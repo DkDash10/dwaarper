@@ -2,7 +2,7 @@
     {
         "CategoryName": "Decor",
         "name": "Full Home Painting",
-        "img": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y2hpY2tlbiUyMGZyaWVkJTIwcmljZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+        "img": "https://plus.unsplash.com/premium_photo-1680297038160-89157d0c56d4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG9tZSUyMHBhaW50aW5nfGVufDB8fDB8fHww",
         "options": [
             {
                 "At-Home consultation": "99"
@@ -13,7 +13,7 @@
     {
         "CategoryName": "Decor",
         "name": "Wall Panels",
-        "img": "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dmVnJTIwZnJpZWQlMjByaWNlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+        "img": "https://plus.unsplash.com/premium_photo-1683121250314-f5e3bb80aa75?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFuJTIwYXBwbHlpbmd3YWxsJTIwcGFuZWxzfGVufDB8fDB8fHww",
         "options": [
             {
                 "At-Home consultation": "99"
@@ -23,8 +23,8 @@
     },
     {
         "CategoryName": "Appliance Repair",
-        "name": "A/c Repair",
-        "img": "https://media.istockphoto.com/photos/king-fish-biryani-with-raita-served-in-a-golden-dish-isolated-on-dark-picture-id1409942571?b=1&k=20&m=1409942571&s=170667a&w=0&h=ozlMJf5hsDmS2sSdEdBWnoSZOEITef4qGMeWeq2lyTc=",
+        "name": "AC Repair",
+        "img": "https://plus.unsplash.com/premium_photo-1682126012378-859ca7a9f4cf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YWMlMjByZXBhaXJ8ZW58MHx8MHx8fDA%3D",
         "options": [
             {
                 "AC power issue repair": "299",
@@ -39,7 +39,7 @@
     {
         "CategoryName": "Appliance Repair",
         "name": "Washing Machine Repair",
-        "img": "https://media.istockphoto.com/photos/king-fish-biryani-with-raita-served-in-a-golden-dish-isolated-on-dark-picture-id1409942571?b=1&k=20&m=1409942571&s=170667a&w=0&h=ozlMJf5hsDmS2sSdEdBWnoSZOEITef4qGMeWeq2lyTc=",
+        "img": "https://plus.unsplash.com/premium_photo-1661342406124-740ae7a0dd0e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2FzaGluZyUyMG1hY2hpbmUlMjByZXBhaXJ8ZW58MHx8MHx8fDA%3D",
         "options": [
             {
                 "Fully automatic check-up (top load)": "199",
@@ -52,7 +52,7 @@
     {
         "CategoryName": "Appliance Repair",
         "name": "Television Repair",
-        "img": "https://media.istockphoto.com/photos/king-fish-biryani-with-raita-served-in-a-golden-dish-isolated-on-dark-picture-id1409942571?b=1&k=20&m=1409942571&s=170667a&w=0&h=ozlMJf5hsDmS2sSdEdBWnoSZOEITef4qGMeWeq2lyTc=",
+        "img": "https://media.istockphoto.com/id/832983526/photo/electrician-checking-television.jpg?s=612x612&w=0&k=20&c=cy0kefsswlabBndRp2-CnbZesSgSpEqclCyp5DBmtjc=",
         "options": [
             {
                 "Television check-up": "299",
@@ -68,7 +68,7 @@
     {
         "CategoryName": "Appliance Repair",
         "name": "Refrigerator Repair",
-        "img": "https://media.istockphoto.com/photos/king-fish-biryani-with-raita-served-in-a-golden-dish-isolated-on-dark-picture-id1409942571?b=1&k=20&m=1409942571&s=170667a&w=0&h=ozlMJf5hsDmS2sSdEdBWnoSZOEITef4qGMeWeq2lyTc=",
+        "img": "https://media.istockphoto.com/id/1128872850/photo/repairman-fixing-refrigerator-with-screwdriver.jpg?s=612x612&w=0&k=20&c=F6fgkzj1e_2x-diaozUqVhHuN967oY5bmlbaO5kD5Xk=",
         "options": [
             {
                 "At-Home consultation": "99"
@@ -79,7 +79,7 @@
     {
         "CategoryName": "General Repair",
         "name": "Plumbing",
-        "img": "https://cdn.pixabay.com/photo/2019/11/04/12/16/rice-4601049__340.jpg",
+        "img": "https://plus.unsplash.com/premium_photo-1663045495725-89f23b57cfc5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHBsdW1iaW5nfGVufDB8fDB8fHww",
         "options": [
             {
                 "Tap repair": "99",
@@ -100,7 +100,7 @@
     {
         "CategoryName": "General Repair",
         "name": "Electrician",
-        "img": "https://media.istockphoto.com/photos/veg-biryani-picture-id1363306527?b=1&k=20&m=1363306527&s=170667a&w=0&h=VCbro7CX8nq2kruynWOCO2GbMGCea2dDJy6O6ebCKD0=",
+        "img": "https://media.istockphoto.com/id/169270331/photo/electrician-working-in-living-room.webp?a=1&b=1&s=612x612&w=0&k=20&c=Bxmuaq8bLuJPHRTnFd93zNowctzHTUC-9EcB7UDutAU=",
         "options": [
             {
                 "Switch replacement": "99",
@@ -124,7 +124,7 @@
     {
         "CategoryName": "General Repair",
         "name": "Carpenter",
-        "img": "https://cdn.pixabay.com/photo/2018/03/23/08/27/thai-fried-rice-3253027__340.jpg",
+        "img": "https://plus.unsplash.com/premium_photo-1682086494813-296b6dd1ecf6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGhvbWUlMjBlbGVjdHJpY2lhbnxlbnwwfHwwfHx8MA%3D%3D",
         "options": [
             {
                 "Cupboard channel repair/replacement": "129",
@@ -147,7 +147,7 @@
     {
         "CategoryName": "Cleaning",
         "name": "Sofa & Carpet Cleaning",
-        "img": "https://media.istockphoto.com/photos/spicy-paneer-or-chilli-paneer-or-paneer-tikka-or-cottage-cheese-in-picture-id697316634?b=1&k=20&m=697316634&s=170667a&w=0&h=bctfHdYTz9q2dJUnuxGRDUUwC9UBWjL_oQo5ECVVDAs=",
+        "img": "https://plus.unsplash.com/premium_photo-1733306538480-f0d59b6edadf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c29mYSUyMGNsZWFuaW5nfGVufDB8fDB8fHww",
         "options": [
             {
                 "Sofa & cushions cleaning": "999",
@@ -162,7 +162,7 @@
     {
         "CategoryName": "Cleaning",
         "name": "Bathroom Cleaning",
-        "img": "https://media.istockphoto.com/photos/paneer-tikka-kabab-in-red-sauce-is-an-indian-dish-made-from-chunks-of-picture-id1257507446?b=1&k=20&m=1257507446&s=170667a&w=0&h=Nd7QsslbvPqOcvwu1bY0rEPZXJqwoKTYCal3nty4X-Y=",
+        "img": "https://media.istockphoto.com/id/153187215/photo/woman-doing-chores-cleaning-bathroom-at-home.jpg?s=612x612&w=0&k=20&c=gSkveUjgYJVhdZkQFvnJszSLgMxQW4G0lDu-b-04i_Y=",
         "options": [
             {
                 "Normal cleaning": "999",
@@ -175,7 +175,7 @@
     {
         "CategoryName": "Cleaning",
         "name": "Kitchen Cleaning",
-        "img": "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y2hpY2tlbiUyMHRpa2thfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+        "img": "https://media.istockphoto.com/id/1139715687/photo/woman-in-yellow-gloves-washes-the-door-in-kitchen-cabinet.jpg?s=612x612&w=0&k=20&c=zaCCsFK77gTubJymaEiakXuGmHURMI4YyKcq7skVMVQ=",
         "options": [
             {
                 "Chimney cleaning": "499",
@@ -190,7 +190,7 @@
     {
         "CategoryName": "Cleaning",
         "name": "Appliance Cleaning",
-        "img": "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y2hpY2tlbiUyMHRpa2thfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+        "img": "https://media.istockphoto.com/id/859265520/photo/high-angle-view-of-woman-cleaning-refrigerator.jpg?s=612x612&w=0&k=20&c=p40d12L03vvdjAy_rDmzLtibXMW4FgYfU9qW1H5JQeE=",
         "options": [
             {
                 "Fridge cleaning": "499",
@@ -206,7 +206,7 @@
     {
         "CategoryName": "Cleaning",
         "name": "Full House Cleaning",
-        "img": "https://media.istockphoto.com/photos/double-topping-pizza-on-the-wooden-desk-isolated-picture-id1074109872?k=20&m=1074109872&s=612x612&w=0&h=JoYwwTfU_mMBykXpRB_DmgeecfotutOIO9pV5_JObpk=",
+        "img": "https://media.istockphoto.com/id/590277932/photo/nothing-is-better-than-team-work.jpg?s=612x612&w=0&k=20&c=ZU5PmR6RXaTp4PgwfUTmOuTJw00gLQ8PRGUQGRSzwbE=",
         "options": [
             {
                 "Unfurnished + 1 BHK cleaning": "1,299",
@@ -226,7 +226,7 @@
     {
         "CategoryName": "Pest Control",
         "name": "Kitchen Pest Control",
-        "img": "https://media.istockphoto.com/photos/paneer-tikka-at-skewers-in-black-bowl-at-dark-slate-background-paneer-picture-id1186759790?k=20&m=1186759790&s=612x612&w=0&h=e9MlX_7cZtq9_-ORGLPNU27VNP6SvDz7s-iwTxrf7wU=",
+        "img": "https://media.istockphoto.com/id/832975776/photo/exterminator-spraying-pesticide-in-kitchen.jpg?s=612x612&w=0&k=20&c=dGGTXWHfCMqeOuqHckxV-6TFuFgBwny9gS9WzBY5jhY=",
         "options": [
             {
                 "Pest control (includes utensil removal)": "1,299",
@@ -238,7 +238,7 @@
     {
         "CategoryName": "Pest Control",
         "name": "Apartment Pest Control",
-        "img": "https://media.istockphoto.com/photos/paneer-tikka-at-skewers-in-black-bowl-at-dark-slate-background-paneer-picture-id1186759790?k=20&m=1186759790&s=612x612&w=0&h=e9MlX_7cZtq9_-ORGLPNU27VNP6SvDz7s-iwTxrf7wU=",
+        "img": "https://media.istockphoto.com/id/1406519107/photo/pest-control-worker-lying-on-floor-and-spraying-pesticides-in-bedroom.jpg?s=612x612&w=0&k=20&c=zh_OBdgxFS7FqUT6Y3WY6WLUVtNMS-1x9Cuf0K8F_Gg=",
         "options": [
             {
                 "Pest control (includes appliance removal)": "2,499",
@@ -250,7 +250,7 @@
     {
         "CategoryName": "Pest Control",
         "name": "Office Pest Control",
-        "img": "https://media.istockphoto.com/photos/paneer-tikka-at-skewers-in-black-bowl-at-dark-slate-background-paneer-picture-id1186759790?k=20&m=1186759790&s=612x612&w=0&h=e9MlX_7cZtq9_-ORGLPNU27VNP6SvDz7s-iwTxrf7wU=",
+        "img": "https://media.istockphoto.com/id/1296687873/photo/pest-control-exterminator-man-spraying-pesticide.jpg?s=612x612&w=0&k=20&c=_ypmsMY6tYCCWjePcpWZcXdaOOaM1rp_9z7hNGO6SLo=",
         "options": [
             {
                 "Office Pest control": "4,299",
@@ -262,7 +262,7 @@
     {
         "CategoryName": "Pest Control",
         "name": "Termite Control",
-        "img": "https://media.istockphoto.com/photos/paneer-tikka-at-skewers-in-black-bowl-at-dark-slate-background-paneer-picture-id1186759790?k=20&m=1186759790&s=612x612&w=0&h=e9MlX_7cZtq9_-ORGLPNU27VNP6SvDz7s-iwTxrf7wU=",
+        "img": "https://media.istockphoto.com/id/1256052483/photo/termites-extermination.jpg?s=612x612&w=0&k=20&c=-p-HjfMbgMo_3bBmFYpRQt65lTvSZ5W3J8IJG9cFJms=",
         "options": [
             {
                 "1 BHK Apartment termite control": "4,299",
