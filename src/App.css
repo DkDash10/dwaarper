@@ -1,0 +1,91 @@
+.navigationbar{
+    padding: 2rem !important;
+    background-color: #424242;
+    box-shadow: 0 0 15px 4px rgb(47 47 47 / 49%)
+}
+.nav_container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav_links{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+.nav_form{
+    position: relative;
+}
+.nav_search{
+    padding:  0.5rem 4rem 0.5rem 1.5rem;
+    border: 1px solid black;
+    outline: none;
+    border-radius: 0.5rem;
+}
+.nav_form button{
+    width: 50px;
+    height: 42px;
+    position: absolute;
+    left: 376px;
+    border-radius: 0 0.5rem 0.5rem 0;
+    background-color: #f0f0f0;
+    border: 1px solid #424242;
+    outline: none;
+}
+/* .nav_form button:hover{
+    background-color:#424242;
+    border: none;
+    border: 1px solid #f0f0f0;
+    color: #f0f0f0 !important;
+} */
+.nav_searchicon{
+    font-size: 1.5rem;
+    position: absolute;
+    left: 12px;
+    top: 7px;
+    color: #424242;
+}
+/* .nav_searchicon:hover{
+    color: #f0f0f0;
+} */
+
+.carousal_image{
+    width: 100%;
+    height: 70vh;
+    object-fit: cover;
+}
+.home{
+    padding: 2rem;
+}
+.home_cards{
+
+    display: flex;
+    overflow-x: hidden;
+    /* justify-content: center; */
+}
+.home_card{
+    width: 100%;
+    border-radius: 8px; 
+    display: flex; 
+    gap: 20px;
+    flex-direction: column;
+    min-width: 400px;
+    width: 400px
+}
+.home_card img{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+.home_card button{
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+footer{
+    padding: 2rem;
+    background-color: #424242;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 15px 4px rgb(47 47 47 / 49%)
+}
