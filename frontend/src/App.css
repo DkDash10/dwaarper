@@ -1,0 +1,255 @@
+.navigationbar{
+    padding: 2rem !important;
+    background-color: #282828;
+    box-shadow: 0 0 15px 4px rgb(47 47 47 / 49%)
+}
+.nav_container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+}
+.nav_logo{
+    /* font-family: "Playwrite VN", serif; */
+    font-family: "Macondo", serif;
+    font-weight: bold;
+    font-size: 24px;
+}
+.nav_links{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* .nav_form button:hover{
+    background-color:#424242;
+    border: none;
+    border: 1px solid #f0f0f0;
+    color: #f0f0f0 !important;
+} */
+.nav_searchicon{
+    font-size: 1.5rem;
+    position: absolute;
+    left: 12px;
+    top: 7px;
+    color: #424242;
+}
+/* .nav_searchicon:hover{
+    color: #f0f0f0;
+} */
+
+.carousal_image{
+    width: 100%;
+    height: 70vh;
+    object-fit: cover;
+}
+
+.carousel-item-container {
+    position: relative;
+}
+
+.carousal_text{
+    color: white;
+    z-index: 2;
+}
+  
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);  /* Dark semi-transparent overlay */
+    z-index: 1;  /* Put overlay above the image */
+}
+
+/* cards.jsx css start */
+.search{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2rem 0;
+}
+.search p{
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+.search_form{
+    position: relative;
+}
+.search_input{
+    padding:  0.5rem 1.5rem;
+    border: 1px solid black;
+    outline: none;
+    border-radius: 0.5rem;
+    width: 300px;
+    max-width: 300px;
+    color: #424242;
+}
+.search_form button{
+    width: 50px;
+    height: 42px;
+    position: absolute;
+    left: 376px;
+    border-radius: 0 0.5rem 0.5rem 0;
+    background-color: #f0f0f0;
+    border: 1px solid #424242;
+    outline: none;
+}
+.cards{
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    
+}
+.card_overflow{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.5rem;
+}
+.card_category{
+    font-size: 2rem;
+    font-weight: bold;
+}
+.card_overflow button{
+    padding: 10px;
+    border-radius: 0.5rem;
+}
+.card_section{
+    display: flex;
+    overflow-x: hidden;
+    gap: 2rem;
+    flex-grow: 1;
+    padding: 1rem 0.5rem 1rem 0.5rem;
+}
+.card_sections{
+    border-radius: 0.5rem;
+    border: 1px solid #ccc; 
+    padding: 1rem;
+    display: flex; 
+    gap: 20px;
+    flex-direction: column;
+    min-width: 350px;
+    width: 400px;
+    background-color: #fff;
+    z-index: 20;
+    justify-content: space-between;
+}
+.card_sections:hover{
+    box-shadow: 0px 0px 10px 1px rgb(202, 202, 202);
+  
+}
+.card_img{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+.card_name{
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.card_desc{
+    font-size: 14px;
+}
+.card_option{
+    font-size: 16px;
+}
+.card_cart{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card_price{
+    font-size: 20px;
+    font-weight: bold;
+}
+.card_cartbtn{
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.card_noservices{
+    text-align: center;
+}
+
+/* cards.jsx css end */
+
+/* footer.jsx css start */
+
+footer{
+    padding: 2rem;
+    background-color: #282828;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 15px 4px rgb(47 47 47 / 49%)
+}
+
+/* footer.jsx css start */
+
+.signup{
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    width: 100%;
+    height: 100vh;
+}
+.signup_card{
+    padding: 2rem;
+    width: 400px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 1rem;
+}
+.signup_form{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.signup_form-field input, .signup_form-field #password{
+    border: 1px solid black;
+    outline: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    color: #424242;
+    font-size: 14px;
+}
+.signup_form-field #password{
+    padding-right: 3rem;
+}
+.signup_form-field{
+    position: relative;
+}
+.signup_form-field button{
+    padding: 0.3rem !important;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+.signup_form-icons{
+    font-size: 1.5rem;
+}
+.signup_form button{
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.signup_form-footer a{
+    color: blue;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+.signup_form-footer a:hover{
+    text-decoration: underline;
+    color: darkblue;
+}
+
+
+  
