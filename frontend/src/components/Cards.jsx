@@ -10,7 +10,7 @@ export default function Cards(props) {
   const cartData = useCart();
 
   const [search, setSearch] = useState("");
-  const [cost, setCost] = useState({});
+  const [service, setService] = useState({});
   const [hasResults, setHasResults] = useState(true); // Track if any results are found
 
   const serviceData = props.serviceData;
@@ -25,7 +25,7 @@ export default function Cards(props) {
   };
 
   const handleCostChange = (id, value) => {
-    setCost((prev) => ({ ...prev, [id]: value }));
+    setService((prev) => ({ ...prev, [id]: value }));
   };
 
   useEffect(() => {
@@ -113,7 +113,7 @@ export default function Cards(props) {
                         <p className="card_desc">{filterItems.description}</p>
                         <div className="card_option">
                           <select
-                            value={cost[filterItems._id] || defaultCost}
+                            value={service[filterItems._id] || defaultCost}
                             onChange={(e) =>
                               handleCostChange(filterItems._id, e.target.value)
                             }
@@ -132,7 +132,7 @@ export default function Cards(props) {
                             {filterItems.options &&
                               parseInt(
                                 filterItems.options[0][
-                                  cost[filterItems._id] || defaultCost
+                                  service[filterItems._id] || defaultCost
                                 ].replace(/,/g, "")
                               )}
                             /-
@@ -142,15 +142,16 @@ export default function Cards(props) {
                             type="button"
                             onClick={() => {
                               const selectedPrice = filterItems.options[0][
-                                cost[filterItems._id] || defaultCost
+                                service[filterItems._id] || defaultCost
                               ].replace(/,/g, "");
 
                               const cartData = {
                                 type: "ADD",
+                                img: filterItems.img,
                                 id: filterItems._id,
                                 name: filterItems.name,
                                 price: selectedPrice,
-                                cost: cost[filterItems._id] || defaultCost,
+                                service: service[filterItems._id] || defaultCost,
                               };
                               console.log(cartData);
                               dispatch(cartData);

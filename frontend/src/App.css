@@ -21,14 +21,53 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    transition: transform 0.3s ease
 }
-
-/* .nav_form button:hover{
-    background-color:#424242;
-    border: none;
-    border: 1px solid #f0f0f0;
-    color: #f0f0f0 !important;
-} */
+.nav_links:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.nav_dropdown{
+    position: relative;
+    display: flex;
+    gap: 2rem;
+}
+.nav_dropdown-button{
+    background-color: transparent;
+    border: 3px solid white;
+    /* border: 0; */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+.nav_dropdown-logo, .nav_cart-logo{
+    color: white;
+    font-size: 1.5rem;
+}
+.nav_cart-count{
+    border-radius: 50%;
+    background-color: white!important;
+    color: #282828;
+    font-size: 10px;
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    left: 15px;
+}
+.nav_dropdown-menu{
+    border: 2px solid white;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 1rem;
+    align-items: flex-end;
+    position: absolute;
+    z-index: 100;
+    width: 150px;
+    top: 45px;
+    right: 0px;
+    background-color: #282828;
+    border-radius: 0.5rem;
+}
 .nav_searchicon{
     font-size: 1.5rem;
     position: absolute;
@@ -81,7 +120,6 @@
 }
 .search_input{
     padding:  0.5rem 1.5rem;
-    border: 1px solid black;
     outline: none;
     border-radius: 0.5rem;
     width: 300px;
@@ -207,7 +245,7 @@ footer{
     gap: 1rem;
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
+    border: 2px solid black;
     background-color: white;
     border-radius: 1rem;
 }
@@ -227,7 +265,6 @@ footer{
     gap: 1rem;
 }
 .signup_form-field input, .signup_form-field #password{
-    border: 1px solid black;
     outline: none;
     border-radius: 0.5rem;
     padding: 0.5rem 1rem;
@@ -242,7 +279,7 @@ footer{
     position: relative;
 }
 .signup_form-field button{
-    padding: 0.3rem !important;
+    padding: 0.35rem !important;
     position: absolute;
     right: 0;
     bottom: 0;
