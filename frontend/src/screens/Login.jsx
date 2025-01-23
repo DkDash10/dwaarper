@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { GrHide } from "react-icons/gr";
 import { BiShow } from "react-icons/bi";
+import { IoChevronBackOutline } from "react-icons/io5";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +49,8 @@ export default function Login() {
   return (
     <div className="signup">
           <div className="signup_card">
+            <p className="signup_card-header">Login</p>
+            <Link to="/"><IoChevronBackOutline /> Back to home</Link>
             <form action="" onSubmit={handleSubmit} className="signup_form">
               <div className="signup_form-field">
                 <label htmlFor="email">Email</label>
@@ -78,9 +81,9 @@ export default function Login() {
               </div>
               <button type="submit">Login</button>
               <p className="signup_form-footer">
-                Not a user?{" "}
+                Not a user?
                 <span>
-                  <Link to="/signup">Signup</Link>
+                  <Link to="/signup">&nbsp;Signup</Link>
                 </span>
               </p>
             </form>

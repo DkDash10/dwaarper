@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { GrHide } from "react-icons/gr";
 import { BiShow } from "react-icons/bi";
+import { IoChevronBackOutline } from "react-icons/io5";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -50,6 +51,8 @@ export default function Signup() {
   return (
     <div className="signup">
       <div className="signup_card">
+         <p className="signup_card-header">Create Account</p>
+        <Link to="/"><IoChevronBackOutline /> Back to home</Link>
         <form action="" onSubmit={handleSubmit} className="signup_form">
           <div className="signup_form-field">
             <label htmlFor="name">Name</label>
@@ -100,9 +103,9 @@ export default function Signup() {
           </div>
           <button type="submit">Sign Up</button>
           <p className="signup_form-footer">
-            Already have an account?{" "}
+            Already have an account?
             <span>
-              <Link to="/login">Login</Link>
+              <Link to="/login">&nbsp;Login</Link>
             </span>
           </p>
         </form>
