@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { LuUser,LuShoppingCart } from "react-icons/lu";
 import Badge from 'react-bootstrap/Badge';
+import {useCart} from "./ContextReducer";
 
 
 export default function Navigationbar() {
@@ -15,6 +16,7 @@ export default function Navigationbar() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  let data = useCart();
   return (
     <nav className="navigationbar">
       <div className="nav_container">
@@ -24,7 +26,11 @@ export default function Navigationbar() {
             <div className="nav_dropdown">
               <Link className="nav_links" to="/cart" >
                 <LuShoppingCart className="nav_cart-logo" />
-                <Badge className="nav_cart-count">1</Badge>
+                {
+                  data.length > 0 && (
+                    <Badge className="nav_cart-count">{data.length}</Badge>
+                  )
+                }
               </Link>
               <button className="nav_dropdown-button" onClick={toggleDropdown}>
                 <LuUser className="nav_dropdown-logo" />

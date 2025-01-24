@@ -15,7 +15,7 @@ a {
   cursor: pointer;
 }
 select {
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   width: 100%;
   border-radius: 0.5rem;
 }
@@ -34,3 +34,12 @@ input{
 .row {
   --bs-gutter-x: 0 !important;
 }
+.Toastify__toast-container {
+  font-family: 'Kanit', serif !important;
+}
+
+.Toastify__toast {
+  font-family: 'Kanit', serif !important;
+  padding-right: 2rem !important;
+}
+

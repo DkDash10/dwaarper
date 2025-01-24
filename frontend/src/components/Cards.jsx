@@ -3,6 +3,8 @@ import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useDispatchCart, useCart } from "./ContextReducer";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
 
 export default function Cards(props) {
   const scrollRefs = useRef([]);
@@ -41,8 +43,26 @@ export default function Cards(props) {
     setHasResults(filteredItemsByCategory.some((items) => items.length > 0));
   }, [serviceData, search]);
 
+  // Toast notification function
+  const showToast = (serviceName) => {
+    toast.success(`${serviceName} has been added to the cart!`, {
+      position: toast.POSITION?.TOP_RIGHT,
+      autoClose: 3000, // Toast will automatically close after 3 seconds
+    });
+  };
+
+  // Check if the service with the specific option is already in the cart
+  const isServiceInCart = (id, selectedOption) => {
+    return cartData.some(
+      (item) => item.id === id && item.service === selectedOption
+    );
+  };
+
   return (
     <>
+      {/* ToastContainer to render the toast messages */}
+      <ToastContainer />
+
       <div className="search">
         <p>Search our available services</p>
         <div className="search_form">
@@ -96,6 +116,15 @@ export default function Cards(props) {
                       filterItems.options &&
                       Object.keys(filterItems.options[0])[0];
 
+                    const selectedOption =
+                      service[filterItems._id] || defaultCost;
+
+                    const selectedPrice =
+                      filterItems.options &&
+                      parseInt(
+                        filterItems.options[0][selectedOption].replace(/,/g, "")
+                      );
+
                     return (
                       <div className="card_sections" key={filterItems._id}>
                         <img
@@ -113,7 +142,7 @@ export default function Cards(props) {
                         <p className="card_desc">{filterItems.description}</p>
                         <div className="card_option">
                           <select
-                            value={service[filterItems._id] || defaultCost}
+                            value={selectedOption}
                             onChange={(e) =>
                               handleCostChange(filterItems._id, e.target.value)
                             }
@@ -128,38 +157,39 @@ export default function Cards(props) {
                         </div>
                         <div className="card_cart">
                           <p className="card_price">
-                            Price: ₹
-                            {filterItems.options &&
-                              parseInt(
-                                filterItems.options[0][
-                                  service[filterItems._id] || defaultCost
-                                ].replace(/,/g, "")
-                              )}
-                            /-
+                            Price: ₹{selectedPrice}/-
                           </p>
-                          {localStorage.getItem("authToken") ? (<button
-                            className="card_cartbtn"
-                            type="button"
-                            onClick={() => {
-                              const selectedPrice = filterItems.options[0][
-                                service[filterItems._id] || defaultCost
-                              ].replace(/,/g, "");
-
-                              const cartData = {
-                                type: "ADD",
-                                img: filterItems.img,
-                                id: filterItems._id,
-                                name: filterItems.name,
-                                price: selectedPrice,
-                                service: service[filterItems._id] || defaultCost,
-                              };
-                              console.log(cartData);
-                              dispatch(cartData);
-                            }}
-                          >
-                            Add to cart
-                          </button>): ""}
-                          
+                          {localStorage.getItem("authToken") ? (
+                            <button
+                              className="card_cartbtn"
+                              type="button"
+                              disabled={isServiceInCart(
+                                filterItems._id,
+                                selectedOption
+                              )} // Disable button if the service with the selected option is in the cart
+                              onClick={() => {
+                                // Prevent adding if the service with the selected option is already in the cart
+                                if (!isServiceInCart(filterItems._id, selectedOption)) {
+                                  const cartData = {
+                                    type: "ADD",
+                                    img: filterItems.img,
+                                    id: filterItems._id,
+                                    name: filterItems.name,
+                                    price: selectedPrice,
+                                    service: selectedOption,
+                                  };
+                                  dispatch(cartData);
+                                  showToast(filterItems.name); // Show the toast notification
+                                }
+                              }}
+                            >
+                              {isServiceInCart(filterItems._id, selectedOption)
+                                ? "Added to cart"
+                                : "Add to cart"}
+                            </button>
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </div>
                     );
