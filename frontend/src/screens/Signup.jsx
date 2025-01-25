@@ -52,7 +52,7 @@ export default function Signup() {
     <div className="signup">
       <div className="signup_card">
          <p className="signup_card-header">Create Account</p>
-        <Link to="/"><IoChevronBackOutline /> Back to home</Link>
+        <Link to="/" className="backToHome"><IoChevronBackOutline /> Back to home</Link>
         <form action="" onSubmit={handleSubmit} className="signup_form">
           <div className="signup_form-field">
             <label htmlFor="name">Name</label>

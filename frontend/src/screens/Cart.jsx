@@ -5,6 +5,8 @@ import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { TbShoppingCartQuestion } from "react-icons/tb";
+import { ToastContainer, toast, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
 
 export default function Cart() {
   let data = useCart();
@@ -20,21 +22,32 @@ export default function Cart() {
 
   let finalPrice = totalPrice - discount;
 
+   // Toast notification function
+    const showToast = (serviceName) => {
+      toast(`${serviceName} has been added to the cart!`);
+    };
+
   return (
     <>
       <Navigationbar />
+      <ToastContainer 
+        draggable
+        transition={Slide} 
+        autoClose={1500}
+      />
       {data.length === 0 ? (
         <>
           <div className="emptyCart">
             <div className="emptyCart_card">
               <TbShoppingCartQuestion className="emptyCart_card-logo" />
               <p>Your cart is currently empty.</p>
-              <Link to="/">Browse Services</Link>
+              <Link to="/">Browse services</Link>
             </div>
           </div>
         </>
       ) : (
         <>
+          
           <div className="discount">
             <p>Got it! We've got you covered.&nbsp;</p>
             <p>
@@ -62,6 +75,7 @@ export default function Cart() {
                       className="cart_items-remove"
                       onClick={() => {
                         dispatch({ type: "REMOVE", index: index });
+                        showToast(service.name)
                       }}
                     >
                       Remove

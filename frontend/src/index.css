@@ -41,5 +41,6 @@ input{
 .Toastify__toast {
   font-family: 'Kanit', serif !important;
   padding-right: 2rem !important;
+  border: 1px solid #ccc !important;
 }
 

@@ -3,7 +3,7 @@ import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useDispatchCart, useCart } from "./ContextReducer";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
 
 export default function Cards(props) {
@@ -45,10 +45,7 @@ export default function Cards(props) {
 
   // Toast notification function
   const showToast = (serviceName) => {
-    toast.success(`${serviceName} has been added to the cart!`, {
-      position: toast.POSITION?.TOP_RIGHT,
-      autoClose: 3000, // Toast will automatically close after 3 seconds
-    });
+    toast(`${serviceName} has been added to the cart!`);
   };
 
   // Check if the service with the specific option is already in the cart
@@ -57,12 +54,31 @@ export default function Cards(props) {
       (item) => item.id === id && item.service === selectedOption
     );
   };
+  
+  const handleAddToCart = (filterItems, selectedOption, selectedPrice) => {
+    if (!isServiceInCart(filterItems._id, selectedOption)) {
+      const cartData = {
+        type: "ADD",
+        img: filterItems.img,
+        id: filterItems._id,
+        name: filterItems.name,
+        price: selectedPrice,
+        service: selectedOption,
+      };
+      dispatch(cartData);
+      showToast(filterItems.name); // Show toast notification
+    }
+  };
+  
 
   return (
     <>
       {/* ToastContainer to render the toast messages */}
-      <ToastContainer />
-
+      <ToastContainer 
+        draggable
+        transition={Slide} 
+        autoClose={1500}
+      />
       <div className="search">
         <p>Search our available services</p>
         <div className="search_form">
@@ -163,25 +179,10 @@ export default function Cards(props) {
                             <button
                               className="card_cartbtn"
                               type="button"
-                              disabled={isServiceInCart(
-                                filterItems._id,
-                                selectedOption
-                              )} // Disable button if the service with the selected option is in the cart
-                              onClick={() => {
-                                // Prevent adding if the service with the selected option is already in the cart
-                                if (!isServiceInCart(filterItems._id, selectedOption)) {
-                                  const cartData = {
-                                    type: "ADD",
-                                    img: filterItems.img,
-                                    id: filterItems._id,
-                                    name: filterItems.name,
-                                    price: selectedPrice,
-                                    service: selectedOption,
-                                  };
-                                  dispatch(cartData);
-                                  showToast(filterItems.name); // Show the toast notification
-                                }
-                              }}
+                              disabled={isServiceInCart(filterItems._id, selectedOption)}
+                              onClick={() =>
+                                handleAddToCart(filterItems, selectedOption, selectedPrice)
+                              }
                             >
                               {isServiceInCart(filterItems._id, selectedOption)
                                 ? "Added to cart"
