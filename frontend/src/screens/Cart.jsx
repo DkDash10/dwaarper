@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
 
 export default function Cart() {
   let data = useCart();
-  console.log(data[0]?.img);
   let dispatch = useDispatchCart();
 
   let totalPrice = data.reduce((total, service) => {
@@ -22,10 +21,38 @@ export default function Cart() {
 
   let finalPrice = totalPrice - discount;
 
-   // Toast notification function
-    const showToast = (serviceName) => {
-      toast(`${serviceName} has been added to the cart!`);
-    };
+  // Toast notification function
+  const showToast = (serviceName) => {
+    toast(`${serviceName} has been added to the cart!`);
+  };
+
+  const handleCheckout = async()=>{
+    try{
+      let userEmail = localStorage.getItem('userEmail');
+      const response = await fetch('http://localhost:5000/api/orderData',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          order_data: data,
+          order_date: new Date().toDateString()
+        })
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const resData = await response.json();
+      console.log(resData)
+      if(response.status === 200){
+        dispatch({type: "DROP"})
+        toast.success('Order placed successfully!');
+      }
+    }catch(error) {
+      console.error("Failed to fetch:", error);
+    }
+  }
 
   return (
     <>
@@ -106,7 +133,7 @@ export default function Cart() {
                   {/* <span>{totalPrice}</span> */}
                 </div>
               </div>
-              <button className="cart_checkout">Proceed to Checkout</button>
+              <button className="cart_checkout" onClick={handleCheckout}>Proceed to Checkout</button>
             </div>
           </div>
         </>

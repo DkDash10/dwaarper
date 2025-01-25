@@ -21,22 +21,38 @@ router.post(
       .withMessage("Password must be at least 5 characters long"),
   ],
   async (req, res) => {
+    const { name, location, email, password } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const salt = await bcrypt.genSalt(12);
-    let secPassword = await bcrypt.hash(req.body.password, salt);
-
     try {
-      await User.create({
-        name: req.body.name,
-        location: req.body.location,
-        email: req.body.email,
-        password: secPassword, 
+      let user = await User.findOne({ email });
+      if (user) {
+        return res.status(400).json({ success: false, message: 'User with this email already exists' });
+      }
+
+      // Generate salt and hash the password
+      const salt = await bcrypt.genSalt(12);
+      let secPassword = await bcrypt.hash(password, salt);
+
+      // Create a new user
+      user = await User.create({
+        name,
+        location,
+        email,
+        password: secPassword,
       });
-      res.json({ success: true });
+
+      const data = {
+        user: {
+          id: user.id,
+        }
+      };
+
+      const authToken = jwt.sign(data, process.env.JWT_SECRET);
+      res.json({ success: true, authToken: authToken });
     } catch (error) {
       console.error("Error while creating user:", error);
       res.json({ success: false });

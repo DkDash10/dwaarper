@@ -37,6 +37,8 @@ export default function Signup() {
       alert("Enter valid details");
     }
     if(data.success){
+      localStorage.setItem("userEmail", credentials.email)
+      localStorage.setItem("authToken", data.authToken)
       navigate("/")
     }
   };
