@@ -12,6 +12,7 @@ export default function Signup() {
     password: "",
     location: "",
   });
+  let [address, setAddress] = useState("");
   let navigate = useNavigate()
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -35,9 +36,9 @@ export default function Signup() {
     console.log(data);
     if (!data.success) {
       alert("Enter valid details");
-    }
-    if(data.success){
-      localStorage.setItem("userEmail", credentials.email)
+    }else{
+      const { password, ...userData } = credentials;
+      localStorage.setItem("userData", JSON.stringify(userData));
       localStorage.setItem("authToken", data.authToken)
       navigate("/")
     }
@@ -49,6 +50,44 @@ export default function Signup() {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+  
+    let navLocation = () => {
+      return new Promise((res, rej) => {
+        navigator.geolocation.getCurrentPosition(res, rej);
+      });
+    };
+  
+    try {
+      let latlong = await navLocation().then((res) => {
+        let latitude = res.coords.latitude;
+        let longitude = res.coords.longitude;
+        return [latitude, longitude];
+      });
+  
+      let [lat, long] = latlong;
+      console.log(lat, long); // Ensure coordinates are logged correctly
+  
+      // Now call your API with the correct latlong
+      const response = await fetch("http://localhost:5000/api/getlocation", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ latlong: { lat, long } })
+      });
+  
+      const {location}  = await response.json();
+      console.log(location);
+      setAddress(location);
+      setCredentials({ ...credentials, location: location });
+    } catch (error) {
+      console.error('Error retrieving location:', error);
+    }
+  };
+  
 
   return (
     <div className="signup">
@@ -95,13 +134,21 @@ export default function Signup() {
           </div>
           <div className="signup_form-field">
             <label htmlFor="location">Location</label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={credentials.location}
-              onChange={handleChange}
-            />
+            <fieldset>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={address} // Display address fetched or typed by user
+                onChange={(e) => {
+                  setAddress(e.target.value); // Update visible address
+                  setCredentials((prev) => ({ ...prev, location: e.target.value })); // Update credentials
+                }}
+              />
+            </fieldset>
+            <div className="m-3">
+              <button type="button" onClick={handleClick} name="location" className=" btn btn-success">Click for current Location </button>
+            </div>
           </div>
           <button type="submit">Sign Up</button>
           <p className="signup_form-footer">

@@ -10,6 +10,7 @@ export default function Navigationbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("userData");
   };
 
   const toggleDropdown = () => {

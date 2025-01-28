@@ -101,4 +101,31 @@ router.post(
   }
 );
 
+router.post('/getlocation', async (req, res) => {
+  try {
+    const { lat, long } = req.body.latlong;
+
+    console.log("Backend Lat/Lon:", lat, long);
+
+    const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    console.log("BigDataCloud Response:", JSON.stringify(data, null, 2));
+
+    // Ensure the response contains expected fields
+    if (!data.locality && !data.principalSubdivisionCode) {
+      return res.status(400).send({ error: "Failed to retrieve location data" });
+    }
+
+    const location = `${data.locality || ""}, ${data.principalSubdivisionCode || ""}, ${data.countryName || ""}, ${data.postcode || ""}`;
+
+    // console.log("Location:", location);
+    res.send({ location });
+  } catch (error) {
+    console.error("Server Error:", error.message);
+    res.status(500).send({ error: "Server Error" });
+  }
+});
+
 module.exports = router;

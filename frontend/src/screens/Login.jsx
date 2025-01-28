@@ -34,8 +34,10 @@ export default function Login() {
       if (!data.success) {
         alert("Enter valid details");
       }
+      const { password, ...userData } = credentials;
+
       if (data.success) {
-        localStorage.setItem("userEmail", credentials.email)
+        localStorage.setItem("userData", JSON.stringify(userData))
         localStorage.setItem("authToken", data.authToken)
         navigate("/");
       }

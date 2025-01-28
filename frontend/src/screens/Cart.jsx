@@ -7,17 +7,19 @@ import { IoChevronBackOutline } from "react-icons/io5";
 import { TbShoppingCartQuestion } from "react-icons/tb";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function Cart() {
   let data = useCart();
+  // console.log(data);
   let dispatch = useDispatchCart();
 
   let totalPrice = data.reduce((total, service) => {
     let price = parseFloat(service.price);
-    return total + (isNaN(price) ? 0 : price); 
+    return total + (isNaN(price) ? 0 : price);
   }, 0);
 
-  let discount = 0.20 * totalPrice;
+  let discount = 0.2 * totalPrice;
 
   let finalPrice = totalPrice - discount;
 
@@ -26,42 +28,59 @@ export default function Cart() {
     toast(`${serviceName} has been added to the cart!`);
   };
 
-  const handleCheckout = async()=>{
-    try{
-      let userEmail = localStorage.getItem('userEmail');
-      const response = await fetch('http://localhost:5000/api/orderData',{
-        method: 'POST',
+  const makePayment = async () => {
+    try {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      if (!userData) {
+        console.error("No user data found in localStorage");
+        return;
+      }
+  
+      const userEmail = userData.email;
+      const order_data = data; // Pass the cart data as order_data
+  
+      const body = {
+        products: data,
+        customerDetails: userData,
+        email: userEmail,
+        order_data, // Add order_data to the body
+        order_date: new Date().toDateString(),
+        finalPrice: finalPrice,
+      };
+  
+      const response = await fetch("http://localhost:5000/api/create-checkout-session", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: userEmail,
-          order_data: data,
-          order_date: new Date().toDateString()
-        })
+        body: JSON.stringify(body),
       });
+  
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Failed to create checkout session! Status: ${response.status}`);
       }
-      const resData = await response.json();
-      console.log(resData)
-      if(response.status === 200){
-        dispatch({type: "DROP"})
-        toast.success('Order placed successfully!');
+  
+      const session = await response.json();
+      const stripe = await loadStripe("pk_test_51MgU4YSCZDwYFEVOL78hnRImX4fndMO5GO8JTI0IVJxGivngE2azshTFLlPXewd3sckyAioyIpW5ovWVROVa4jqA00TL5cC618");
+  
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+  
+      if (result.error) {
+        console.error(result.error.message);
       }
-    }catch(error) {
-      console.error("Failed to fetch:", error);
+    } catch (error) {
+      console.error("Error during the payment process:", error);
     }
-  }
+  };
+  
+  
 
   return (
     <>
       <Navigationbar />
-      <ToastContainer 
-        draggable
-        transition={Slide} 
-        autoClose={1500}
-      />
+      <ToastContainer draggable transition={Slide} autoClose={1500} />
       {data.length === 0 ? (
         <>
           <div className="emptyCart">
@@ -74,7 +93,6 @@ export default function Cart() {
         </>
       ) : (
         <>
-          
           <div className="discount">
             <p>Got it! We've got you covered.&nbsp;</p>
             <p>
@@ -102,7 +120,7 @@ export default function Cart() {
                       className="cart_items-remove"
                       onClick={() => {
                         dispatch({ type: "REMOVE", index: index });
-                        showToast(service.name)
+                        showToast(service.name);
                       }}
                     >
                       Remove
@@ -119,7 +137,9 @@ export default function Cart() {
               <div className="cart_summaryItems">
                 <div className="cart_summaryItem">
                   <span>Total Price</span>
-                  <span className="cart_summary-price">₹{totalPrice.toFixed(2)}/-</span>
+                  <span className="cart_summary-price">
+                    ₹{totalPrice.toFixed(2)}/-
+                  </span>
                   {/* <span>{totalPrice}</span> */}
                 </div>
                 <div className="cart_summaryItem">
@@ -129,11 +149,15 @@ export default function Cart() {
                 <hr />
                 <div className="cart_summaryItem">
                   <span>Final Price</span>
-                  <span className="cart_summary-price">₹{finalPrice.toFixed(2)}/-</span>
+                  <span className="cart_summary-price">
+                    ₹{finalPrice.toFixed(2)}/-
+                  </span>
                   {/* <span>{totalPrice}</span> */}
                 </div>
               </div>
-              <button className="cart_checkout" onClick={handleCheckout}>Proceed to Checkout</button>
+              <button className="cart_checkout" onClick={makePayment}>
+                Proceed to Checkout
+              </button>
             </div>
           </div>
         </>
