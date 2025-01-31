@@ -222,15 +222,17 @@
 
 /* cart.jsx css start */
 
-.emptyCart{
+.emptyCart, .success, .cancel{
     min-height: 73vh;
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
-    
 }
-.emptyCart_card{
+.success, .cancel{
+    height: 100vh;
+}
+.emptyCart_card, .success_card, .cancel_card{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -241,13 +243,14 @@
     gap: 1rem;
     border-radius: 0.5rem;
 }
-.emptyCart_card-logo{
+.emptyCart_card-logo, .success_card-logo, .cancel_card-logo{
     font-size: 3rem;
 }
 .emptyCart p{
     font-size: 22px;
+    font-weight: bold;
 }
-.emptyCart_card a{
+.emptyCart_card a, .cancel_card a{
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     font-size: 16px;
@@ -257,7 +260,11 @@
     border: 2px solid #000;
     text-decoration: none;
 }
-
+.success_card-text, .cancel_card-text{
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+}
 .discount{
     display: flex;
     margin: 2rem 2rem 0;

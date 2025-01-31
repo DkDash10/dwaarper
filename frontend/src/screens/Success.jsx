@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import { useDispatchCart } from "../components/ContextReducer";
+import { TbShoppingCartCheck } from "react-icons/tb";
 
 const Success = () => {
   const navigate = useNavigate();
@@ -58,11 +59,19 @@ const Success = () => {
   }, [navigate]);
 
   return (
-    <div>
+    <>
       <ToastContainer draggable transition={Slide} autoClose={1500} />
-      <h2>Payment Successful!</h2>
-      <p>Your order has been placed successfully.</p>
-    </div>
+      <div className="success">
+        <div className="success_card">
+          <TbShoppingCartCheck className="success_card-logo" />
+          <div>
+            <p className="success_card-text">Payment Successful!</p>
+            <p>Your service order has been successfully placed.</p>
+          </div>
+          {/* <Link to="/">Browse services</Link> */}
+        </div>
+      </div>
+    </>
   );
 };
 
