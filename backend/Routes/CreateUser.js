@@ -105,20 +105,20 @@ router.post('/getlocation', async (req, res) => {
   try {
     const { lat, long } = req.body.latlong;
 
-    console.log("Backend Lat/Lon:", lat, long);
+    // console.log("Backend Lat/Lon:", lat, long);
 
     const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`;
     const response = await fetch(url);
     const data = await response.json();
 
-    console.log("BigDataCloud Response:", JSON.stringify(data, null, 2));
+    // console.log("BigDataCloud Response:", JSON.stringify(data, null, 2));
 
     // Ensure the response contains expected fields
-    if (!data.locality && !data.principalSubdivisionCode) {
+    if (!data.locality && !data.principalSubdivision) {
       return res.status(400).send({ error: "Failed to retrieve location data" });
     }
 
-    const location = `${data.locality || ""}, ${data.principalSubdivisionCode || ""}, ${data.countryName || ""}, ${data.postcode || ""}`;
+    const location = `${data.locality || ""}, ${data.city || ""}, ${data.principalSubdivision || ""} ${data.postcode || ""}`;
 
     // console.log("Location:", location);
     res.send({ location });

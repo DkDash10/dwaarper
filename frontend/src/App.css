@@ -7,7 +7,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.2rem;
 }
 .nav_logo{
     /* font-family: "Playwrite VN", serif; */
@@ -20,12 +19,18 @@
     gap: 1rem;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    transition: transform 0.3s ease
+    transition: transform 0.3s ease;
+    font-size: 18px;
+}
+.nav_links-mid{
+    gap: 3rem;
 }
 .nav_links:hover{
     text-decoration: underline;
     cursor: pointer;
+}
+.nav_links-auth{
+    font-weight: bold;
 }
 .nav_dropdown{
     position: relative;
@@ -222,17 +227,17 @@
 
 /* cart.jsx css start */
 
-.emptyCart, .success, .cancel{
+.emptyCart, .success, .cancel, .notFound{
     min-height: 73vh;
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
 }
-.success, .cancel{
+.success, .cancel, .notFound{
     height: 100vh;
 }
-.emptyCart_card, .success_card, .cancel_card{
+.emptyCart_card, .success_card, .cancel_card, .notFound_card{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -243,14 +248,10 @@
     gap: 1rem;
     border-radius: 0.5rem;
 }
-.emptyCart_card-logo, .success_card-logo, .cancel_card-logo{
-    font-size: 3rem;
+.emptyCart_card-logo, .success_card-logo, .cancel_card-logo, .notFound_card-logo{
+    font-size: 4rem;
 }
-.emptyCart p{
-    font-size: 22px;
-    font-weight: bold;
-}
-.emptyCart_card a, .cancel_card a{
+.emptyCart_card a, .cancel_card a, .notFound_card a{
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     font-size: 16px;
@@ -260,8 +261,8 @@
     border: 2px solid #000;
     text-decoration: none;
 }
-.success_card-text, .cancel_card-text{
-    font-size: 22px;
+.emptyCart p, .success_card-text, .cancel_card-text, .notFound_card-text{
+    font-size: 18px;
     font-weight: bold;
     text-align: center;
 }
@@ -360,7 +361,14 @@
     font-size: 16px;
     font-weight: bold;
 }
-
+.card_noServices{
+    padding: 2rem;
+}
+.card_noServices p{
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
 
 /* car.jsx css end */
 
@@ -398,6 +406,10 @@ footer{
     align-items: center;
     color: blue;
 }
+.backToHome:hover{
+    text-decoration: underline;
+    color: darkblue;
+}
 .signup_card-header{
     text-align: center;
     font-size: 30px;
@@ -416,7 +428,7 @@ footer{
     color: #424242;
     font-size: 14px;
 }
-.signup_form-field #password{
+.signup_form-field #password, .signup_form-field #location{
     padding-right: 3rem;
 }
 .signup_form-field{
@@ -434,6 +446,7 @@ footer{
 .signup_form button{
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+    margin-top: 0.5rem;
 }
 .signup_form-footer{
     display: flex;
@@ -446,6 +459,32 @@ footer{
     text-decoration: underline;
     color: darkblue;
 }
+.error {
+    border-color: #dc3545 !important;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 0.25rem;
+    position: absolute;
+    bottom: -1.25rem;
+    left: 0;
+    line-height: 2;
+}
+
+.error-message.general {
+    position: static;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.password-input, .location-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 
 
   

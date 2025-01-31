@@ -58,9 +58,9 @@ const Cancel = () => {
         <TbShoppingCartX className="cancel_card-logo" />
         <div>
           {cancelStatus.loading ? (
-            <p>Processing cancellation...</p>
+            <p className="cancel_card-text">Processing cancellation...</p>
           ) : cancelStatus.error ? (
-            <p className="error">Error: {cancelStatus.error}</p>
+            <p className="cancel_card-text">Error: {cancelStatus.error}</p>
           ) : (
             <>
               <p className="cancel_card-text">Payment Canceled</p>

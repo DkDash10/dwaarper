@@ -114,10 +114,10 @@ export default function Cards(props) {
                   <p className="card_category">{data.CategoryName}</p>
                   {filteredItems.length > 3 && ( // Show buttons only if more than 3 cards
                     <div style={{ display: "flex", gap: "1rem" }}>
-                      <button onClick={() => scrollLeft(index)}>
+                      <button title="Scroll left" onClick={() => scrollLeft(index)}>
                         <FaLongArrowAltLeft />
                       </button>
-                      <button onClick={() => scrollRight(index)}>
+                      <button title="Scroll right" onClick={() => scrollRight(index)}>
                         <FaLongArrowAltRight />
                       </button>
                     </div>
@@ -200,8 +200,8 @@ export default function Cards(props) {
             );
           })
         ) : (
-          <div className="no-services">
-            <p>No services found</p>
+          <div className="card_noServices">
+            <p>No services found!</p>
           </div>
         )}
       </div>

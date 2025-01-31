@@ -6,91 +6,161 @@ import { IoChevronBackOutline } from "react-icons/io5";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-    const [credentials, setCredentials] = useState({
-      email: "",
-      password: "",
+  const [credentials, setCredentials] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  let navigate = useNavigate();
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case "email":
+        return !/\S+@\S+\.\S+/.test(value) ? "Enter a valid email" : "";
+      case "password":
+        return value.length < 5 ? "Password must be at least 5 characters long" : "";
+      default:
+        return "";
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const newErrors = {};
+    Object.keys(credentials).forEach(field => {
+      newErrors[field] = validateField(field, credentials[field]);
     });
 
-    let navigate = useNavigate();
+    if (Object.values(newErrors).some(error => error !== "")) {
+      setErrors(newErrors);
+      return;
+    }
 
-    const togglePasswordVisibility = () => {
-      setShowPassword(!showPassword);
-    };
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
+    try {
       const response = await fetch("http://localhost:5000/api/loginuser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: credentials.email,
-          password: credentials.password,
-        }),
+        body: JSON.stringify(credentials),
       });
+      
       const data = await response.json();
-      console.log(data);
+      
       if (!data.success) {
-        alert("Enter valid details");
-      }
-      const { password, ...userData } = credentials;
-
-      if (data.success) {
-        localStorage.setItem("userData", JSON.stringify(userData))
-        localStorage.setItem("authToken", data.authToken)
+        if (data.errors === "Email not found") {
+          setErrors(prev => ({
+            ...prev,
+            email: "Email not found"
+          }));
+        } else if (data.errors === "Incorrect password") {
+          setErrors(prev => ({
+            ...prev,
+            password: "Incorrect password"
+          }));
+        } else if (data.errors) {
+          const backendErrors = {};
+          if (Array.isArray(data.errors)) {
+            data.errors.forEach(error => {
+              backendErrors[error.param] = error.msg;
+            });
+          }
+          setErrors(backendErrors);
+        }
+      } else {
+        const { password, ...userData } = credentials;
+        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("authToken", data.authToken);
         navigate("/");
       }
-    };
-  
-    const handleChange = (e) => {
-      setCredentials({
-        ...credentials,
-        [e.target.name]: e.target.value,
-      });
-    };
+    } catch (error) {
+      console.error("Error during login:", error);
+      setErrors(prev => ({
+        ...prev,
+        general: "An error occurred during login. Please try again."
+      }));
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    setErrors(prev => ({
+      ...prev,
+      [name]: ""
+    }));
+  };
+
   return (
     <div className="signup">
-          <div className="signup_card">
-            <p className="signup_card-header">Login</p>
-            <Link to="/" className="backToHome"><IoChevronBackOutline /> Back to home</Link>
-            <form action="" onSubmit={handleSubmit} className="signup_form">
-              <div className="signup_form-field">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={credentials.email}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="signup_form-field">
-                <label htmlFor="password">Password</label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={credentials.password}
-                  onChange={handleChange}
-                />
-                <button type="button" onClick={togglePasswordVisibility}>
-                  {showPassword ? (
-                    <GrHide className="signup_form-icons" />
-                  ) : (
-                    <BiShow className="signup_form-icons" />
-                  )}
-                </button>
-              </div>
-              <button type="submit">Login</button>
-              <p className="signup_form-footer">
-                Not a user?
-                <span>
-                  <Link to="/signup">&nbsp;Signup</Link>
-                </span>
-              </p>
-            </form>
+      <div className="signup_card">
+        <p className="signup_card-header">Login</p>
+        <Link to="/" className="backToHome">
+          <IoChevronBackOutline /> Back to home
+        </Link>
+        <form onSubmit={handleSubmit} className="signup_form">
+          <div className="signup_form-field">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={credentials.email}
+              onChange={handleChange}
+              className={errors.email ? "error" : ""}
+            />
+            {errors.email && <span className="error-message">{errors.email}</span>}
           </div>
-        </div>
-  )
+          
+          <div className="signup_form-field">
+            <label htmlFor="password">Password</label>
+            <div className="password-input">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={credentials.password}
+                onChange={handleChange}
+                className={errors.password ? "error" : ""}
+              />
+              <button type="button" onClick={togglePasswordVisibility}>
+                {showPassword ? (
+                  <GrHide title="Hide" className="signup_form-icons" />
+                ) : (
+                  <BiShow title="Show" className="signup_form-icons" />
+                )}
+              </button>
+            </div>
+            {errors.password && <span className="error-message">{errors.password}</span>}
+          </div>
+          
+          {errors.general && (
+            <div className="error-message general">{errors.general}</div>
+          )}
+          
+          <button type="submit">Login</button>
+          
+          <p className="signup_form-footer">
+            Not a user?
+            <span>
+              <Link to="/signup">&nbsp;Signup</Link>
+            </span>
+          </p>
+        </form>
+      </div>
+    </div>
+  );
 }
