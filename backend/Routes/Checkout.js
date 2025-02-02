@@ -41,6 +41,9 @@ router.post("/create-checkout-session", async (req, res) => {
 
     // Create Stripe checkout session
     const discountPercentage = 0.2;
+    const BASE_CLIENT_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000' 
+    : 'https://dwaarper-wow5.onrender.com';
     const line_items = products.map((product) => ({
       price_data: {
         currency: "INR",
@@ -63,8 +66,8 @@ router.post("/create-checkout-session", async (req, res) => {
         order_id: orderId.toString(),
         email: email
       },
-      success_url: `http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:3000/cancel?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${BASE_CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${BASE_CLIENT_URL}/cancel?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     res.json({ id: session.id });
