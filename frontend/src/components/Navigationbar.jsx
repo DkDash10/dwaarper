@@ -23,13 +23,13 @@ export default function Navigationbar() {
       <div className="nav_container">
         <Link className="nav_logo" to="/">DwaarPer</Link>
         <div className="nav_links nav_links-mid">
-          <Link className="nav_links" to="/profile" >
+          <Link className="nav_links" to="/" >
             Why Choose Us
           </Link>
-          <Link className="nav_links" to="/myorders" >
+          <Link className="nav_links" to="/" >
             Who are we
           </Link>
-          <Link className="nav_links" to="/myorders" >
+          <Link className="nav_links" to="/" >
             Connect with us
           </Link>
         </div>
@@ -49,9 +49,9 @@ export default function Navigationbar() {
               </button>
               {isDropdownOpen && (
                 <div className="nav_dropdown-menu">
-                   <Link className="nav_links" to="/profile" >
+                   {/* <Link className="nav_links" to="/profile" >
                     Profile
-                  </Link>
+                  </Link> */}
                   <Link className="nav_links" to="/myorders" >
                     My Orders
                   </Link>

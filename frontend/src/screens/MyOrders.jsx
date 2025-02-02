@@ -18,10 +18,9 @@ const OrderHistory = () => {
         if (!userData?.email) {
           throw new Error('User email not found');
         }
-
         const response = await fetch(`${window.location.hostname === 'localhost' 
           ? 'http://localhost:5000'
-          : 'https://dwaarper.onrender.com'}/api/orders`, {
+          : 'https://dwaarper.onrender.com'}/api/order-data`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -34,7 +33,10 @@ const OrderHistory = () => {
         }
 
         const data = await response.json();
-        setOrders(data.orders);
+    
+        // Correcting how data is set
+        setOrders(data.orderData?.order_data || []);
+    
       } catch (error) {
         setError(error.message);
       } finally {
@@ -47,7 +49,7 @@ const OrderHistory = () => {
 
   // Remove the filterOrdersByDate function since filtering is now handled in the backend
   const filteredOrders = orders; // Just use orders directly
-  filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+  filteredOrders?.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 
   if (loading) return <div className="myOrder_loading">Loading orders...</div>;
@@ -74,12 +76,12 @@ const OrderHistory = () => {
           </div>
           <div className="myOrder_card-content">
             <div className="myOrder_list">
-              {filteredOrders.length === 0 ? (
+              {filteredOrders?.length === 0 ? (
                 <div className="myOrder_noOrders">
                   No orders found
                 </div>
               ) : (
-                filteredOrders.map((order, index) => (
+                filteredOrders?.map((order, index) => (
                   <div key={index} className="myOrder_item">
                     <img
                       src={order.img}
