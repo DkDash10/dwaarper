@@ -20,6 +20,7 @@ app.use(express.json());
 app.use('/api', require('./Routes/CreateUser'));
 app.use('/api', require('./Routes/DisplayServices'));
 app.use('/api', require('./Routes/Checkout'));
+app.use('/api', require('./Routes/OrderData'));
 
 
 app.listen(port, () => {

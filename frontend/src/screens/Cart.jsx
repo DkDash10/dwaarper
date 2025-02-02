@@ -94,18 +94,15 @@ export default function Cart() {
       ) : (
         <>
           <div className="discount">
-            <p>Got it! We've got you covered.&nbsp;</p>
-            <p>
-              A <strong>20%</strong> discount has already been applied to your
-              cart.
-            </p>
+            <p>Got it! We've got you covered. A <strong>20%</strong> discount has already been applied to your
+            cart.</p>
           </div>
           <div className="cart">
             <div className="cart_items">
+              <p className="cart_header">Cart</p>
               <Link to="/" className="backToHome">
                 <IoChevronBackOutline /> Back to home
               </Link>
-              <p className="cart_header">Cart</p>
               {data.map((service, index) => (
                 <div className="cart_items-item" key={index}>
                   <img
@@ -114,8 +111,10 @@ export default function Cart() {
                     alt={service.name}
                   />
                   <div className="cart_items-details">
-                    <p className="cart_items-name">{service.name}</p>
-                    <p className="cart_items-service">{service.service}</p>
+                    <div>
+                      <p className="cart_items-name">{service.name}</p>
+                      <p className="cart_items-service">{service.service}</p>
+                    </div>
                     <button
                       className="cart_items-remove"
                       onClick={() => {
@@ -163,7 +162,7 @@ export default function Cart() {
         </>
       )}
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

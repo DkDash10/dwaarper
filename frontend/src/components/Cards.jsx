@@ -113,7 +113,7 @@ export default function Cards(props) {
                 <div className="card_overflow">
                   <p className="card_category">{data.CategoryName}</p>
                   {filteredItems.length > 3 && ( // Show buttons only if more than 3 cards
-                    <div style={{ display: "flex", gap: "1rem" }}>
+                    <div className="card_scrollBtns">
                       <button title="Scroll left" onClick={() => scrollLeft(index)}>
                         <FaLongArrowAltLeft />
                       </button>
@@ -147,12 +147,6 @@ export default function Cards(props) {
                           src={filterItems.img}
                           alt={filterItems.name}
                           className="card_img"
-                          style={{
-                            width: "100%",
-                            borderRadius: "8px",
-                            display: "flex",
-                            gap: "20px",
-                          }}
                         />
                         <p className="card_name">{filterItems.name}</p>
                         <p className="card_desc">{filterItems.description}</p>

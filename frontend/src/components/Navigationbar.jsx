@@ -22,10 +22,21 @@ export default function Navigationbar() {
     <nav className="navigationbar">
       <div className="nav_container">
         <Link className="nav_logo" to="/">DwaarPer</Link>
-        <div className="nav_links" gap={3}>
+        <div className="nav_links nav_links-mid">
+          <Link className="nav_links" to="/profile" >
+            Why Choose Us
+          </Link>
+          <Link className="nav_links" to="/myorders" >
+            Who are we
+          </Link>
+          <Link className="nav_links" to="/myorders" >
+            Connect with us
+          </Link>
+        </div>
+        <div className="nav_links">
           {localStorage.getItem("authToken") ? (
             <div className="nav_dropdown">
-              <Link className="nav_links" to="/cart" >
+              <Link className="nav_links" to="/cart" title="Cart" >
                 <LuShoppingCart className="nav_cart-logo" />
                 {
                   data.length > 0 && (
@@ -33,7 +44,7 @@ export default function Navigationbar() {
                   )
                 }
               </Link>
-              <button className="nav_dropdown-button" onClick={toggleDropdown}>
+              <button className="nav_dropdown-button" onClick={toggleDropdown} title="Menu">
                 <LuUser className="nav_dropdown-logo" />
               </button>
               {isDropdownOpen && (
@@ -44,6 +55,17 @@ export default function Navigationbar() {
                   <Link className="nav_links" to="/myorders" >
                     My Orders
                   </Link>
+                  <div className="nav_links-midResp">
+                    <Link className="nav_links" to="/profile" >
+                      Why Choose Us
+                    </Link>
+                    <Link className="nav_links" to="/myorders" >
+                      Who are we
+                    </Link>
+                    <Link className="nav_links" to="/myorders" >
+                      Connect with us
+                    </Link>
+                  </div>
                   <Link className="nav_links" to="/login" onClick={handleLogout}>
                     Logout
                   </Link>
@@ -52,10 +74,10 @@ export default function Navigationbar() {
             </div>
           ) : (
             <>
-              <Link className="nav_links" to="/login">
+              <Link className="nav_links nav_links-auth" to="/login">
                 Login
               </Link>
-              <Link className="nav_links" to="/signup">
+              <Link className="nav_links nav_links-auth" to="/signup">
                 Signup
               </Link>
             </>
