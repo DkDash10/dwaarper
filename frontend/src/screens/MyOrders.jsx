@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 import NavigationBar from '../components/Navigationbar';
-import Footer from '../components/Footer';
+// import Footer from '../components/Footer';
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -10,45 +10,40 @@ const OrderHistory = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        
+        if (!userData?.email) {
+          throw new Error('User email not found');
+        }
+
+        const response = await fetch(`${window.location.hostname === 'localhost' 
+          ? 'http://localhost:5000'
+          : 'https://your-production-url.com'}/api/orders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: userData.email, timeFilter }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch orders');
+        }
+
+        const data = await response.json();
+        setOrders(data.orders);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchOrders();
-  }, [timeFilter]); // Add timeFilter as dependency to refetch when it changes
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      
-      if (!userData?.email) {
-        throw new Error('User email not found');
-      }
-
-      const response = await fetch(`${window.location.hostname === 'localhost' 
-        ? 'http://localhost:5000' 
-        : 'https://dwaarper.onrender.com'}/api/order-data`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          email: userData.email,
-          timeFilter: timeFilter 
-        }),
-      });
-
-      const data = await response.json();
-      
-      if (data.orderData && data.orderData.order_data) {
-        // Data is already processed in the backend, just set it directly
-        setOrders(data.orderData.order_data);
-      } else {
-        setOrders([]);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [timeFilter]);
 
   // Remove the filterOrdersByDate function since filtering is now handled in the backend
   const filteredOrders = orders; // Just use orders directly

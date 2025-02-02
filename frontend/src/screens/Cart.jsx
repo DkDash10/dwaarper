@@ -1,7 +1,7 @@
 import React from "react";
 import { useCart, useDispatchCart } from "../components/ContextReducer";
 import Navigationbar from "../components/Navigationbar";
-import Footer from "../components/Footer";
+// import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { TbShoppingCartQuestion } from "react-icons/tb";

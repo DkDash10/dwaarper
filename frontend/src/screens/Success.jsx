@@ -58,7 +58,7 @@ const Success = () => {
     };
     
     confirmPayment();
-  }, [navigate]);
+  }, [dispatch, navigate]);
 
   return (
     <>

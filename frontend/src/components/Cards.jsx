@@ -41,7 +41,7 @@ export default function Cards(props) {
 
     // Check if any results exist across all categories
     setHasResults(filteredItemsByCategory.some((items) => items.length > 0));
-  }, [serviceData, search]);
+  }, [serviceData, search, serviceCategory]);
 
   // Toast notification function
   const showToast = (serviceName) => {
