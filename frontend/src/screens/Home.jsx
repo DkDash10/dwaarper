@@ -10,7 +10,9 @@ export default function Home() {
   const [serviceData, setServiceData] = useState([]);
 
   const loadData = async () => {
-    let response = await fetch("http://localhost:5000/api/service_data", {
+    let response = await fetch(`${window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000' 
+  : 'https://dwaarper.onrender.com'}/api/service_data`, {
       method: "POST",
       headers: {
         "Content-Type": 'application/json'

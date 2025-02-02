@@ -29,7 +29,9 @@ const Cancel = () => {
         throw new Error("User email not found");
       }
 
-      const response = await fetch("http://localhost:5000/api/cancel-payment", {
+      const response = await fetch(`${window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://dwaarper.onrender.com'}/api/cancel-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionId, email }),

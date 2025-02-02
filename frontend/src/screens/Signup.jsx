@@ -57,7 +57,9 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/createuser", {
+      const response = await fetch(`${window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://dwaarper.onrender.com'}/api/createuser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +131,9 @@ export default function Signup() {
   
       let [lat, long] = latlong;
       
-      const response = await fetch("http://localhost:5000/api/getlocation", {
+      const response = await fetch(`${window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://dwaarper.onrender.com'}/api/getlocation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -22,7 +22,9 @@ const OrderHistory = () => {
         throw new Error('User email not found');
       }
 
-      const response = await fetch('http://localhost:5000/api/order-data', {
+      const response = await fetch(`${window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://dwaarper.onrender.com'}/api/order-data`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

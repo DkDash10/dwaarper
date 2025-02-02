@@ -30,7 +30,9 @@ const Success = () => {
       console.log("Request Body to /verify-payment:", requestBody); // Debug the request body
     
       try {
-        const response = await fetch('http://localhost:5000/api/verify-payment', {
+        const response = await fetch(`${window.location.hostname === 'localhost' 
+          ? 'http://localhost:5000' 
+          : 'https://dwaarper.onrender.com'}/api/verify-payment`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

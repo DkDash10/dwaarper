@@ -47,8 +47,10 @@ export default function Cart() {
         order_date: new Date().toDateString(),
         finalPrice: finalPrice,
       };
-  
-      const response = await fetch("http://localhost:5000/api/create-checkout-session", {
+      
+      const response = await fetch(`${window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://dwaarper.onrender.com'}/api/create-checkout-session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -46,7 +46,9 @@ export default function Login() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/loginuser", {
+      const response = await fetch(`${window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://dwaarper.onrender.com'}/api/loginuser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
