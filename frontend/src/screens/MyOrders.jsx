@@ -21,7 +21,7 @@ const OrderHistory = () => {
 
         const response = await fetch(`${window.location.hostname === 'localhost' 
           ? 'http://localhost:5000'
-          : 'https://your-production-url.com'}/api/orders`, {
+          : 'https://dwaarper.onrender.com'}/api/orders`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
