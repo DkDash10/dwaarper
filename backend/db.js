@@ -5,10 +5,7 @@ const mongoURI = `mongodb+srv://dhaneshdash11:${process.env.MONGO_PASSWORD}@clus
 
 const mongoDB = async () => {
   try {
-    await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(mongoURI);
     console.log('MongoDB connected successfully');
 
     const fetched_data = await mongoose.connection.db.collection("service_data").find({}).toArray();
