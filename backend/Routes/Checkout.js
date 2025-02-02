@@ -41,7 +41,7 @@ router.post("/create-checkout-session", async (req, res) => {
 
     // Create Stripe checkout session
     const discountPercentage = 0.2;
-    const BASE_CLIENT_URL = window.location.hostname === 'localhost' 
+    const BASE_CLIENT_URL =  req.headers.host.includes('localhost') 
     ? 'http://localhost:3000' 
     : 'https://dwaarper-wow5.onrender.com';
     const line_items = products.map((product) => ({
