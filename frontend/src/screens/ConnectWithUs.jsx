@@ -73,7 +73,9 @@ export default function ConnectWithUs() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/contact", {
+      const response = await fetch(`${window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000' 
+        : 'https://dwaarper.onrender.com'}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
