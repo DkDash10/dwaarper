@@ -1,10 +1,10 @@
 import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import banner1 from '../assets/banner1.png';
-import banner2 from '../assets/banner2.png';
-import banner3 from '../assets/banner3.png';
-import banner4 from '../assets/banner4.png';
-import banner5 from '../assets/banner5.png';
+import banner1 from '../assets/HomeBanner/banner1.png';
+import banner2 from '../assets/HomeBanner/banner2.png';
+import banner3 from '../assets/HomeBanner/banner3.png';
+import banner4 from '../assets/HomeBanner/banner4.png';
+import banner5 from '../assets/HomeBanner/banner5.png';
 
 function CarouselFadeExample() {
   const carouselData = [

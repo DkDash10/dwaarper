@@ -21,6 +21,7 @@ app.use('/api', require('./Routes/CreateUser'));
 app.use('/api', require('./Routes/DisplayServices'));
 app.use('/api', require('./Routes/Checkout'));
 app.use('/api', require('./Routes/OrderData'));
+app.use('/api', require('./Routes/Contact'));
 
 
 app.listen(port, () => {

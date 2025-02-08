@@ -13,6 +13,10 @@ import { CartProvider } from './components/ContextReducer';
 import Cancel from './screens/Cancel';
 import Success from './screens/Success';
 import NotFound from './screens/NotFound';
+import WhyChooseUs from './screens/WhyChooseUs';
+import WhoAreWe from './screens/WhoAreWe';
+import ConnectWithUs from './screens/ConnectWithUs';
+import BackToTopButton from './components/BackToTop';
 
 function App() {
   return (
@@ -27,8 +31,12 @@ function App() {
             <Route exact path="/success" element={<Success/>}/>
             <Route exact path="/cancel" element={<Cancel/>}/>
             <Route exact path="/myorders" element={<MyOrders/>}/>
+            <Route exact path="/why-choose-us" element={<WhyChooseUs/>}/>
+            <Route exact path="/who-are-we" element={<WhoAreWe/>}/>
+            <Route exact path="/connect-with-us" element={<ConnectWithUs/>}/>
             <Route path="*" element={<NotFound />} />
           </Routes>
+            <BackToTopButton />
         </div>
       </Router>
     </CartProvider>
