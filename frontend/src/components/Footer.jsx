@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container">
         <div className="row">
           <div className="col-md-12">
-            <p className="text-center">© 2025 DwaarPer App</p>
+            <p className="text-center">© 2026 DwaarPer</p>
           </div>
         </div>
       </div>

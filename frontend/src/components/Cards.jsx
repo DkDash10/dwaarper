@@ -17,6 +17,8 @@ export default function Cards(props) {
 
   const serviceData = props.serviceData;
   const serviceCategory = props.serviceCategory;
+  const loading = props.loading;
+  const error = props.error;
 
   const scrollLeft = (index) => {
     scrollRefs.current[index].scrollBy({ left: -300, behavior: "smooth" });
@@ -96,7 +98,15 @@ export default function Cards(props) {
         </div>
       </div>
       <div className="cards">
-        {hasResults ? (
+        {loading ? (
+          <div className="card_noServices">
+            <p>Hang tight, waking up the server....</p>
+          </div>
+        ) : error ? (
+          <div className="card_noServices">
+            <p>Error loading services: {error}</p>
+          </div>
+        ) : hasResults ? (
           serviceCategory.map((data, index) => {
             const filteredItems = serviceData.filter(
               (item) =>
