@@ -1,167 +1,234 @@
-import { Link, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
-import { GrHide } from "react-icons/gr";
-import { BiShow } from "react-icons/bi";
-import { IoChevronBackOutline } from "react-icons/io5";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { BiShow, BiHide } from "react-icons/bi";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
+
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
 
-  let navigate = useNavigate();
+  const [errors, setErrors] = useState({});
 
-  const validateField = (name, value) => {
-    switch (name) {
-      case "email":
-        return !/\S+@\S+\.\S+/.test(value) ? "Enter a valid email" : "";
-      case "password":
-        return value.length < 5 ? "Password must be at least 5 characters long" : "";
-      default:
-        return "";
-    }
+  // ======================
+  // HANDLE CHANGE
+  // ======================
+  const handleChange = (e) => {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
+
+    setErrors({
+      ...errors,
+      [e.target.name]: "",
+    });
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  // ======================
+  // LOGIN SUBMIT
+  // ======================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const newErrors = {};
-    Object.keys(credentials).forEach(field => {
-      newErrors[field] = validateField(field, credentials[field]);
-    });
-
-    if (Object.values(newErrors).some(error => error !== "")) {
-      setErrors(newErrors);
+    if (!validateForm()) {
       return;
     }
-
     try {
-      const response = await fetch(`${window.location.hostname === 'localhost' 
-        ? 'http://localhost:5000' 
-        : 'https://dwaarper.onrender.com'}/api/loginuser`, {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
       });
-      
+
       const data = await response.json();
-      
+
       if (!data.success) {
-        if (data.errors === "Email not found") {
-          setErrors(prev => ({
-            ...prev,
-            email: "Email not found"
-          }));
-        } else if (data.errors === "Incorrect password") {
-          setErrors(prev => ({
-            ...prev,
-            password: "Incorrect password"
-          }));
-        } else if (data.errors) {
-          const backendErrors = {};
-          if (Array.isArray(data.errors)) {
-            data.errors.forEach(error => {
-              backendErrors[error.param] = error.msg;
-            });
-          }
-          setErrors(backendErrors);
-        }
+        setErrors(data.message || "Invalid credentials");
+        return;
+      }
+
+      localStorage.setItem("token", data.authToken);
+      window.dispatchEvent(new Event("authChanged"));
+      if (!data.isProfileComplete) {
+        navigate("/complete-profile");
       } else {
-        const { password, ...userData } = credentials;
-        localStorage.setItem("userData", JSON.stringify(userData));
-        localStorage.setItem("authToken", data.authToken);
         navigate("/");
       }
-    } catch (error) {
-      console.error("Error during login:", error);
-      setErrors(prev => ({
-        ...prev,
-        general: "An error occurred during login. Please try again."
-      }));
+    } catch (err) {
+      console.error(err);
+      setErrors("Something went wrong");
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCredentials(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    setErrors(prev => ({
-      ...prev,
-      [name]: ""
-    }));
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email)) {
+      newErrors.email = "Enter a valid email";
+    }
+
+    if (!credentials.password.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
+  // ======================
+  // GOOGLE LOGIN
+  // ======================
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:5000/api/auth/google";
+  };
+
+  // ======================
+  // INPUT STYLE
+  // ======================
+  const inputClass =
+    "w-full px-4 py-3 bg-zinc-900 text-white rounded-lg placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600 transition";
+
   return (
-    <div className="signup">
-      <div className="signup_card">
-        <p className="signup_card-header">Login</p>
-        <Link to="/" className="backToHome">
-          <IoChevronBackOutline /> Back to home
-        </Link>
-        <form onSubmit={handleSubmit} className="signup_form">
-          <div className="signup_form-field">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={credentials.email}
-              onChange={handleChange}
-              className={errors.email ? "error" : ""}
+    <div className="min-h-screen flex bg-gradient-to-b from-black via-zinc-950 to-black text-white">
+      {/* LEFT SIDE */}
+      <div className="hidden md:flex w-1/2 flex-col justify-center px-16">
+        <h1 className="text-4xl font-semibold">Welcome Back</h1>
+
+        <p className="text-zinc-400 mb-8 leading-relaxed">
+          Continue booking trusted home services with ease.
+        </p>
+
+        <ul className="space-y-4 text-zinc-400">
+          <li>
+            <span className="text-yellow-500">•</span> Verified professionals
+          </li>
+          <li>
+            <span className="text-yellow-500">•</span> Secure Stripe payments
+          </li>
+          <li>
+            <span className="text-yellow-500">•</span> Fast doorstep service
+          </li>
+        </ul>
+      </div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent)] pointer-events-none"></div>
+      {/* RIGHT SIDE */}
+      <div className="flex w-full md:w-1/2 items-center justify-center px-6">
+        <div className="w-full max-w-md bg-[#111] p-8 rounded-lg">
+          {/* HEADER */}
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold">Sign in</h2>
+
+            <p className="text-zinc-500 text-sm">
+              New here?{" "}
+              <Link
+                to="/signup"
+                className="text-yellow-500 hover:text-yellow-300"
+              >
+                Create account
+              </Link>
+            </p>
+          </div>
+
+          {/* GOOGLE BUTTON */}
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full py-3 rounded-lg border border-zinc-800 text-white flex items-center justify-center gap-2 hover:bg-zinc-900 transition"
+          >
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              className="w-5 h-5"
+              alt="google"
             />
-            {errors.email && <span className="error-message">{errors.email}</span>}
+            Continue with Google
+          </button>
+
+          {/* DIVIDER */}
+          <div className="flex items-center my-6">
+            <div className="flex-1 h-px bg-zinc-800"></div>
+
+            <span className="px-4 text-zinc-500 text-sm">or</span>
+
+            <div className="flex-1 h-px bg-zinc-800"></div>
           </div>
-          
-          <div className="signup_form-field">
-            <label htmlFor="password">Password</label>
-            <div className="password-input">
+
+          {/* FORM */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* EMAIL */}
+            <div>
+              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">
+                Email
+              </label>
+
               <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                value={credentials.password}
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={credentials.email}
                 onChange={handleChange}
-                className={errors.password ? "error" : ""}
+                className={inputClass}
+                required
               />
-              <button type="button" onClick={togglePasswordVisibility}>
-                {showPassword ? (
-                  <GrHide title="Hide" className="signup_form-icons" />
-                ) : (
-                  <BiShow title="Show" className="signup_form-icons" />
-                )}
-              </button>
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-2">{errors.email}</p>
+              )}
             </div>
-            {errors.password && <span className="error-message">{errors.password}</span>}
-          </div>
-          
-          {errors.general && (
-            <div className="error-message general">{errors.general}</div>
-          )}
-          
-          <button type="submit">Login</button>
-          
-          <p className="signup_form-footer">
-            Not a user?
-            <span>
-              <Link to="/signup">&nbsp;Signup</Link>
-            </span>
-          </p>
-        </form>
+
+            {/* PASSWORD */}
+            <div>
+              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">
+                Password
+              </label>
+
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  className={`${inputClass} pr-12`}
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
+                >
+                  {showPassword ? (
+                    <BiHide className="text-yellow-500" size={22} />
+                  ) : (
+                    <BiShow className="text-yellow-500" size={22} />
+                  )}
+                </button>
+                {errors.password && (
+                  <p className="text-red-500 text-xs mt-2">{errors.password}</p>
+                )}
+              </div>
+            </div>
+
+            {/* ERROR */}
+            {errors.general && (
+              <p className="text-red-500 text-sm">{errors.general}</p>
+            )}
+
+            {/* BUTTON */}
+            <button
+              type="submit"
+              className="w-full py-3 rounded-lg border border-zinc-800 text-white flex items-center justify-center gap-2 hover:bg-zinc-900 transition"
+            >
+              Sign in
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

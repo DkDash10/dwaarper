@@ -3,6 +3,9 @@ const app = express()
 const cors = require('cors');
 const port = process.env.PORT || 5000
 const mongoDB = require('./db');
+require('dotenv').config();
+const passport = require("passport");
+require("./config/passport");
 
 mongoDB();
 
@@ -17,11 +20,21 @@ app.get('/', (req, res) => {
 })
 app.use(cors());
 app.use(express.json());
-app.use('/api', require('./Routes/CreateUser'));
+app.use('/api/auth', require('./Routes/CreateUser'));
 app.use('/api', require('./Routes/DisplayServices'));
 app.use('/api', require('./Routes/Checkout'));
 app.use('/api', require('./Routes/OrderData'));
 app.use('/api', require('./Routes/Contact'));
+app.use(
+  require("express-session")({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.listen(port, () => {

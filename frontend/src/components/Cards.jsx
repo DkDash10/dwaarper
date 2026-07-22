@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import { useDispatchCart, useCart } from "./ContextReducer";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
@@ -11,7 +9,7 @@ export default function Cards(props) {
   const dispatch = useDispatchCart();
   const cartData = useCart();
 
-  const [search, setSearch] = useState("");
+  const search = props.search;
   const [service, setService] = useState({});
   const [hasResults, setHasResults] = useState(true); // Track if any results are found
 
@@ -81,22 +79,6 @@ export default function Cards(props) {
         transition={Slide} 
         autoClose={1500}
       />
-      <div className="search">
-        <p>Search our available services</p>
-        <div className="search_form">
-          <Row>
-            <Col xs="auto">
-              <input
-                type="search"
-                placeholder="Search"
-                className="mr-sm-2 search_input"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </Col>
-          </Row>
-        </div>
-      </div>
       <div className="cards">
         {loading ? (
           <div className="card_noServices">

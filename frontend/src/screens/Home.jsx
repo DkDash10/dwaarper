@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import Navigationbar from '../components/Navigationbar'
 import Footer from '../components/Footer'
 import Cards from '../components/Cards'
-import Carousal from '../components/Carousal'
+// import Carousal from '../components/Carousal'
+import Hero from '../components/Hero/Hero'
 
 export default function Home() {
 
@@ -10,6 +11,8 @@ export default function Home() {
   const [serviceData, setServiceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
+  const servicesRef = useRef(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -42,13 +45,28 @@ export default function Home() {
   return (
     <>
         <Navigationbar/>
-        <Carousal/>
-        <Cards
-          serviceCategory={serviceCategory}
-          serviceData={serviceData}
-          loading={loading}
-          error={error}
-        />     
+        {/* <Carousal/> */}
+        <Hero
+          search={search}
+          setSearch={setSearch}
+          onViewResults={() =>
+            servicesRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            })
+          }
+        />
+        <section id="services" ref={servicesRef}>
+          <Cards
+            search={search}
+            serviceCategory={serviceCategory}
+            serviceData={serviceData}
+            loading={loading}
+            error={error}
+            
+          /> 
+        </section>
+            
         <Footer/>
     </>
   )

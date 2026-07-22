@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   margin: 0;
   padding: 0;
@@ -28,10 +32,10 @@ p {
 .btn:focus-visible {
   box-shadow: none;
 }
-input{
+input {
   border: 2px solid black;
 }
-textarea{
+textarea {
   min-height: 43px;
   border: 2px solid black;
 }
@@ -43,13 +47,45 @@ textarea:focus {
 .row {
   --bs-gutter-x: 0 !important;
 }
+
+@keyframes phoneFloat {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes reflection {
+  0% {
+    left: -220px;
+  }
+
+  100% {
+    left: 420px;
+  }
+}
+
+.phoneFloat {
+  animation: phoneFloat 6s ease-in-out infinite;
+}
+
+.animate-reflection {
+  animation: reflection 6s linear infinite;
+}
+
 .Toastify__toast-container {
-  font-family: 'Kanit', serif !important;
+  font-family: "Kanit", serif !important;
 }
 
 .Toastify__toast {
-  font-family: 'Kanit', serif !important;
+  font-family: "Kanit", serif !important;
   padding-right: 2rem !important;
   border: 1px solid #ccc !important;
 }
-
