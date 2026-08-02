@@ -86,82 +86,18 @@ export default function HeroPhone() {
 
       <div
         ref={phoneRef}
-        className="
-        phoneFloat
-        relative
-        w-[340px]
-        h-[680px]
-        rounded-[58px]
-        border
-        border-white/10
-        bg-gradient-to-b
-        from-[#181818]
-        via-[#111]
-        to-[#070707]
-        shadow-[0_60px_140px_rgba(0,0,0,.65)]
-        overflow-hidden
-        transition-transform
-        duration-300
-        will-change-transform
-        hover:shadow-[0_70px_180px_rgba(34,211,238,.18)]
-    "
+        className="phoneFloat relative w-[340px] h-[680px] rounded-[58px] border border-white/10 bg-gradient-to-b from-[#181818] via-[#111] to-[#070707] shadow-[0_60px_140px_rgba(0,0,0,.65)] overflow-hidden transition-transform duration-300 will-change-transform hover:shadow-[0_70px_180px_rgba(34,211,238,.18)]"
       >
-        {/* Metal Border */}
-
-        <div
-          className="
-absolute
-left-2
-top-10
-bottom-10
-w-[2px]
-bg-gradient-to-b
-from-white/40
-via-white/10
-to-transparent
-"
-        />
-
         {/* Screen */}
 
         <div className="absolute inset-[8px] rounded-[48px] overflow-hidden bg-[#090909]">
-          <div
-            className="
-        absolute
-        -left-40
-        top-0
-        h-full
-        w-28
-        rotate-[18deg]
-        bg-gradient-to-r
-        from-transparent
-        via-white/20
-        to-transparent
-        blur-2xl
-        animate-reflection
-        pointer-events-none
-        z-50
-    "
-          />
+          <div className="absolute -left-40 top-0 h-full w-28 rotate-[18deg] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-2xl animate-reflection pointer-events-none z-50" />
           <PhoneScreen activeService={activeService} />
         </div>
 
         {/* Dynamic Island */}
 
-        <div
-          className="
-            absolute
-            left-1/2
-            top-4
-            -translate-x-1/2
-            w-32
-            h-8
-            rounded-full
-            bg-black
-            border
-            border-white/5
-          "
-        />
+        <div className="absolute left-1/2 top-4 -translate-x-1/2 w-32 h-8 rounded-full bg-black border border-white/5" />
       </div>
     </div>
   );

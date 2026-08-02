@@ -2,8 +2,8 @@ import React, {useState, useRef, useEffect} from 'react'
 import Navigationbar from '../components/Navigationbar'
 import Footer from '../components/Footer'
 import Cards from '../components/Cards'
-// import Carousal from '../components/Carousal'
 import Hero from '../components/Hero/Hero'
+import BookingJourney from "../components/BookingJourney/BookingJourney";
 
 export default function Home() {
 
@@ -45,7 +45,6 @@ export default function Home() {
   return (
     <>
         <Navigationbar/>
-        {/* <Carousal/> */}
         <Hero
           search={search}
           setSearch={setSearch}
@@ -56,6 +55,7 @@ export default function Home() {
             })
           }
         />
+        <BookingJourney />
         <section id="services" ref={servicesRef}>
           <Cards
             search={search}

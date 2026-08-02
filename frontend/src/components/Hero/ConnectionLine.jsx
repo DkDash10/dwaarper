@@ -8,10 +8,7 @@ export default function ConnectionLine({
   return (
     <div className={`absolute pointer-events-none z-10 ${className}`}>
       <div
-        className={`
-                    relative
-                    ${rotate}
-                `}
+        className={`relative ${rotate}`}
         style={{
           width,
           height: "1px",
@@ -20,46 +17,19 @@ export default function ConnectionLine({
         {/* Glow */}
 
         <div
-          className="
-                        absolute
-                        inset-0
-                        rounded-full
-                        bg-gradient-to-r
-                        from-transparent
-                        via-cyan-400/30
-                        to-transparent
-                        blur-[2px]
-                    "
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent blur-[2px]"
         />
 
         {/* Main Line */}
 
         <div
-          className="
-                        absolute
-                        inset-0
-                        rounded-full
-                        bg-gradient-to-r
-                        from-transparent
-                        via-white/35
-                        to-transparent
-                    "
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/35 to-transparent"
         />
 
         {/* Moving Dot */}
 
         <div
-          className="
-                        signal
-                        absolute
-                        top-1/2
-                        -translate-y-1/2
-                        h-2
-                        w-2
-                        rounded-full
-                        bg-cyan-300
-                        shadow-[0_0_12px_rgba(34,211,238,.8)]
-                    "
+          className="signal absolute top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,.8)]"
         />
       </div>
 

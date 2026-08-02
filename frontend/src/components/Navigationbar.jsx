@@ -5,7 +5,7 @@ import {
   LuX,
   LuPackage,
   LuLogOut,
-  LuMapPin
+  LuMapPin,
 } from "react-icons/lu";
 import { useCart } from "./ContextReducer";
 
@@ -17,6 +17,11 @@ export default function Navigationbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
   const [user, setUser] = useState(null);
+
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [isTop, setIsTop] = useState(true);
+
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const authChanged = () => setLoggedIn(!!localStorage.getItem("token"));
@@ -60,6 +65,34 @@ export default function Navigationbar() {
     loadUser();
   }, [loggedIn]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+
+      // Transparent when at top
+      setIsTop(currentScroll < 20);
+
+      // Always show near top
+      if (currentScroll < 300) {
+        setShowNavbar(true);
+      } else {
+        // Hide on scroll down
+        if (currentScroll > lastScrollY.current) {
+          setShowNavbar(false);
+        } else {
+          // Show on scroll up
+          setShowNavbar(true);
+        }
+      }
+
+      lastScrollY.current = currentScroll;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const logout = () => {
     localStorage.removeItem("token");
     window.dispatchEvent(new Event("authChanged"));
@@ -69,15 +102,50 @@ export default function Navigationbar() {
 
   return (
     <>
-      <div className="fixed top-4 left-0 right-0 z-50 px-5">
-        <div className="mx-auto max-w-6xl rounded-2xl bg-black/40 backdrop-blur-2xl px-6 py-4 flex items-center justify-between">
+      <div
+        className={`
+    fixed
+    left-0
+    right-0
+    z-50
+    px-5
+    transition-all
+    duration-500
+    ease-[cubic-bezier(.22,1,.36,1)]
+
+    ${
+      showNavbar
+        ? "translate-y-0 opacity-100 top-2"
+        : "-translate-y-24 opacity-0 top-2"
+    }
+  `}
+      >
+        <div
+          className={`
+  mx-auto
+  max-w-6xl
+  flex
+  items-center
+  justify-between
+  rounded-2xl
+  px-6
+  transition-all
+  duration-500
+  ease-[cubic-bezier(.22,1,.36,1)]
+
+  ${
+    isTop
+      ? "py-3 bg-transparent backdrop-blur-0 border-transparent shadow-none"
+      : "py-3 bg-black/45 backdrop-blur-2xl border-white/10 shadow-[0_10px_40px_rgba(0,0,0,.35)]"
+  }
+`}
+        >
           <Link
             to="/"
             className="uppercase tracking-[0.25em] text-xs text-white"
           >
             DWAARPER
           </Link>
-
 
           <div className="flex items-center gap-3">
             {loggedIn ? (
@@ -190,24 +258,24 @@ export default function Navigationbar() {
         {loggedIn && (
           <>
             <div className="px-6 py-6 border-b border-white/5 flex flex-col gap-4">
-            <div className="flex flex-row gap-4 items-center justify-center">
-              <div className="h-14 w-14 rounded-full bg-white/10 flex items-center justify-center text-white font-semibold">
-                {user?.name?.[0]?.toUpperCase() || "U"}
+              <div className="flex flex-row gap-4 items-center justify-center">
+                <div className="h-14 w-14 rounded-full bg-white/10 flex items-center justify-center text-white font-semibold">
+                  {user?.name?.[0]?.toUpperCase() || "U"}
+                </div>
+                <div>
+                  <div className="text-white">{user?.name}</div>
+                  <div className="text-xs text-white/50">{user?.location}</div>
+                </div>
               </div>
-              <div>
-                <div className="text-white">{user?.name}</div>
-                <div className="text-xs text-white/50">{user?.location}</div>
-              </div>
-            </div>
-            <Link
-              to="/profile"
-              onClick={() => setMobileOpen(false)}
-              className="block rounded-2xl bg-white/5 px-4 py-3 transition-all hover:bg-white/10"
-            >
-              <p className="text-sm font-medium text-white">
-                Manage your profile
-              </p>
-            </Link>
+              <Link
+                to="/profile"
+                onClick={() => setMobileOpen(false)}
+                className="block rounded-2xl bg-white/5 px-4 py-3 transition-all hover:bg-white/10"
+              >
+                <p className="text-sm font-medium text-white">
+                  Manage your profile
+                </p>
+              </Link>
             </div>
           </>
         )}
