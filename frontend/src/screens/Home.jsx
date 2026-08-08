@@ -4,6 +4,7 @@ import Footer from '../components/Footer'
 import Cards from '../components/Cards'
 import Hero from '../components/Hero/Hero'
 import BookingJourney from "../components/BookingJourney/BookingJourney";
+import WhyChoose from '../components/WhyChoose/WhyChoose'
 
 export default function Home() {
 
@@ -56,6 +57,7 @@ export default function Home() {
           }
         />
         <BookingJourney />
+        <WhyChoose />
         <section id="services" ref={servicesRef}>
           <Cards
             search={search}

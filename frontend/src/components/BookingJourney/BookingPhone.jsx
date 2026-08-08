@@ -105,7 +105,7 @@ export default function BookingPhone({ step = 0 }) {
       <div className="relative mx-auto w-[340px] h-[690px] animate-[phoneFloat_7s_ease-in-out_infinite]">
         {/* Glow */}
 
-        <div ref={glowRef} className="absolute inset-0 rounded-[60px] bg-cyan-500/8 blur-[120px] scale-110" />
+        <div ref={glowRef} className="absolute inset-0 rounded-[60px] bg-cyan-500/8 blur-[70px] scale-[1.03]" />
 
         {/* Phone */}
 

@@ -69,7 +69,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
     });
   };
   return (
-    <section className="relative min-h-[90vh] bg-[#090909] overflow-hidden">
+    <section className="relative min-h-[90vh] pb-20 bg-[#090909] overflow-hidden">
       {/* Navbar spacing */}
       <div className="h-28 md:h-32"></div>
       {/* Background Blur */}
