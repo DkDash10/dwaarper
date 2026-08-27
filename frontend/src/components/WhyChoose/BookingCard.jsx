@@ -323,19 +323,18 @@ export default function BookingCard() {
           <div
             ref={buttonRef}
             className="
-              mt-5
-              flex
-              h-9
-              items-center
-              justify-center
-              rounded-xl
-              bg-gradient-to-r
-              from-cyan-400
-              to-blue-500
-              text-[10px]
-              font-semibold
-              text-black
-            "
+    mt-5
+    flex
+    h-9
+    items-center
+    justify-center
+    rounded-full
+    bg-white
+    px-4
+    text-[10px]
+    font-semibold
+    text-black
+  "
           >
             Confirm Booking
           </div>

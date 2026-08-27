@@ -1,6 +1,7 @@
 import "./App.css";
 import Home from "./screens/Home";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import CompleteProfile from "./screens/CompleteProfile";
@@ -15,6 +16,8 @@ import WhyChooseUs from "./screens/WhyChooseUs";
 import WhoAreWe from "./screens/WhoAreWe";
 import ConnectWithUs from "./screens/ConnectWithUs";
 import BackToTopButton from "./components/BackToTop";
+import Profile from "./screens/Profile/Profile";
+import Services from "./screens/Services/Services"
 
 function App() {
   return (
@@ -22,18 +25,28 @@ function App() {
       <Router>
         <div>
           <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route exact path="/login" element={<Login />} />
-            <Route exact path="/signup" element={<Signup />} />
+            {/* Public */}
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/complete-profile" element={<CompleteProfile />} />
             <Route path="/google-success" element={<GoogleSuccess />} />
-            <Route exact path="/cart" element={<Cart />} />
-            <Route exact path="/success" element={<Success />} />
-            <Route exact path="/cancel" element={<Cancel />} />
-            <Route exact path="/myorders" element={<MyOrders />} />
-            <Route exact path="/why-choose-us" element={<WhyChooseUs />} />
-            <Route exact path="/who-are-we" element={<WhoAreWe />} />
-            <Route exact path="/connect-with-us" element={<ConnectWithUs />} />
+            <Route path="/services" element={<Services />}/>
+
+            {/* Protected */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/myorders" element={<MyOrders />} />
+            </Route>
+
+            {/* Other public pages */}
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
+            <Route path="/why-choose-us" element={<WhyChooseUs />} />
+            <Route path="/who-are-we" element={<WhoAreWe />} />
+            <Route path="/connect-with-us" element={<ConnectWithUs />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
           <BackToTopButton />

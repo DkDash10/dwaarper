@@ -135,7 +135,7 @@ export default function CompleteProfile() {
 
       if (!data.success) {
         setErrors({
-          general: "Failed to complete profile",
+          general: data.message || "Failed to complete profile",
         });
         return;
       }
@@ -154,8 +154,7 @@ export default function CompleteProfile() {
   // ======================
   // INPUT STYLE
   // ======================
-  const inputClass =
-    "w-full px-4 py-3 bg-zinc-900 text-white rounded-lg placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600 transition";
+  const inputClass = "w-full px-4 py-3 bg-zinc-900 text-white rounded-lg placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600 transition";
 
   return (
     <div className="min-h-screen flex bg-gradient-to-b from-black via-zinc-950 to-black text-white">
@@ -163,21 +162,17 @@ export default function CompleteProfile() {
       <div className="hidden md:flex w-1/2 flex-col justify-center px-16">
         <h1 className="text-4xl font-semibold">Almost there</h1>
 
-        <p className="text-zinc-400 mb-8 leading-relaxed">
-          Complete your profile to start booking premium home services.
-        </p>
+        <p className="text-zinc-400 mb-8 leading-relaxed">Complete your profile to start booking premium home services.</p>
 
         <ul className="space-y-4 text-zinc-400">
           <li>
-            <span className="text-yellow-500">•</span> Faster checkout
-            experience
+            <span className="text-cyan-300">•</span> Faster checkout experience
           </li>
           <li>
-            <span className="text-yellow-500">•</span> Real-time booking updates
+            <span className="text-cyan-300">•</span> Real-time booking updates
           </li>
           <li>
-            <span className="text-yellow-500">•</span> Personalized
-            recommendations
+            <span className="text-cyan-300">•</span> Personalized recommendations
           </li>
         </ul>
       </div>
@@ -190,10 +185,7 @@ export default function CompleteProfile() {
             <h2 className="text-2xl font-semibold">Complete profile</h2>
 
             <p className="text-zinc-500 text-sm">
-              Just a few details to{" "}
-              <span className="text-yellow-500">
-                personalize your experience.
-              </span>
+              Just a few details to <span className="text-cyan-300">personalize your experience.</span>
             </p>
           </div>
 
@@ -201,65 +193,43 @@ export default function CompleteProfile() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* PHONE */}
             <div>
-              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">
-                Phone Number
-              </label>
+              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">Phone Number</label>
 
-              <input
-                type="tel"
-                name="phone"
-                placeholder="+91 9876543210"
-                value={form.phone}
-                onChange={handleChange}
-                className={inputClass}
-                required
-              />
-              {errors.phone && (
-                <p className="text-red-500 text-xs mt-2">{errors.phone}</p>
-              )}
+              <input type="tel" name="phone" placeholder="9876543210" value={form.phone} onChange={handleChange} className={inputClass} required />
+              {errors.phone && <p className="text-red-500 text-xs mt-2">{errors.phone}</p>}
             </div>
 
             {/* LOCATION */}
             <div>
-              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">
-                City / Location
-              </label>
+              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">City / Location</label>
 
               <div className="relative">
-                <input
-                  type="text"
-                  name="location"
-                  placeholder="Mumbai, Maharashtra"
-                  value={form.location}
-                  onChange={handleChange}
-                  className={`${inputClass} pr-14`}
-                  required
-                />
+                <input type="text" name="location" placeholder="Mumbai, Maharashtra" value={form.location} onChange={handleChange} className={`${inputClass} pr-14`} required />
 
                 <button
                   type="button"
                   onClick={detectLocation}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white transition"
+                  className="
+    absolute
+    right-4
+    top-1/2
+    -translate-y-1/2
+    text-cyan-300
+    transition
+    hover:text-cyan-200
+  "
                 >
-                  <IoLocationOutline className="text-yellow-500" size={22} />
+                  <IoLocationOutline size={22} />
                 </button>
-                {errors.location && (
-                  <p className="text-red-500 text-xs mt-2">{errors.location}</p>
-                )}
+                {errors.location && <p className="text-red-500 text-xs mt-2">{errors.location}</p>}
               </div>
 
-              <p className="text-xs text-yellow-500 mt-2">
-                {detecting
-                  ? "Detecting your location..."
-                  : "Use current location"}
-              </p>
+              <p className="text-xs text-cyan-300 mt-2">{detecting ? "Detecting your location..." : "Use current location"}</p>
             </div>
 
             {/* ADDRESS */}
             <div>
-              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">
-                Address
-              </label>
+              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">Address</label>
 
               <textarea
                 name="address"
@@ -270,20 +240,35 @@ export default function CompleteProfile() {
                 className={`${inputClass} resize-none`}
                 required
               />
-              {errors.address && (
-                <p className="text-red-500 text-xs mt-2">{errors.address}</p>
-              )}
+              {errors.address && <p className="text-red-500 text-xs mt-2">{errors.address}</p>}
             </div>
 
             {/* ERROR */}
-            {errors.general && (
-              <p className="text-red-500 text-sm">{errors.general}</p>
-            )}
+            {errors.general && <p className="text-red-500 text-sm">{errors.general}</p>}
             {/* BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-lg border border-zinc-800 text-white flex items-center justify-center gap-2 hover:bg-zinc-900 transition"
+              className="
+    w-full
+    rounded-full
+    bg-white
+    px-6
+    py-3
+    text-sm
+    font-medium
+    text-black
+    flex
+    items-center
+    justify-center
+    gap-2
+    transition-all
+    duration-300
+    hover:-translate-y-0.5
+    hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]
+    disabled:cursor-not-allowed
+    disabled:opacity-50
+  "
             >
               {loading ? "Saving..." : "Complete setup"}
             </button>

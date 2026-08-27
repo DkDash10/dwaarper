@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { BiShow, BiHide } from "react-icons/bi";
+import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [credentials, setCredentials] = useState({
     email: "",
@@ -35,9 +37,9 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
+
+    setLoading(true);
+
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -50,12 +52,15 @@ export default function Login() {
       const data = await response.json();
 
       if (!data.success) {
-        setErrors(data.message || "Invalid credentials");
+        setErrors({
+          general: data.message || "Invalid credentials",
+        });
         return;
       }
 
       localStorage.setItem("token", data.authToken);
       window.dispatchEvent(new Event("authChanged"));
+
       if (!data.isProfileComplete) {
         navigate("/complete-profile");
       } else {
@@ -63,24 +68,13 @@ export default function Login() {
       }
     } catch (err) {
       console.error(err);
-      setErrors("Something went wrong");
+
+      setErrors({
+        general: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const validateForm = () => {
-    let newErrors = {};
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email)) {
-      newErrors.email = "Enter a valid email";
-    }
-
-    if (!credentials.password.trim()) {
-      newErrors.password = "Password is required";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
   };
 
   // ======================
@@ -93,8 +87,7 @@ export default function Login() {
   // ======================
   // INPUT STYLE
   // ======================
-  const inputClass =
-    "w-full px-4 py-3 bg-zinc-900 text-white rounded-lg placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600 transition";
+  const inputClass = "w-full px-4 py-3 bg-zinc-900 text-white rounded-lg placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600 transition";
 
   return (
     <div className="min-h-screen flex bg-gradient-to-b from-black via-zinc-950 to-black text-white">
@@ -102,19 +95,17 @@ export default function Login() {
       <div className="hidden md:flex w-1/2 flex-col justify-center px-16">
         <h1 className="text-4xl font-semibold">Welcome Back</h1>
 
-        <p className="text-zinc-400 mb-8 leading-relaxed">
-          Continue booking trusted home services with ease.
-        </p>
+        <p className="text-zinc-400 mb-8 leading-relaxed">Continue booking trusted home services with ease.</p>
 
         <ul className="space-y-4 text-zinc-400">
           <li>
-            <span className="text-yellow-500">•</span> Verified professionals
+            <span className="text-cyan-300">•</span> Verified professionals
           </li>
           <li>
-            <span className="text-yellow-500">•</span> Secure Stripe payments
+            <span className="text-cyan-300">•</span> Secure Stripe payments
           </li>
           <li>
-            <span className="text-yellow-500">•</span> Fast doorstep service
+            <span className="text-cyan-300">•</span> Fast doorstep service
           </li>
         </ul>
       </div>
@@ -128,10 +119,7 @@ export default function Login() {
 
             <p className="text-zinc-500 text-sm">
               New here?{" "}
-              <Link
-                to="/signup"
-                className="text-yellow-500 hover:text-yellow-300"
-              >
+              <Link to="/signup" className="text-cyan-300 hover:text-cyan-200">
                 Create account
               </Link>
             </p>
@@ -140,13 +128,30 @@ export default function Login() {
           {/* GOOGLE BUTTON */}
           <button
             onClick={handleGoogleLogin}
-            className="w-full py-3 rounded-lg border border-zinc-800 text-white flex items-center justify-center gap-2 hover:bg-zinc-900 transition"
+            type="button"
+            className="
+  w-full
+  rounded-full
+  border
+  border-white/10
+  bg-transparent
+  px-6
+  py-3
+  text-sm
+  font-medium
+  text-white/75
+  flex
+  items-center
+  justify-center
+  gap-3
+  transition-all
+  duration-300
+  hover:border-white/20
+  hover:bg-white/[0.04]
+  hover:text-white
+"
           >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              className="w-5 h-5"
-              alt="google"
-            />
+            <FcGoogle size={20} />
             Continue with Google
           </button>
 
@@ -163,29 +168,15 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* EMAIL */}
             <div>
-              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">
-                Email
-              </label>
+              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">Email</label>
 
-              <input
-                type="email"
-                name="email"
-                placeholder="you@example.com"
-                value={credentials.email}
-                onChange={handleChange}
-                className={inputClass}
-                required
-              />
-              {errors.email && (
-                <p className="text-red-500 text-xs mt-2">{errors.email}</p>
-              )}
+              <input type="email" name="email" placeholder="you@example.com" value={credentials.email} onChange={handleChange} className={inputClass} required />
+              {errors.email && <p className="text-red-500 text-xs mt-2">{errors.email}</p>}
             </div>
 
             {/* PASSWORD */}
             <div>
-              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">
-                Password
-              </label>
+              <label className="text-xs text-zinc-400 uppercase tracking-wide mb-2 block">Password</label>
 
               <div className="relative">
                 <input
@@ -198,34 +189,43 @@ export default function Login() {
                   required
                 />
 
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
-                >
-                  {showPassword ? (
-                    <BiHide className="text-yellow-500" size={22} />
-                  ) : (
-                    <BiShow className="text-yellow-500" size={22} />
-                  )}
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white">
+                  {showPassword ? <BiHide className="text-cyan-300" size={22} /> : <BiShow className="text-cyan-300" size={22} />}
                 </button>
-                {errors.password && (
-                  <p className="text-red-500 text-xs mt-2">{errors.password}</p>
-                )}
+                {errors.password && <p className="text-red-500 text-xs mt-2">{errors.password}</p>}
               </div>
             </div>
 
             {/* ERROR */}
-            {errors.general && (
-              <p className="text-red-500 text-sm">{errors.general}</p>
-            )}
+            {errors.general && <p className="text-red-500 text-sm">{errors.general}</p>}
 
+            {/* BUTTON */}
             {/* BUTTON */}
             <button
               type="submit"
-              className="w-full py-3 rounded-lg border border-zinc-800 text-white flex items-center justify-center gap-2 hover:bg-zinc-900 transition"
+              disabled={loading}
+              className="
+    w-full
+    rounded-full
+    bg-white
+    px-6
+    py-3
+    text-sm
+    font-medium
+    text-black
+    flex
+    items-center
+    justify-center
+    gap-2
+    transition-all
+    duration-300
+    hover:-translate-y-0.5
+    hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]
+    disabled:cursor-not-allowed
+    disabled:opacity-50
+  "
             >
-              Sign in
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
         </div>

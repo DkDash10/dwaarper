@@ -174,6 +174,89 @@ router.post("/getlocation", async (req, res) => {
   }
 });
 
+// =======================
+// UPDATE PROFILE
+// =======================
+router.put("/profile", fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const {
+      name,
+      phone,
+      address,
+      location,
+    } = req.body;
+
+    // Basic validation
+    if (!name || name.trim().length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: "Name must be at least 2 characters long",
+      });
+    }
+
+    if (phone && !/^[6-9]\d{9}$/.test(phone)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid 10-digit Indian phone number",
+      });
+    }
+
+    if (!address || address.trim().length < 5) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid address",
+      });
+    }
+
+    if (!location || location.trim().length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter your location",
+      });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        name: name.trim(),
+        phone: phone?.trim() || "",
+        address: address.trim(),
+        location: location.trim(),
+        isProfileComplete: true,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select(
+      "name email location phone address isProfileComplete authProvider"
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+
+  } catch (error) {
+    console.error("Profile update error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating profile",
+    });
+  }
+});
+
 // GOOGLE LOGIN
 router.get(
   "/google",
@@ -223,6 +306,43 @@ router.get("/me", fetchUser, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server Error",
+    });
+  }
+});
+
+router.delete("/delete-account", fetchUser, async (req, res) => {
+  try {
+    // Require explicit confirmation
+    if (req.body.confirmation !== "DELETE") {
+      return res.status(400).json({
+        success: false,
+        message: "Account deletion confirmation is required",
+      });
+    }
+
+    // Find authenticated user
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Delete account
+    await User.findByIdAndDelete(req.user.id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete account error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to delete account",
     });
   }
 });
