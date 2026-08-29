@@ -258,30 +258,41 @@ router.put("/profile", fetchUser, async (req, res) => {
 });
 
 // GOOGLE LOGIN
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] }),
-);
+router.get("/google", (req, res, next) => {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    return res.status(503).json({
+      success: false,
+      message: "Google login is not configured on this server.",
+    });
+  }
+
+  return passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+});
 
 // CALLBACK
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { session: false }),
-  (req, res) => {
-    const data = {
-      user: {
-        id: req.user.id,
-      },
-    };
+router.get("/google/callback", (req, res, next) => {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    return res.status(503).json({
+      success: false,
+      message: "Google login is not configured on this server.",
+    });
+  }
 
-    const token = jwt.sign(data, process.env.JWT_SECRET);
+  return passport.authenticate("google", { session: false })(req, res, next);
+}, (req, res) => {
+  const data = {
+    user: {
+      id: req.user.id,
+    },
+  };
 
-    // redirect to frontend
-    res.redirect(
-      `http://localhost:3000/google-success?token=${token}&profileComplete=${req.user.isProfileComplete}`,
-    );
-  },
-);
+  const token = jwt.sign(data, process.env.JWT_SECRET);
+
+  // redirect to frontend
+  res.redirect(
+    `http://localhost:3000/google-success?token=${token}&profileComplete=${req.user.isProfileComplete}`,
+  );
+});
 
 router.get("/me", fetchUser, async (req, res) => {
   try {
