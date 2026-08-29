@@ -2,6 +2,19 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 
+const getGoogleCallbackUrl = () => {
+  if (process.env.GOOGLE_CALLBACK_URL) {
+    return process.env.GOOGLE_CALLBACK_URL;
+  }
+
+  const backendBaseUrl =
+    process.env.BACKEND_URL ||
+    process.env.PUBLIC_URL ||
+    `http://localhost:${process.env.PORT || 5000}`;
+
+  return `${backendBaseUrl.replace(/\/$/, "")}/api/auth/google/callback`;
+};
+
 const hasGoogleConfig = Boolean(
   process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET,
 );
@@ -12,7 +25,7 @@ if (hasGoogleConfig) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/api/auth/google/callback",
+        callbackURL: getGoogleCallbackUrl(),
       },
       async (accessToken, refreshToken, profile, done) => {
         try {

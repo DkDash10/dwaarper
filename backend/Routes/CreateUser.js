@@ -9,6 +9,10 @@ const fetchUser = require("../middleware/fetchUser");
 
 require("dotenv").config();
 
+const isGoogleConfigured = Boolean(
+  process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET,
+);
+
 const getFrontendBaseUrl = (req) => {
   const configuredUrl = process.env.FRONTEND_URL;
   if (configuredUrl) return configuredUrl.replace(/\/$/, "");
@@ -275,7 +279,7 @@ router.put("/profile", fetchUser, async (req, res) => {
 
 // GOOGLE LOGIN
 router.get("/google", (req, res, next) => {
-  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  if (!isGoogleConfigured) {
     return res.status(503).json({
       success: false,
       message: "Google login is not configured on this server.",
@@ -287,7 +291,7 @@ router.get("/google", (req, res, next) => {
 
 // CALLBACK
 router.get("/google/callback", (req, res, next) => {
-  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  if (!isGoogleConfigured) {
     return res.status(503).json({
       success: false,
       message: "Google login is not configured on this server.",

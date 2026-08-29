@@ -37,21 +37,28 @@ app.get('/', (req, res) => {
 })
 app.use(cors());
 app.use(express.json());
-app.use('/api/auth', require('./Routes/CreateUser'));
-app.use('/api', require('./Routes/DisplayServices'));
-app.use('/api', require('./Routes/Checkout'));
-app.use('/api', require('./Routes/OrderData'));
-app.use('/api', require('./Routes/Contact'));
+app.set('trust proxy', 1);
 app.use(
   require("express-session")({
-    secret: "secret",
+    secret: process.env.SESSION_SECRET || "secret",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "lax",
+    },
   })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use('/api/auth', require('./Routes/CreateUser'));
+app.use('/api', require('./Routes/DisplayServices'));
+app.use('/api', require('./Routes/Checkout'));
+app.use('/api', require('./Routes/OrderData'));
+app.use('/api', require('./Routes/Contact'));
 
 
 app.listen(port, () => {
