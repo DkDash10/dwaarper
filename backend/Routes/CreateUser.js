@@ -14,19 +14,33 @@ const isGoogleConfigured = Boolean(
 );
 
 const getFrontendBaseUrl = (req) => {
+  const origin =
+    req.headers.origin ||
+    (req.headers.referer ? new URL(req.headers.referer).origin : null);
+
+  if (origin) return origin.replace(/\/$/, "");
+
   const configuredUrl = process.env.FRONTEND_URL;
   if (configuredUrl) return configuredUrl.replace(/\/$/, "");
 
-  const referer = req.headers.referer;
-  if (referer) {
-    try {
-      return new URL(referer).origin;
-    } catch (error) {
-      console.error("Invalid referer for Google redirect:", error.message);
-    }
+  return "http://localhost:3000";
+};
+
+const getGoogleCallbackUrl = (req) => {
+  const forwardedHost = req.headers["x-forwarded-host"];
+  const host = forwardedHost || req.headers.host || "localhost:5000";
+  const protocol = req.headers["x-forwarded-proto"] || req.protocol || "http";
+  const backendBaseUrl = `${protocol}://${host}`.replace(/\/$/, "");
+
+  if (host && protocol) {
+    return `${backendBaseUrl}/api/auth/google/callback`;
   }
 
-  return "http://localhost:3000";
+  if (process.env.GOOGLE_CALLBACK_URL) {
+    return process.env.GOOGLE_CALLBACK_URL;
+  }
+
+  return `http://localhost:${process.env.PORT || 5000}/api/auth/google/callback`;
 };
 
 // =======================
@@ -286,7 +300,12 @@ router.get("/google", (req, res, next) => {
     });
   }
 
-  return passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+  const callbackURL = getGoogleCallbackUrl(req);
+
+  return passport.authenticate("google", {
+    scope: ["profile", "email"],
+    callbackURL,
+  })(req, res, next);
 });
 
 // CALLBACK
@@ -298,7 +317,9 @@ router.get("/google/callback", (req, res, next) => {
     });
   }
 
-  return passport.authenticate("google", { session: false })(req, res, next);
+  const callbackURL = getGoogleCallbackUrl(req);
+
+  return passport.authenticate("google", { session: false, callbackURL })(req, res, next);
 }, (req, res) => {
   const data = {
     user: {
