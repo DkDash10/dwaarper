@@ -7,7 +7,9 @@ import Footer from "../../components/Footer";
 import ProfileHeader from "./ProfileHeader";
 import ProfileSection from "./ProfileSection";
 
-const API_URL = "http://localhost:5000";
+const API_URL = window.location.hostname === "localhost"
+  ? "http://localhost:5000"
+  : "https://dwaarper.onrender.com";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -52,7 +54,8 @@ export default function Profile() {
           },
         });
 
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {};
 
         if (!response.ok || !data.success) {
           localStorage.removeItem("token");
@@ -141,7 +144,8 @@ export default function Profile() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Unable to update profile");
@@ -193,7 +197,8 @@ export default function Profile() {
         }),
       });
 
-      const data = await response.json();
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Unable to delete account");

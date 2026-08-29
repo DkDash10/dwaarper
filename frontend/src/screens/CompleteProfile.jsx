@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoLocationOutline } from "react-icons/io5";
 
+const API_BASE_URL = window.location.hostname === "localhost"
+  ? "http://localhost:5000"
+  : "https://dwaarper.onrender.com";
+
 export default function CompleteProfile() {
   const navigate = useNavigate();
 
@@ -81,7 +85,7 @@ export default function CompleteProfile() {
             long: position.coords.longitude,
           };
 
-          const response = await fetch("/api/auth/getlocation", {
+          const response = await fetch(`${API_BASE_URL}/api/auth/getlocation`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -89,11 +93,12 @@ export default function CompleteProfile() {
             body: JSON.stringify({ latlong }),
           });
 
-          const data = await response.json();
+          const text = await response.text();
+          const data = text ? JSON.parse(text) : {};
 
           setForm((prev) => ({
             ...prev,
-            location: data.location,
+            location: data.location || "",
           }));
 
           setDetecting(false);
@@ -122,7 +127,7 @@ export default function CompleteProfile() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/complete-profile", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/complete-profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +136,8 @@ export default function CompleteProfile() {
         body: JSON.stringify(form),
       });
 
-      const data = await response.json();
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!data.success) {
         setErrors({

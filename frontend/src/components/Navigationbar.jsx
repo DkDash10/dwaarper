@@ -10,6 +10,10 @@ import {
 } from "react-icons/lu";
 import { useCart } from "./ContextReducer";
 
+const API_BASE_URL = window.location.hostname === "localhost"
+  ? "http://localhost:5000"
+  : "https://dwaarper.onrender.com";
+
 export default function Navigationbar() {
   const cart = useCart();
   const dropdownRef = useRef(null);
@@ -56,15 +60,19 @@ export default function Navigationbar() {
       }
 
       try {
-        const res = await fetch("/api/auth/me", {
+        const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
           headers: {
             "auth-token": localStorage.getItem("token"),
           },
         });
 
-        const data = await res.json();
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : {};
+
         if (data.success) setUser(data.user);
-      } catch {}
+      } catch (error) {
+        console.error("Failed to load navbar user:", error);
+      }
     }
 
     loadUser();
