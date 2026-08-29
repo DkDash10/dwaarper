@@ -9,6 +9,22 @@ const fetchUser = require("../middleware/fetchUser");
 
 require("dotenv").config();
 
+const getFrontendBaseUrl = (req) => {
+  const configuredUrl = process.env.FRONTEND_URL;
+  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
+
+  const referer = req.headers.referer;
+  if (referer) {
+    try {
+      return new URL(referer).origin;
+    } catch (error) {
+      console.error("Invalid referer for Google redirect:", error.message);
+    }
+  }
+
+  return "http://localhost:3000";
+};
+
 // =======================
 // SIGNUP
 // =======================
@@ -287,10 +303,10 @@ router.get("/google/callback", (req, res, next) => {
   };
 
   const token = jwt.sign(data, process.env.JWT_SECRET);
+  const frontendBaseUrl = getFrontendBaseUrl(req);
 
-  // redirect to frontend
   res.redirect(
-    `http://localhost:3000/google-success?token=${token}&profileComplete=${req.user.isProfileComplete}`,
+    `${frontendBaseUrl}/google-success?token=${token}&profileComplete=${req.user.isProfileComplete}`,
   );
 });
 

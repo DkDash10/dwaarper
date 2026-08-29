@@ -3,6 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { BiShow, BiHide } from "react-icons/bi";
 import { FcGoogle } from "react-icons/fc";
 
+const API_BASE_URL = window.location.hostname === "localhost"
+  ? "http://localhost:5000"
+  : "https://dwaarper.onrender.com";
+
 export default function Login() {
   const navigate = useNavigate();
 
@@ -41,7 +45,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +53,8 @@ export default function Login() {
         body: JSON.stringify(credentials),
       });
 
-      const data = await response.json();
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!data.success) {
         setErrors({
@@ -81,7 +86,7 @@ export default function Login() {
   // GOOGLE LOGIN
   // ======================
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${API_BASE_URL}/api/auth/google`;
   };
 
   // ======================
