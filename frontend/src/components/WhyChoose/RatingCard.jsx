@@ -346,7 +346,7 @@ export default function RatingCard() {
 
         {/* Featured Testimonial */}
 
-        <div className="mt-5 border-t border-white/[0.08] pt-4" ref={testimonialRef}>
+        <div className="mt-5 mb-4 border-t border-white/[0.08] pt-4" ref={testimonialRef}>
           <div className="flex gap-3">
             {/* Quote mark */}
 
@@ -355,11 +355,11 @@ export default function RatingCard() {
             <div className="min-w-0">
               <p className="text-[11px] leading-4 text-white/65">Super smooth booking experience. The professional arrived exactly on time.</p>
 
-              <div className="mt-2 flex items-center gap-2">
+              {/* <div className="mt-2 flex items-center gap-2">
                 <div className="h-1 w-1 rounded-full bg-cyan-400" />
 
                 <span className="text-[9px] font-medium uppercase tracking-[.12em] text-white/35">Verified customer</span>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

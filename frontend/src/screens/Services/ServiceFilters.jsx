@@ -1,29 +1,57 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { LuSearch, LuX } from "react-icons/lu";
 
-export default function ServiceFilters({
-  search,
-  setSearch,
-  categories,
-  activeCategory,
-  setActiveCategory,
-}) {
+export default function ServiceFilters({ search, setSearch, categories, activeCategory, setActiveCategory }) {
+  const placeholderServices = ["home cleaning...", "plumbing services...", "electricians...", "AC repair...", "pest control...", "appliance repair..."];
+
+  const [placeholderText, setPlaceholderText] = useState("");
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (search) {
+      setPlaceholderText("");
+      setIsDeleting(false);
+      return;
+    }
+
+    const currentService = placeholderServices[placeholderIndex];
+
+    let delay;
+
+    if (!isDeleting) {
+      // Typing
+      delay = placeholderText.length === currentService.length ? 1500 : 65;
+    } else {
+      // Backspacing
+      delay = 35;
+    }
+
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        if (placeholderText.length < currentService.length) {
+          setPlaceholderText(currentService.slice(0, placeholderText.length + 1));
+        } else {
+          setIsDeleting(true);
+        }
+      } else {
+        if (placeholderText.length > 0) {
+          setPlaceholderText(currentService.slice(0, placeholderText.length - 1));
+        } else {
+          setIsDeleting(false);
+          setPlaceholderIndex((prev) => (prev + 1) % placeholderServices.length);
+        }
+      }
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [placeholderText, placeholderIndex, isDeleting, search]);
+
   return (
     <div
       className="
         relative
         z-10
-        -mx-4
-        border-y
-        border-white/[0.06]
-        bg-black/90
-        px-4
-        py-4
-        backdrop-blur-xl
-        sm:mx-0
-        sm:rounded-3xl
-        sm:border
-        sm:px-5
       "
     >
       <div className="flex flex-col gap-4">
@@ -45,21 +73,8 @@ export default function ServiceFilters({
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search for a service..."
-            className="
-              w-full
-              rounded-xl
-              bg-zinc-900
-              px-11
-              py-3
-              text-sm
-              text-white
-              placeholder:text-zinc-500
-              transition
-              focus:outline-none
-              focus:ring-1
-              focus:ring-zinc-600
-            "
+            placeholder={`Search for ${placeholderText}`}
+            className="w-full rounded-2xl bg-white/[0.04] px-14 border-white/10 py-[22px] text-white placeholder:text-white/35 outline-none focus:border-white/20"
           />
 
           {search && (
@@ -116,16 +131,13 @@ export default function ServiceFilters({
 
             {/* Categories */}
             {categories.map((category) => {
-              const isActive =
-                activeCategory === category.CategoryName;
+              const isActive = activeCategory === category.CategoryName;
 
               return (
                 <button
                   key={category.CategoryName}
                   type="button"
-                  onClick={() =>
-                    setActiveCategory(category.CategoryName)
-                  }
+                  onClick={() => setActiveCategory(category.CategoryName)}
                   className={`
                     rounded-full
                     px-4
@@ -134,11 +146,7 @@ export default function ServiceFilters({
                     font-medium
                     transition-all
                     duration-300
-                    ${
-                      isActive
-                        ? "bg-white text-black"
-                        : "border border-white/10 bg-white/[0.03] text-white/50 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                    }
+                    ${isActive ? "bg-white text-black" : "border border-white/10 bg-white/[0.03] text-white/50 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"}
                   `}
                 >
                   {category.CategoryName}

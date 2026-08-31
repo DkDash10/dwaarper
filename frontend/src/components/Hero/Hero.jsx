@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { LuSearch, LuShieldCheck } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 import HeroPhone from "./HeroPhone";
 
-const placeholderTexts = [
-  "home cleaning...",
-  "plumbing services...",
-  "electricians...",
-  "AC repair...",
-  "pest control...",
-  "appliance repair...",
-];
+const placeholderTexts = ["home cleaning...", "plumbing services...", "electricians...", "AC repair...", "pest control...", "appliance repair..."];
 
 export default function Hero({ search, setSearch, onViewResults }) {
-
   const [displayText, setDisplayText] = useState("");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cursor, setCursor] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const current = placeholderTexts[placeholderIndex];
@@ -57,10 +52,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
   }, []);
 
   const handleBookNow = () => {
-    document.getElementById("services")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    navigate("/services");
   };
 
   const handleHowItWorks = () => {
@@ -68,6 +60,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
       behavior: "smooth",
     });
   };
+
   return (
     <section className="relative min-h-[90vh] pb-20 bg-[#090909] overflow-hidden">
       {/* Navbar spacing */}
@@ -76,7 +69,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
       <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 blur-[150px] rounded-full" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 blur-[180px] rounded-full" />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-10">
+      <div className="relative max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-20 items-center min-h-[calc(100vh-8rem)] pb-20">
           {/* LEFT */}
 
@@ -94,8 +87,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
             </h1>
 
             <p className="mt-8 max-w-xl text-lg leading-8 text-white/55">
-              Whether it's deep cleaning, appliance repair, plumbing or
-              electrical work, find trusted professionals near you in minutes.
+              Whether it's deep cleaning, appliance repair, plumbing or electrical work, find trusted professionals near you in minutes.
             </p>
 
             {/* CTA */}
@@ -108,10 +100,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
                 Book a Professional
               </button>
 
-              <button
-                className="group font-medium text-white/70 hover:text-white transition flex items-center gap-2"
-                onClick={handleHowItWorks}
-              >
+              <button className="group font-medium text-white/70 hover:text-white transition flex items-center gap-2" onClick={handleHowItWorks}>
                 See How It Works
               </button>
             </div>
@@ -121,14 +110,11 @@ export default function Hero({ search, setSearch, onViewResults }) {
             <div className="mt-12">
               <div>
                 <div className="relative">
-                  <LuSearch
-                    size={20}
-                    className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40"
-                  />
+                  <LuSearch size={20} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40" />
 
                   <input
                     type="search"
-                    className="w-full rounded-2xl bg-white/[0.04] border border-white/5  px-14  py-[22px] text-white placeholder:text-white/35 outline-none focus:border-white/20"
+                    className="w-full rounded-2xl border-white/10 bg-white/[0.04] px-14 py-[22px] text-white placeholder:text-white/35 outline-none focus:border-white/20"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -149,15 +135,10 @@ export default function Hero({ search, setSearch, onViewResults }) {
                         <span className="ml-2 font-medium">"{search}"</span>
                       </p>
 
-                      <p className="mt-1 text-xs text-white/45">
-                        Scroll to explore matching services.
-                      </p>
+                      <p className="mt-1 text-xs text-white/45">Scroll to explore matching services.</p>
                     </div>
 
-                    <button
-                      onClick={onViewResults}
-                      className="rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:scale-105"
-                    >
+                    <button onClick={() => onViewResults(search)} className="rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:scale-105">
                       View Results
                     </button>
                   </div>
@@ -191,7 +172,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
           {/* RIGHT */}
 
           <div className="relative flex items-center justify-center">
-            <HeroPhone/>
+            <HeroPhone />
           </div>
         </div>
       </div>

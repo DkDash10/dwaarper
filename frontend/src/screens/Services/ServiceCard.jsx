@@ -1,13 +1,7 @@
 import React, { useMemo, useState } from "react";
-import {
-  LuChevronDown,
-  LuShoppingCart,
-} from "react-icons/lu";
+import { LuChevronDown, LuShoppingCart } from "react-icons/lu";
 import { toast } from "react-toastify";
-import {
-  useCart,
-  useDispatchCart,
-} from "../../components/ContextReducer";
+import { useCart, useDispatchCart } from "../../components/ContextReducer";
 
 export default function ServiceCard({ service, onLogin }) {
   const dispatch = useDispatchCart();
@@ -16,9 +10,8 @@ export default function ServiceCard({ service, onLogin }) {
   const options = service?.options?.[0] || {};
   const optionNames = Object.keys(options);
 
-  const [selectedOption, setSelectedOption] = useState(
-    optionNames[0] || ""
-  );
+  const [selectedOption, setSelectedOption] = useState(optionNames[0] || "");
+  const [isOptionOpen, setIsOptionOpen] = useState(false);
 
   const selectedPrice = useMemo(() => {
     const rawPrice = options[selectedOption];
@@ -27,16 +20,10 @@ export default function ServiceCard({ service, onLogin }) {
       return 0;
     }
 
-    return (
-      Number(String(rawPrice).replace(/,/g, "")) || 0
-    );
+    return Number(String(rawPrice).replace(/,/g, "")) || 0;
   }, [options, selectedOption]);
 
-  const isServiceInCart = cartData.some(
-    (item) =>
-      item.id === service._id &&
-      item.service === selectedOption
-  );
+  const isServiceInCart = cartData.some((item) => item.id === service._id && item.service === selectedOption);
 
   const handleAddToCart = () => {
     const token = localStorage.getItem("token");
@@ -161,13 +148,11 @@ export default function ServiceCard({ service, onLogin }) {
         </p>
 
         {/* Options */}
-        {optionNames.length > 0 && (
+        {/* {optionNames.length > 0 && (
           <div className="relative mt-6">
             <select
               value={selectedOption}
-              onChange={(event) =>
-                setSelectedOption(event.target.value)
-              }
+              onChange={(event) => setSelectedOption(event.target.value)}
               className="
                 w-full
                 appearance-none
@@ -184,14 +169,15 @@ export default function ServiceCard({ service, onLogin }) {
                 focus:ring-zinc-600
               "
             >
-              {optionNames.map((option) => (
-                <option
-                  key={option}
-                  value={option}
-                >
-                  {option}
-                </option>
-              ))}
+              {optionNames.map((option) => {
+                const price = Number(String(options[option]).replace(/,/g, "")) || 0;
+
+                return (
+                  <option key={option} value={option} className="bg-zinc-900 text-white">
+                    {option} — ₹{price.toLocaleString("en-IN")}
+                  </option>
+                );
+              })}
             </select>
 
             <LuChevronDown
@@ -205,6 +191,146 @@ export default function ServiceCard({ service, onLogin }) {
                 text-white/35
               "
             />
+          </div>
+        )}
+         */}
+
+        {optionNames.length > 0 && (
+          <div className="relative mt-6">
+            <p
+              className="
+        mb-2
+        text-[10px]
+        font-medium
+        uppercase
+        tracking-[0.16em]
+        text-white/30
+      "
+            >
+              Choose an option
+            </p>
+
+            {/* Selected option */}
+            <button
+              type="button"
+              onClick={() => setIsOptionOpen((prev) => !prev)}
+              className="
+        flex
+        w-full
+        items-center
+        justify-between
+        gap-3
+        rounded-xl
+        bg-zinc-900
+        px-4
+        py-3
+        text-left
+        text-sm
+        text-white
+        transition
+        hover:bg-zinc-800
+        focus:outline-none
+        focus:ring-1
+        focus:ring-zinc-600
+      "
+            >
+              <span className="truncate">{selectedOption}</span>
+
+              <LuChevronDown
+                size={15}
+                className={`
+          shrink-0
+          text-white/35
+          transition-transform
+          duration-200
+          ${isOptionOpen ? "rotate-180" : ""}
+        `}
+              />
+            </button>
+
+            {/* Dropdown */}
+            {isOptionOpen && (
+              <div
+                className="
+          absolute
+          left-0
+          right-0
+         bottom-full
+          z-50
+          mt-2
+          p-1
+          overflow-hidden
+          rounded-2xl
+          border-white/[0.08]
+          bg-zinc-950
+          shadow-2xl
+        "
+              >
+                <div
+  className="
+    service-options-scroll
+    max-h-52
+    overflow-y-auto
+    p-1
+    [scrollbar-width:thin]
+    [scrollbar-color:rgba(255,255,255,0.2)_transparent]
+  "
+>
+                  {optionNames.map((option) => {
+                    const price = Number(String(options[option]).replace(/,/g, "")) || 0;
+
+                    const isSelected = option === selectedOption;
+
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => {
+                          setSelectedOption(option);
+                          setIsOptionOpen(false);
+                        }}
+                        className={`
+                  flex
+                  w-full
+                  items-center
+                  justify-between
+                  gap-4
+                  rounded-xl
+                  px-3
+                  py-3
+                  my-1
+                  text-left
+                  transition-colors
+                  duration-150
+                  ${isSelected ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}
+                `}
+                      >
+                        <span
+                          className={`
+                    min-w-0
+                    truncate
+                    text-sm
+                    ${isSelected ? "font-medium text-white" : "text-white/65"}
+                  `}
+                        >
+                          {option}
+                        </span>
+
+                        <span
+                          className="
+                    shrink-0
+                    text-xs
+                    text-white/40
+                  "
+                        >
+                          ₹{price.toLocaleString("en-IN")}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -230,9 +356,7 @@ export default function ServiceCard({ service, onLogin }) {
               Starting at
             </p>
 
-            <p className="mt-1 text-lg font-semibold text-white">
-              ₹{selectedPrice.toLocaleString("en-IN")}
-            </p>
+            <p className="mt-1 text-lg font-semibold text-white">₹{selectedPrice.toLocaleString("en-IN")}</p>
           </div>
 
           <button
@@ -263,9 +387,7 @@ export default function ServiceCard({ service, onLogin }) {
           >
             <LuShoppingCart size={14} />
 
-            {isServiceInCart
-              ? "Added"
-              : "Add to Cart"}
+            {isServiceInCart ? "Added" : "Add to Cart"}
           </button>
         </div>
       </div>

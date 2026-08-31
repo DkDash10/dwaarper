@@ -184,19 +184,19 @@ export default function ProfessionalScreen({ active }) {
       {/* Stats */}
 
       <div ref={statsRef} className="mt-6 grid grid-cols-3 gap-2 px-6 items-center">
-        <div className="flex flex-column rounded-2xl border border-white/10 bg-white/5 p-2 text-center">
+        <div className="flex flex-col-reverse rounded-2xl border border-white/10 bg-white/5 p-2 text-center">
           <p className="font-semibold text-white">4.9</p>
 
           <span className="text-xs text-white/45">Rating</span>
         </div>
 
-        <div className="flex flex-column rounded-2xl border border-white/10 bg-white/5 p-2 text-center">
+        <div className="flex flex-col-reverse rounded-2xl border border-white/10 bg-white/5 p-2 text-center">
           <p className="font-semibold text-white">520+</p>
 
           <span className="text-xs text-white/45">Jobs</span>
         </div>
 
-        <div className="flex flex-column rounded-2xl border border-white/10 bg-white/5 p-2 text-center">
+        <div className="flex flex-col-reverse rounded-2xl border border-white/10 bg-white/5 p-2 text-center">
           <p className="font-semibold text-white">12 min</p>
 
           <span className="text-xs text-white/45">ETA</span>

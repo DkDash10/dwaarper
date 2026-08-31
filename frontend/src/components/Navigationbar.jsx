@@ -162,7 +162,7 @@ export default function Navigationbar() {
         }`}
       >
         <div
-          className={`mx-auto max-w-6xl flex items-center justify-between rounded-2xl px-4 sm:px-6 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${
+          className={`mx-auto max-w-7xl flex items-center justify-between rounded-2xl px-4 sm:px-6 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${
             isTop
               ? "py-2.5 sm:py-3 bg-transparent backdrop-blur-0 border-transparent shadow-none"
               : "py-2.5 sm:py-3 bg-black/45 backdrop-blur-2xl border-white/10 shadow-[0_10px_40px_rgba(0,0,0,.35)]"

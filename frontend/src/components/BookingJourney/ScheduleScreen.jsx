@@ -2,7 +2,7 @@ import { LuArrowLeft, LuCalendar, LuClock3, LuCheck } from "react-icons/lu";
 import gsap from "gsap";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
-const slots = ["09:00 AM", "10:30 AM", "12:00 PM", "02:30 PM", "04:00 PM", "06:00 PM"];
+const slots = ["09:00 AM", "10:30 AM", "12:00 PM", "01:30 PM", "03:00 PM", "04:30 PM", "06:00 PM", "07:30 PM"];
 
 export default function ScheduleScreen({ active }) {
   const headerRef = useRef(null);
@@ -158,8 +158,6 @@ export default function ScheduleScreen({ active }) {
         </div>
 
         <div>
-          <span className="text-white/40 text-sm">Step 2 of 4</span>
-
           <h2 className="text-2xl font-semibold text-white">Select Schedule</h2>
         </div>
       </div>
@@ -202,7 +200,7 @@ export default function ScheduleScreen({ active }) {
             <button
               key={slot}
               data-slot={index}
-              className={`rounded-2xl border p-3 text-sm transition ${selectedSlot === index ? "border-cyan-400 bg-cyan-400 text-black" : "border-white/10 bg-white/5 text-white"}`}
+              className={`rounded-2xl border p-3 text-sm transition ${selectedSlot === index ? "border-cyan-400 bg-cyan-400 text-black font-semibold" : "border-white/10 bg-white/5 text-white"}`}
             >
               <div className="flex items-center justify-center gap-2">
                 <span>{slot}</span>

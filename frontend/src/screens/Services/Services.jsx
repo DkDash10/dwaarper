@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navigationbar from "../../components/Navigationbar";
 import Footer from "../../components/Footer";
 import ServiceFilters from "./ServiceFilters";
@@ -9,6 +9,7 @@ const API_URL = window.location.hostname === "localhost" ? "http://localhost:500
 
 export default function Services() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [serviceCategory, setServiceCategory] = useState([]);
   const [serviceData, setServiceData] = useState([]);
@@ -50,15 +51,30 @@ export default function Services() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    const query = searchParams.get("search") || "";
+    setSearch(query);
+  }, [searchParams]);
+
   const filteredServices = useMemo(() => {
-    const q = search.trim().toLowerCase();
+    const query = search.trim().toLowerCase();
+
+    if (!query) {
+      return serviceData.filter((service) => activeCategory === "All" || service.CategoryName === activeCategory);
+    }
+
+    const searchTerms = query.split(/\s+/).filter(Boolean);
 
     return serviceData.filter((service) => {
       const categoryMatch = activeCategory === "All" || service.CategoryName === activeCategory;
 
-      const searchMatch = !q || service.name?.toLowerCase().includes(q) || service.description?.toLowerCase().includes(q) || service.CategoryName?.toLowerCase().includes(q);
+      if (!categoryMatch) return false;
 
-      return categoryMatch && searchMatch;
+      const optionText = Object.keys(service?.options?.[0] || {}).join(" ");
+
+      const searchableText = [service.name, service.description, service.CategoryName, optionText].filter(Boolean).join(" ").toLowerCase();
+
+      return searchTerms.every((term) => searchableText.includes(term));
     });
   }, [serviceData, search, activeCategory]);
 
@@ -175,7 +191,7 @@ export default function Services() {
               <span className="text-white/45">We’ll handle the rest.</span>
             </h1>
 
-            <p className="mt-5 max-w-2xl text-sm leading-7 text-white/45 sm:text-base">
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/45 sm:text-base">
               Explore trusted home services, choose exactly what you need, and add it to your cart in a few clicks.
             </p>
           </div>
@@ -262,7 +278,9 @@ export default function Services() {
                       </div>
 
                       <div className="flex shrink-0 items-center gap-3">
-                        <span className="hidden text-[10px] uppercase tracking-[0.16em] text-white/20 sm:inline">Swipe to explore</span>
+                        {(scrollState[category]?.canScrollLeft || scrollState[category]?.canScrollRight) && (
+                          <span className="hidden text-[10px] uppercase tracking-[0.16em] text-white/20 sm:inline">Swipe to explore</span>
+                        )}
 
                         <span className="text-xs text-white/25">
                           {services.length} {services.length === 1 ? "service" : "services"}
