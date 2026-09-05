@@ -315,7 +315,18 @@ export default function Services() {
                               lg:min-w-[360px]
                             "
                           >
-                            <ServiceCard service={service} onLogin={() => navigate("/login")} />
+                            <ServiceCard
+                              service={service}
+                              onLogin={() => navigate("/login")}
+                              onBook={(service, selectedOption) => {
+                                navigate("/booking", {
+                                  state: {
+                                    service,
+                                    selectedOption,
+                                  },
+                                });
+                              }}
+                            />
                           </div>
                         ))}
                       </div>

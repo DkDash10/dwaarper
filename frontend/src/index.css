@@ -72,6 +72,44 @@ textarea:focus {
   }
 }
 
+/* Shared booking scrollbar */
+.booking-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+/* Chrome / Edge / Safari */
+.booking-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.booking-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.booking-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+
+.booking-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.20);
+}
+
+/* Remove scrollbar arrows/buttons completely */
+.booking-scrollbar::-webkit-scrollbar-button,
+.booking-scrollbar::-webkit-scrollbar-button:single-button,
+.booking-scrollbar::-webkit-scrollbar-button:vertical:decrement,
+.booking-scrollbar::-webkit-scrollbar-button:vertical:increment,
+.booking-scrollbar::-webkit-scrollbar-button:horizontal:decrement,
+.booking-scrollbar::-webkit-scrollbar-button:horizontal:increment {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
 .phoneFloat {
   animation: phoneFloat 6s ease-in-out infinite;
 }

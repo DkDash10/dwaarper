@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { LuChevronDown, LuShoppingCart } from "react-icons/lu";
+import { LuChevronDown, LuShoppingCart, LuTrash2 } from "react-icons/lu";
 import { toast } from "react-toastify";
 import { useCart, useDispatchCart } from "../../components/ContextReducer";
 
-export default function ServiceCard({ service, onLogin }) {
+export default function ServiceCard({ service, onLogin, onBook }) {
   const dispatch = useDispatchCart();
   const cartData = useCart();
 
@@ -25,7 +25,7 @@ export default function ServiceCard({ service, onLogin }) {
 
   const isServiceInCart = cartData.some((item) => item.id === service._id && item.service === selectedOption);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -37,17 +37,44 @@ export default function ServiceCard({ service, onLogin }) {
       return;
     }
 
-    dispatch({
+    const result = await dispatch({
       type: "ADD",
+
       img: service.img,
+
       id: service._id,
+
       name: service.name,
+
       price: selectedPrice,
+
       service: selectedOption,
     });
 
+    if (!result?.success) {
+      toast.error(result?.message || "Unable to add service", {
+        autoClose: 1800,
+        hideProgressBar: true,
+      });
+
+      return;
+    }
+
     toast.success(`${service.name} added to cart`, {
       autoClose: 1500,
+      hideProgressBar: true,
+    });
+  };
+
+  const handleRemoveFromCart = () => {
+    dispatch({
+      type: "REMOVE",
+      id: service._id,
+      service: selectedOption,
+    });
+
+    toast.info(`${service.name} removed from cart`, {
+      autoClose: 1200,
       hideProgressBar: true,
     });
   };
@@ -267,7 +294,7 @@ export default function ServiceCard({ service, onLogin }) {
         "
               >
                 <div
-  className="
+                  className="
     service-options-scroll
     max-h-52
     overflow-y-auto
@@ -275,7 +302,7 @@ export default function ServiceCard({ service, onLogin }) {
     [scrollbar-width:thin]
     [scrollbar-color:rgba(255,255,255,0.2)_transparent]
   "
->
+                >
                   {optionNames.map((option) => {
                     const price = Number(String(options[option]).replace(/,/g, "")) || 0;
 
@@ -361,33 +388,25 @@ export default function ServiceCard({ service, onLogin }) {
 
           <button
             type="button"
-            onClick={handleAddToCart}
-            disabled={isServiceInCart}
-            className="
-              inline-flex
-              shrink-0
-              items-center
-              gap-2
-              rounded-full
-              bg-white
-              px-5
-              py-3
-              text-xs
-              font-medium
-              text-black
-              transition-all
-              duration-300
-              hover:-translate-y-0.5
-              hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]
-              disabled:cursor-not-allowed
-              disabled:bg-white/[0.12]
-              disabled:text-white/35
-              disabled:shadow-none
-            "
+            onClick={isServiceInCart ? handleRemoveFromCart : handleAddToCart}
+            className={`
+  inline-flex
+  shrink-0
+  items-center
+  gap-2
+  rounded-full
+  px-5
+  py-3
+  text-xs
+  font-medium
+  transition-all
+  duration-300
+  ${isServiceInCart ? "bg-red-500/10 text-red-400 hover:bg-red-500/15" : "bg-white text-black hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]"}
+`}
           >
-            <LuShoppingCart size={14} />
+            {isServiceInCart ? <LuTrash2 size={14} /> : <LuShoppingCart size={14} />}
 
-            {isServiceInCart ? "Added" : "Add to Cart"}
+            {isServiceInCart ? "Remove" : "Book Now"}
           </button>
         </div>
       </div>
