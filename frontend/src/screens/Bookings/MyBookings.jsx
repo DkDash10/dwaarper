@@ -441,7 +441,7 @@ const MyBookings = () => {
                         </div>
 
                         <Link
-                          to={`/mybookings/${order.orderId}`}
+                          to={`/mybookings/${order.orderId}/${order.serviceIndex}`}
                           state={{ booking: order }}
                           className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-xs font-medium text-white/65 transition hover:bg-white hover:text-black"
                         >

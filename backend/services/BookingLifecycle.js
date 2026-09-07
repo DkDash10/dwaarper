@@ -16,7 +16,9 @@ const ACTIVE_STATUSES = ["confirmed", "assigning", "assigned", "on_the_way", "ar
 const parseDateTime = (date, time) => {
   if (!date || !time) return null;
 
-  const value = new Date(`${date}T${time}:00`);
+  // Booking date/time is stored in IST.
+  // Explicit timezone prevents Render/UTC server differences.
+  const value = new Date(`${date}T${time}:00+05:30`);
 
   if (Number.isNaN(value.getTime())) {
     return null;
@@ -240,43 +242,83 @@ const assignPendingBookings = async () => {
           continue;
         }
 
-        // Only unpaid/assigned bookings are ignored.
-        if (bookingHeader.status !== "assigning") {
+        // Only paid orders waiting
+        // for assignment are processed.
+        if (bookingHeader.paymentStatus !== "paid" || !["assigning", "assigned"].includes(bookingHeader.status)) {
           continue;
         }
 
-        if (bookingHeader.paymentStatus !== "paid") {
-          continue;
-        }
-
+        let changed = false;
         let allAssigned = true;
+        let activeServices = 0;
 
-        // -------------------------------------------------
-        // Try to assign each service
-        // -------------------------------------------------
+        // =================================================
+        // PROCESS EACH SERVICE INDEPENDENTLY
+        // =================================================
 
-        for (const item of orderArray.slice(1)) {
+        for (let index = 1; index < orderArray.length; index++) {
+          const item = orderArray[index];
+
           if (!item?.booking) {
             continue;
           }
 
-          // Already assigned
-          if (item.booking.professionalId) {
+          const booking = item.booking;
+
+          const serviceStatus = booking.status || bookingHeader.status || "assigning";
+
+          // -----------------------------------------------
+          // Cancelled services must NEVER be reassigned.
+          // -----------------------------------------------
+
+          if (serviceStatus === "cancelled") {
             continue;
           }
 
+          // -----------------------------------------------
+          // Completed services must NEVER be reassigned.
+          // -----------------------------------------------
+
+          if (serviceStatus === "completed") {
+            continue;
+          }
+
+          activeServices++;
+
+          // -----------------------------------------------
+          // Already has professional
+          // -----------------------------------------------
+
+          if (booking.professionalId) {
+            if (booking.status !== "assigned") {
+              booking.status = "assigned";
+
+              changed = true;
+            }
+
+            continue;
+          }
+
+          // -----------------------------------------------
+          // Need service information
+          // -----------------------------------------------
+
           const serviceId = item.serviceId || item.id;
 
-          const date = item.booking.date || bookingHeader.Order_date;
+          const date = booking.date || bookingHeader.Order_date;
 
-          const time = item.booking.time;
+          const time = booking.time;
 
-          const duration = Number(item.booking.duration) || 60;
+          const duration = Number(booking.duration) || 60;
 
           if (!serviceId || !date || !time) {
             allAssigned = false;
             continue;
           }
+
+          // -----------------------------------------------
+          // Find professional for THIS service
+          // -----------------------------------------------
 
           const professional = await findAvailableProfessional({
             serviceId,
@@ -286,44 +328,66 @@ const assignPendingBookings = async () => {
             allOrders: orders,
           });
 
+          // -----------------------------------------------
+          // No professional yet
+          // -----------------------------------------------
+
           if (!professional) {
             allAssigned = false;
+
+            if (booking.status !== "assigning") {
+              booking.status = "assigning";
+
+              changed = true;
+            }
+
             continue;
           }
 
-          // ------------------------------------------------
+          // -----------------------------------------------
           // Assign professional
-          // ------------------------------------------------
+          // -----------------------------------------------
 
-          item.booking.professionalId = professional._id;
+          booking.professionalId = professional._id;
 
-          item.booking.professionalName = professional.name;
+          booking.professionalName = professional.name;
+
+          booking.status = "assigned";
+
+          changed = true;
+
+          console.log(`Professional ${professional.name} assigned to service ${index - 1} of booking ${bookingHeader.id}`);
         }
 
-        // -------------------------------------------------
-        // If everything is assigned
-        // -------------------------------------------------
+        // =================================================
+        // DETERMINE HEADER STATUS
+        // =================================================
 
-        if (allAssigned) {
-          const now = new Date();
+        if (activeServices > 0 && allAssigned) {
+          bookingHeader.status = "assigned";
+        } else if (activeServices > 0) {
+          bookingHeader.status = "assigning";
+        } else {
+          bookingHeader.status = "cancelled";
+        }
 
-          // Update the booking header locally
-          orderArray[0].status = "assigned";
-          orderArray[0].professionalAssignedAt = now;
+        // =================================================
+        // SAVE IF SOMETHING CHANGED
+        // =================================================
 
-          // Save the complete order_data array in ONE update.
-          // This avoids MongoDB path conflicts with nested array updates.
+        if (changed) {
           const updatedOrderData = order.order_data.map((existingArray) => {
-            if (Array.isArray(existingArray) && existingArray.some((item) => item.id === bookingHeader.id)) {
+            if (Array.isArray(existingArray) && existingArray.some((item) => item && item.id === bookingHeader.id)) {
               return orderArray;
             }
 
             return existingArray;
           });
 
-          const result = await Order.updateOne(
+          await Order.updateOne(
             {
               email: order.email,
+
               order_data: {
                 $elemMatch: {
                   $elemMatch: {
@@ -338,10 +402,6 @@ const assignPendingBookings = async () => {
               },
             },
           );
-
-          if (result.modifiedCount) {
-            console.log(`Professional assigned to booking ${bookingHeader.id}`);
-          }
         }
       }
     }
@@ -354,7 +414,105 @@ const assignPendingBookings = async () => {
 // MOVE ASSIGNED → ON THE WAY
 // =========================================================
 
-const updateOnTheWayBookings = async () => {
+// const updateOnTheWayBookings = async () => {
+//   try {
+//     const orders = await Order.find({}).lean();
+
+//     const now = new Date();
+
+//     for (const order of orders) {
+//       for (const orderArray of order.order_data || []) {
+//         if (!Array.isArray(orderArray) || !orderArray.length) {
+//           continue;
+//         }
+
+//         const bookingHeader = orderArray[0];
+
+//         if (!bookingHeader) {
+//           continue;
+//         }
+
+//         // Only assigned bookings should move to on_the_way.
+//         if (bookingHeader.status !== "assigned") {
+//           continue;
+//         }
+
+//         const firstService = orderArray[1];
+
+//         if (!firstService?.booking) {
+//           continue;
+//         }
+
+//         const bookingDate = firstService.booking.date || bookingHeader.Order_date;
+
+//         const bookingTime = firstService.booking.time;
+
+//         const bookingStart = parseDateTime(bookingDate, bookingTime);
+
+//         if (!bookingStart) {
+//           continue;
+//         }
+
+//         const oneHourBefore = new Date(bookingStart.getTime() - 60 * 60 * 1000);
+
+//         /*
+//          * Normal case:
+//          *
+//          * Booking: 2:00 PM
+//          * On the way: 1:00 PM
+//          */
+//         if (now >= oneHourBefore) {
+//           const result = await Order.updateOne(
+//             {
+//               email: order.email,
+//               order_data: {
+//                 $elemMatch: {
+//                   $elemMatch: {
+//                     id: bookingHeader.id,
+//                   },
+//                 },
+//               },
+//             },
+//             {
+//               $set: {
+//                 "order_data.$[booking].0.status": "on_the_way",
+//                 "order_data.$[booking].0.onTheWayAt": now,
+//               },
+//             },
+//             {
+//               arrayFilters: [
+//                 {
+//                   booking: {
+//                     $elemMatch: {
+//                       id: bookingHeader.id,
+//                     },
+//                   },
+//                 },
+//               ],
+//             },
+//           );
+
+//           if (result.modifiedCount) {
+//             if (now < bookingStart) {
+//               console.log(`Booking ${bookingHeader.id} is now on the way`);
+//             } else {
+//               console.log(`Booking ${bookingHeader.id} missed the normal on-the-way window and was recovered`);
+//             }
+//           }
+//         }
+//       }
+//     }
+//   } catch (error) {
+//     console.error("On-the-way scheduler error:", error);
+//   }
+// };
+
+// =========================================================
+// AUTOMATIC BOOKING LIFECYCLE
+// TEMPORARY UNTIL PROFESSIONAL DASHBOARD IS BUILT
+// =========================================================
+
+const updateBookingStatuses = async () => {
   try {
     const orders = await Order.find({}).lean();
 
@@ -362,7 +520,7 @@ const updateOnTheWayBookings = async () => {
 
     for (const order of orders) {
       for (const orderArray of order.order_data || []) {
-        if (!Array.isArray(orderArray) || !orderArray.length) {
+        if (!Array.isArray(orderArray) || orderArray.length <= 1) {
           continue;
         }
 
@@ -372,78 +530,163 @@ const updateOnTheWayBookings = async () => {
           continue;
         }
 
-        if (bookingHeader.status !== "assigned") {
-          continue;
+        let orderChanged = false;
+
+        // =================================================
+        // PROCESS EVERY SERVICE
+        // =================================================
+
+        for (let index = 1; index < orderArray.length; index++) {
+          const serviceItem = orderArray[index];
+
+          if (!serviceItem?.booking) {
+            continue;
+          }
+
+          const booking = serviceItem.booking;
+
+          // -----------------------------------------------
+          // IMPORTANT:
+          // Status belongs to THIS service.
+          // -----------------------------------------------
+
+          const currentStatus = booking.status || bookingHeader.status || "assigned";
+
+          // Cancelled and completed
+          // services are finished.
+          if (["cancelled", "completed"].includes(currentStatus)) {
+            continue;
+          }
+
+          // Service must have a professional
+          // before lifecycle starts.
+          if (!booking.professionalId) {
+            continue;
+          }
+
+          // =================================================
+          // BOOKING TIME
+          // =================================================
+
+          const bookingDate = booking.date || bookingHeader.Order_date;
+
+          const bookingTime = booking.time;
+
+          const duration = Number(booking.duration) || 60;
+
+          const bookingStart = parseDateTime(bookingDate, bookingTime);
+
+          if (!bookingStart) {
+            continue;
+          }
+
+          // =================================================
+          // LIFECYCLE TIMES
+          // =================================================
+
+          const oneHourBefore = new Date(bookingStart.getTime() - 60 * 60 * 1000);
+
+          // 5 minutes after scheduled time
+          const serviceStart = new Date(bookingStart.getTime() + 5 * 60 * 1000);
+
+          const bookingEnd = new Date(bookingStart.getTime() + duration * 60 * 1000);
+
+          // =================================================
+          // DETERMINE NEXT STATUS
+          // =================================================
+
+          let nextStatus = null;
+          let timestampField = null;
+
+          /*
+           * Always check the latest stage first.
+           *
+           * This means:
+           *
+           * 2 PM booking
+           * Server checked at 11 PM
+           * → completed
+           *
+           * It will NOT get stuck on "on_the_way".
+           */
+
+          if (now >= bookingEnd) {
+            nextStatus = "completed";
+
+            timestampField = "completedAt";
+          } else if (now >= serviceStart) {
+            nextStatus = "in_progress";
+
+            timestampField = "startedAt";
+          } else if (now >= bookingStart) {
+            nextStatus = "arrived";
+
+            timestampField = "arrivedAt";
+          } else if (now >= oneHourBefore) {
+            nextStatus = "on_the_way";
+
+            timestampField = "onTheWayAt";
+          }
+
+          // Nothing to change yet.
+          if (!nextStatus) {
+            continue;
+          }
+
+          // Already at correct stage.
+          if (currentStatus === nextStatus) {
+            continue;
+          }
+
+          // =================================================
+          // UPDATE THIS SERVICE ONLY
+          // =================================================
+
+          booking.status = nextStatus;
+
+          booking[timestampField] = now;
+
+          orderChanged = true;
+
+          console.log(`Booking ${bookingHeader.id}, service ${index - 1}: ${currentStatus} → ${nextStatus}`);
         }
 
-        const firstService = orderArray[1];
+        // =================================================
+        // SAVE ENTIRE ORDER ARRAY ONCE
+        // =================================================
 
-        if (!firstService?.booking) {
-          continue;
-        }
+        if (orderChanged) {
+          const updatedOrderData = order.order_data.map((existingArray) => {
+            if (Array.isArray(existingArray) && existingArray.some((item) => item && item.id === bookingHeader.id)) {
+              return orderArray;
+            }
 
-        const bookingDate = firstService.booking.date || bookingHeader.Order_date;
+            return existingArray;
+          });
 
-        const bookingTime = firstService.booking.time;
+          await Order.updateOne(
+            {
+              email: order.email,
 
-        const bookingStart = parseDateTime(bookingDate, bookingTime);
-
-        if (!bookingStart) {
-          continue;
-        }
-
-        const oneHourBefore = new Date(bookingStart.getTime() - 60 * 60 * 1000);
-
-        if (now < oneHourBefore) {
-          continue;
-        }
-
-        // Don't move bookings that are already
-        // past their scheduled time without
-        // being assigned correctly.
-        if (now >= bookingStart) {
-          continue;
-        }
-
-        const result = await Order.updateOne(
-          {
-            email: order.email,
-
-            order_data: {
-              $elemMatch: {
+              order_data: {
                 $elemMatch: {
-                  id: bookingHeader.id,
-                },
-              },
-            },
-          },
-          {
-            $set: {
-              "order_data.$[booking].0.status": "on_the_way",
-
-              "order_data.$[booking].0.onTheWayAt": now,
-            },
-          },
-          {
-            arrayFilters: [
-              {
-                booking: {
                   $elemMatch: {
                     id: bookingHeader.id,
                   },
                 },
               },
-            ],
-          },
-        );
-
-        if (result.modifiedCount) {
-          console.log(`Booking ${bookingHeader.id} is now on the way`);
+            },
+            {
+              $set: {
+                order_data: updatedOrderData,
+              },
+            },
+          );
         }
       }
     }
   } catch (error) {
-    console.error("On-the-way scheduler error:", error);
+    console.error("Booking lifecycle status error:", error);
   }
 };
 
@@ -453,7 +696,7 @@ const updateOnTheWayBookings = async () => {
 
 const runBookingLifecycle = async () => {
   await assignPendingBookings();
-  await updateOnTheWayBookings();
+  await updateBookingStatuses();
 };
 
 // =========================================================

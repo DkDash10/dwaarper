@@ -1,18 +1,7 @@
 import React from "react";
 import { LuArrowUpRight } from "react-icons/lu";
 
-export default function FloatingServiceCard({
-  icon: Icon,
-  title,
-  subtitle,
-  className,
-  delay = 0,
-  rotate = "",
-  id,
-  activeService,
-  onHover,
-  onLeave,
-}) {
+export default function FloatingServiceCard({ icon: Icon, title, subtitle, className, delay = 0, rotate = "", id, activeService, onHover, onLeave }) {
   const isActive = activeService === id;
 
   return (
@@ -42,10 +31,7 @@ export default function FloatingServiceCard({
               <Icon size={28} className="text-white" />
             </div>
 
-            <LuArrowUpRight
-              className="text-white/40 transition group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1"
-              size={20}
-            />
+            <LuArrowUpRight className="text-white/40 transition group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
           </div>
 
           <h3 className="mt-7 text-xl font-semibold text-white">{title}</h3>

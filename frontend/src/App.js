@@ -39,7 +39,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/mybookings" element={<MyBookings />} />
-              <Route path="/mybookings/:orderId" element={<BookingDetails />} />
+              <Route path="/mybookings/:orderId/:serviceIndex" element={<BookingDetails />} />
             </Route>
 
             {/* Other public pages */}

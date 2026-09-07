@@ -44,6 +44,7 @@ router.post("/create-checkout-session", async (req, res) => {
     const bookingHeader = {
       Order_date: order_date,
       id: orderIdString,
+      orderCreatedAt: new Date(),
 
       status: "pending",
       paymentStatus: "pending",
@@ -236,6 +237,7 @@ router.post("/verify-payment", async (req, res) => {
     }
 
     const orderId = session.metadata?.order_id;
+
     const email = session.metadata?.email;
 
     if (!orderId || !email) {
@@ -268,38 +270,108 @@ router.post("/verify-payment", async (req, res) => {
     }
 
     // -----------------------------------------------------
+    // IDEMPOTENCY CHECK
+    //
+    // If Stripe verification is called twice for the same
+    // session, don't try to process the payment again.
+    // -----------------------------------------------------
+
+    const bookingHeader = bookingArray[0];
+
+    if (bookingHeader?.paymentStatus === "paid" && bookingHeader?.stripeSessionId === sessionId) {
+      console.log(`Payment already verified for booking ${orderId}`);
+
+      return res.json({
+        success: true,
+        status: bookingHeader.status || "assigned",
+        bookingId: orderId,
+        message: "Payment was already verified.",
+      });
+    }
+
+    // -----------------------------------------------------
     // CHECK PROFESSIONAL SELECTION
     // -----------------------------------------------------
 
     const serviceItems = bookingArray.slice(1);
 
-    const hasProfessional = serviceItems.length > 0 && serviceItems.every((item) => item?.booking?.professionalId);
+    if (!serviceItems.length) {
+      return res.status(400).json({
+        success: false,
+        error: "No services found in booking",
+      });
+    }
 
-    const newStatus = hasProfessional ? "assigned" : "assigning";
+    const allServicesAssigned = serviceItems.every((item) => item?.booking?.professionalId);
+
+    const newStatus = allServicesAssigned ? "assigned" : "assigning";
 
     const now = new Date();
 
     // -----------------------------------------------------
-    // ATOMIC UPDATE
+    // CREATE UPDATED BOOKING ARRAY
+    //
+    // Each service gets its own status.
     // -----------------------------------------------------
 
-    const updateFields = {
-      "order_data.$[booking].0.status": newStatus,
+    const updatedBookingArray = bookingArray.map((item, index) => {
+      // ---------------------------------------------
+      // BOOKING HEADER
+      // ---------------------------------------------
 
-      "order_data.$[booking].0.paymentStatus": "paid",
+      if (index === 0) {
+        return {
+          ...item,
 
-      "order_data.$[booking].0.stripeSessionId": sessionId,
+          status: newStatus,
 
-      "order_data.$[booking].0.confirmedAt": now,
-    };
+          paymentStatus: "paid",
 
-    if (hasProfessional) {
-      updateFields["order_data.$[booking].0.professionalAssignedAt"] = now;
-    } else {
-      updateFields["order_data.$[booking].0.assigningAt"] = now;
-    }
+          stripeSessionId: sessionId,
 
-    const updateResult = await Order.updateOne(
+          confirmedAt: now,
+
+          ...(allServicesAssigned
+            ? {
+                professionalAssignedAt: now,
+              }
+            : {
+                assigningAt: now,
+              }),
+        };
+      }
+
+      // ---------------------------------------------
+      // SERVICE
+      // ---------------------------------------------
+
+      if (!item || !item.booking) {
+        return item;
+      }
+
+      const professionalId = item.booking?.professionalId;
+
+      return {
+        ...item,
+
+        booking: {
+          ...item.booking,
+
+          status: professionalId ? "assigned" : "assigning",
+        },
+      };
+    });
+
+    // -----------------------------------------------------
+    // IMPORTANT:
+    //
+    // Use atomic findOneAndUpdate instead of .save().
+    //
+    // This avoids Mongoose VersionError when the lifecycle
+    // worker modifies the same order at the same time.
+    // -----------------------------------------------------
+
+    const updateResult = await Order.findOneAndUpdate(
       {
         email,
 
@@ -312,7 +384,9 @@ router.post("/verify-payment", async (req, res) => {
         },
       },
       {
-        $set: updateFields,
+        $set: {
+          "order_data.$[booking]": updatedBookingArray,
+        },
       },
       {
         arrayFilters: [
@@ -324,21 +398,30 @@ router.post("/verify-payment", async (req, res) => {
             },
           },
         ],
+
+        new: true,
       },
     );
 
-    if (!updateResult.matchedCount) {
+    if (!updateResult) {
       return res.status(404).json({
         success: false,
         error: "Booking could not be updated",
       });
     }
 
+    console.log(`Payment verified successfully for booking ${orderId}`);
+
+    // -----------------------------------------------------
+    // RESPONSE
+    // -----------------------------------------------------
+
     return res.json({
       success: true,
       status: newStatus,
+      bookingId: orderId,
 
-      message: hasProfessional ? "Payment verified and professional assigned." : "Payment verified. Finding a professional.",
+      message: allServicesAssigned ? "Payment verified and professionals assigned." : "Payment verified. Finding professionals.",
     });
   } catch (error) {
     console.error("Error verifying payment:", error);
