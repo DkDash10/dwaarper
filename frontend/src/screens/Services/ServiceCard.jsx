@@ -66,12 +66,29 @@ export default function ServiceCard({ service, onLogin, onBook }) {
     });
   };
 
-  const handleRemoveFromCart = () => {
-    dispatch({
+  const handleRemoveFromCart = async () => {
+    const cartItem = cartData.find((item) => item.id === service._id && item.service === selectedOption);
+
+    if (!cartItem?._id) {
+      toast.error("Unable to find this item in your cart.", {
+        autoClose: 1500,
+        hideProgressBar: true,
+      });
+      return;
+    }
+
+    const result = await dispatch({
       type: "REMOVE",
-      id: service._id,
-      service: selectedOption,
+      itemId: cartItem._id,
     });
+
+    if (!result?.success) {
+      toast.error(result?.message || "Unable to remove service.", {
+        autoClose: 1800,
+        hideProgressBar: true,
+      });
+      return;
+    }
 
     toast.info(`${service.name} removed from cart`, {
       autoClose: 1200,
@@ -81,53 +98,21 @@ export default function ServiceCard({ service, onLogin, onBook }) {
 
   return (
     <article
-      className="
-        group
-        overflow-hidden
-        rounded-3xl
-        border
-        border-white/[0.07]
-        bg-white/[0.025]
-        transition-all
-        duration-300
-        hover:-translate-y-1
-        hover:border-white/[0.13]
-        hover:bg-white/[0.04]
-      "
+      className="group overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.025] transition-all duration-300 hover:-translate-y-1 hover:border-white/[0.13] hover:bg-white/[0.04]"
     >
       {/* Image */}
       <div
-        className="
-          relative
-          aspect-[16/10]
-          overflow-hidden
-          bg-white/[0.03]
-        "
+        className="relative aspect-[16/10] overflow-hidden bg-white/[0.03]"
       >
         <img
           src={service.img}
           alt={service.name}
           loading="lazy"
-          className="
-            h-full
-            w-full
-            object-cover
-            transition-transform
-            duration-700
-            group-hover:scale-[1.04]
-          "
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
         />
 
         <div
-          className="
-            pointer-events-none
-            absolute
-            inset-0
-            bg-gradient-to-t
-            from-black/60
-            via-transparent
-            to-transparent
-          "
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
         />
       </div>
 
@@ -135,41 +120,21 @@ export default function ServiceCard({ service, onLogin, onBook }) {
       <div className="flex flex-col p-6">
         {/* Category */}
         <p
-          className="
-            text-[10px]
-            font-medium
-            uppercase
-            tracking-[0.18em]
-            text-white/30
-          "
+          className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/30"
         >
           {service.CategoryName}
         </p>
 
         {/* Name */}
         <h3
-          className="
-            mt-2
-            line-clamp-1
-            text-lg
-            font-semibold
-            tracking-tight
-            text-white
-          "
+          className="mt-2 line-clamp-1 text-lg font-semibold tracking-tight text-white"
         >
           {service.name}
         </h3>
 
         {/* Description */}
         <p
-          className="
-            mt-2
-            line-clamp-2
-            min-h-[40px]
-            text-xs
-            leading-5
-            text-white/40
-          "
+          className="mt-2 line-clamp-2 min-h-[40px] text-xs leading-5 text-white/40"
         >
           {service.description}
         </p>
@@ -180,21 +145,7 @@ export default function ServiceCard({ service, onLogin, onBook }) {
             <select
               value={selectedOption}
               onChange={(event) => setSelectedOption(event.target.value)}
-              className="
-                w-full
-                appearance-none
-                rounded-xl
-                bg-zinc-900
-                px-4
-                py-3
-                pr-10
-                text-xs
-                text-white
-                transition
-                focus:outline-none
-                focus:ring-1
-                focus:ring-zinc-600
-              "
+              className="w-full appearance-none rounded-xl bg-zinc-900 px-4 py-3 pr-10 text-xs text-white transition focus:outline-none focus:ring-1 focus:ring-zinc-600"
             >
               {optionNames.map((option) => {
                 const price = Number(String(options[option]).replace(/,/g, "")) || 0;
@@ -209,14 +160,7 @@ export default function ServiceCard({ service, onLogin, onBook }) {
 
             <LuChevronDown
               size={15}
-              className="
-                pointer-events-none
-                absolute
-                right-4
-                top-1/2
-                -translate-y-1/2
-                text-white/35
-              "
+              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/35"
             />
           </div>
         )}
@@ -225,14 +169,7 @@ export default function ServiceCard({ service, onLogin, onBook }) {
         {optionNames.length > 0 && (
           <div className="relative mt-6">
             <p
-              className="
-        mb-2
-        text-[10px]
-        font-medium
-        uppercase
-        tracking-[0.16em]
-        text-white/30
-      "
+              className="mb-2 text-[10px] font-medium uppercase tracking-[0.16em] text-white/30"
             >
               Choose an option
             </p>
@@ -241,67 +178,23 @@ export default function ServiceCard({ service, onLogin, onBook }) {
             <button
               type="button"
               onClick={() => setIsOptionOpen((prev) => !prev)}
-              className="
-        flex
-        w-full
-        items-center
-        justify-between
-        gap-3
-        rounded-xl
-        bg-zinc-900
-        px-4
-        py-3
-        text-left
-        text-sm
-        text-white
-        transition
-        hover:bg-zinc-800
-        focus:outline-none
-        focus:ring-1
-        focus:ring-zinc-600
-      "
+              className="flex w-full items-center justify-between gap-3 rounded-xl bg-zinc-900 px-4 py-3 text-left text-sm text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-600"
             >
               <span className="truncate">{selectedOption}</span>
 
               <LuChevronDown
                 size={15}
-                className={`
-          shrink-0
-          text-white/35
-          transition-transform
-          duration-200
-          ${isOptionOpen ? "rotate-180" : ""}
-        `}
+                className={`shrink-0 text-white/35 transition-transform duration-200 ${isOptionOpen ? "rotate-180" : ""}`}
               />
             </button>
 
             {/* Dropdown */}
             {isOptionOpen && (
               <div
-                className="
-          absolute
-          left-0
-          right-0
-         bottom-full
-          z-50
-          mt-2
-          p-1
-          overflow-hidden
-          rounded-2xl
-          border-white/[0.08]
-          bg-zinc-950
-          shadow-2xl
-        "
+                className="absolute left-0 right-0 bottom-full z-50 mt-2 p-1 overflow-hidden rounded-2xl border-white/[0.08] bg-zinc-950 shadow-2xl"
               >
                 <div
-                  className="
-    service-options-scroll
-    max-h-52
-    overflow-y-auto
-    p-1
-    [scrollbar-width:thin]
-    [scrollbar-color:rgba(255,255,255,0.2)_transparent]
-  "
+                  className="service-options-scroll max-h-52 overflow-y-auto p-1 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]"
                 >
                   {optionNames.map((option) => {
                     const price = Number(String(options[option]).replace(/,/g, "")) || 0;
@@ -316,39 +209,16 @@ export default function ServiceCard({ service, onLogin, onBook }) {
                           setSelectedOption(option);
                           setIsOptionOpen(false);
                         }}
-                        className={`
-                  flex
-                  w-full
-                  items-center
-                  justify-between
-                  gap-4
-                  rounded-xl
-                  px-3
-                  py-3
-                  my-1
-                  text-left
-                  transition-colors
-                  duration-150
-                  ${isSelected ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}
-                `}
+                        className={`flex w-full items-center justify-between gap-4 rounded-xl px-3 py-3 my-1 text-left transition-colors duration-150 ${isSelected ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}`}
                       >
                         <span
-                          className={`
-                    min-w-0
-                    truncate
-                    text-sm
-                    ${isSelected ? "font-medium text-white" : "text-white/65"}
-                  `}
+                          className={`min-w-0 truncate text-sm ${isSelected ? "font-medium text-white" : "text-white/65"}`}
                         >
                           {option}
                         </span>
 
                         <span
-                          className="
-                    shrink-0
-                    text-xs
-                    text-white/40
-                  "
+                          className="shrink-0 text-xs text-white/40"
                         >
                           ₹{price.toLocaleString("en-IN")}
                         </span>
@@ -363,22 +233,11 @@ export default function ServiceCard({ service, onLogin, onBook }) {
 
         {/* Bottom section */}
         <div
-          className="
-            mt-6
-            flex
-            items-end
-            justify-between
-            gap-4
-          "
+          className="mt-6 flex items-end justify-between gap-4"
         >
           <div>
             <p
-              className="
-                text-[10px]
-                uppercase
-                tracking-[0.16em]
-                text-white/25
-              "
+              className="text-[10px] uppercase tracking-[0.16em] text-white/25"
             >
               Starting at
             </p>
@@ -389,20 +248,7 @@ export default function ServiceCard({ service, onLogin, onBook }) {
           <button
             type="button"
             onClick={isServiceInCart ? handleRemoveFromCart : handleAddToCart}
-            className={`
-  inline-flex
-  shrink-0
-  items-center
-  gap-2
-  rounded-full
-  px-5
-  py-3
-  text-xs
-  font-medium
-  transition-all
-  duration-300
-  ${isServiceInCart ? "bg-red-500/10 text-red-400 hover:bg-red-500/15" : "bg-white text-black hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]"}
-`}
+            className={`inline-flex shrink-0 items-center gap-2 rounded-full px-5 py-3 text-xs font-medium transition-all duration-300 ${isServiceInCart ? "bg-red-500/10 text-red-400 hover:bg-red-500/15" : "bg-white text-black hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]"}`}
           >
             {isServiceInCart ? <LuTrash2 size={14} /> : <LuShoppingCart size={14} />}
 

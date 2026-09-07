@@ -155,19 +155,7 @@ export default function PaymentCard() {
       {/* Cursor-follow glow */}
       <div
         ref={glowRef}
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-1/2
-          h-48
-          w-48
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-cyan-500/10
-          blur-[90px]
-        "
+        className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[90px]"
       />
 
       <div className="relative z-10 flex h-full flex-col">
@@ -181,15 +169,7 @@ export default function PaymentCard() {
 
         <div
           ref={paymentRef}
-          className="
-            relative
-            mt-7
-            rounded-3xl
-            border
-            border-white/10
-            bg-[#151515]
-            p-5
-          "
+          className="relative mt-7 rounded-3xl border border-white/10 bg-[#151515] p-5"
         >
           {/* Top row */}
 
@@ -198,15 +178,7 @@ export default function PaymentCard() {
 
             <div
               ref={shieldRef}
-              className="
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-                bg-cyan-500/10
-              "
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-cyan-500/10"
             >
               <LuShieldCheck size={18} className="text-cyan-300" />
             </div>
@@ -223,17 +195,7 @@ export default function PaymentCard() {
 
             <div
               ref={protectedRef}
-              className="
-                rounded-full
-                border
-                border-green-400/20
-                bg-green-500/10
-                px-3
-                py-1
-                text-[10px]
-                font-medium
-                text-green-300
-              "
+              className="rounded-full border border-green-400/20 bg-green-500/10 px-3 py-1 text-[10px] font-medium text-green-300"
             >
               Protected
             </div>

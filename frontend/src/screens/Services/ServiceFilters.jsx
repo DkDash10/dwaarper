@@ -49,24 +49,14 @@ export default function ServiceFilters({ search, setSearch, categories, activeCa
 
   return (
     <div
-      className="
-        relative
-        z-10
-      "
+      className="relative z-10"
     >
       <div className="flex flex-col gap-4">
         {/* Search */}
         <div className="relative">
           <LuSearch
             size={17}
-            className="
-              pointer-events-none
-              absolute
-              left-4
-              top-1/2
-              -translate-y-1/2
-              text-white/30
-            "
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/30"
           />
 
           <input
@@ -82,22 +72,7 @@ export default function ServiceFilters({ search, setSearch, categories, activeCa
               type="button"
               onClick={() => setSearch("")}
               aria-label="Clear search"
-              className="
-                absolute
-                right-3
-                top-1/2
-                flex
-                h-8
-                w-8
-                -translate-y-1/2
-                items-center
-                justify-center
-                rounded-full
-                text-white/35
-                transition
-                hover:bg-white/[0.06]
-                hover:text-white
-              "
+              className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-white/35 transition hover:bg-white/[0.06] hover:text-white"
             >
               <LuX size={15} />
             </button>
@@ -111,20 +86,7 @@ export default function ServiceFilters({ search, setSearch, categories, activeCa
             <button
               type="button"
               onClick={() => setActiveCategory("All")}
-              className={`
-                rounded-full
-                px-4
-                py-2
-                text-xs
-                font-medium
-                transition-all
-                duration-300
-                ${
-                  activeCategory === "All"
-                    ? "bg-white text-black"
-                    : "border border-white/10 bg-white/[0.03] text-white/50 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                }
-              `}
+              className={`rounded-full px-4 py-2 text-xs font-medium transition-all duration-300 ${ activeCategory === "All" ? "bg-white text-black" : "border border-white/10 bg-white/[0.03] text-white/50 hover:border-white/20 hover:bg-white/[0.06] hover:text-white" }`}
             >
               All Services
             </button>
@@ -138,16 +100,7 @@ export default function ServiceFilters({ search, setSearch, categories, activeCa
                   key={category.CategoryName}
                   type="button"
                   onClick={() => setActiveCategory(category.CategoryName)}
-                  className={`
-                    rounded-full
-                    px-4
-                    py-2
-                    text-xs
-                    font-medium
-                    transition-all
-                    duration-300
-                    ${isActive ? "bg-white text-black" : "border border-white/10 bg-white/[0.03] text-white/50 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"}
-                  `}
+                  className={`rounded-full px-4 py-2 text-xs font-medium transition-all duration-300 ${isActive ? "bg-white text-black" : "border border-white/10 bg-white/[0.03] text-white/50 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"}`}
                 >
                   {category.CategoryName}
                 </button>

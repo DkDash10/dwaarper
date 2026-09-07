@@ -59,22 +59,7 @@ export default function PhoneScreen({ activeService }) {
             return (
               <div
                 key={index}
-                className={`
-rounded-3xl
-border
-backdrop-blur-xl
-transition-all
-duration-500
-p-3
-${
-  isActive
-    ? "border-cyan-400/40 bg-cyan-500/15 shadow-[0_0_40px_rgba(34,211,238,.25)] scale-[1.03]"
-    : "border-white/10"
-}
-
-bg-gradient-to-br
-${service.color}
-`}
+                className={`rounded-3xl border backdrop-blur-xl transition-all duration-500 p-3 ${ isActive ? "border-cyan-400/40 bg-cyan-500/15 shadow-[0_0_40px_rgba(34,211,238,.25)] scale-[1.03]" : "border-white/10" } bg-gradient-to-br ${service.color}`}
               >
                 <div className="flex items-start justify-between">
                   <div>

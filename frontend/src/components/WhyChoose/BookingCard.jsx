@@ -250,19 +250,7 @@ export default function BookingCard() {
 
       <div
         ref={glowRef}
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-1/2
-          h-48
-          w-48
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-cyan-500/10
-          blur-[90px]
-        "
+        className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[90px]"
       />
 
       <div className="relative z-10 flex h-full flex-col">
@@ -301,16 +289,7 @@ export default function BookingCard() {
                   ref={(el) => {
                     slotsRef.current[index] = el;
                   }}
-                  className={`
-                      flex
-                      h-8
-                      items-center
-                      justify-center
-                      rounded-lg
-                      border
-                      text-[10px]
-                      ${index === 1 ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-300" : "border-white/10 bg-white/[0.02] text-white/50"}
-                    `}
+                  className={`flex h-8 items-center justify-center rounded-lg border text-[10px] ${index === 1 ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-300" : "border-white/10 bg-white/[0.02] text-white/50"}`}
                 >
                   {time}
                 </div>
@@ -322,19 +301,7 @@ export default function BookingCard() {
 
           <div
             ref={buttonRef}
-            className="
-    mt-5
-    flex
-    h-9
-    items-center
-    justify-center
-    rounded-full
-    bg-white
-    px-4
-    text-[10px]
-    font-semibold
-    text-black
-  "
+            className="mt-5 flex h-9 items-center justify-center rounded-full bg-white px-4 text-[10px] font-semibold text-black"
           >
             Confirm Booking
           </div>
@@ -354,22 +321,7 @@ export default function BookingCard() {
 
         <div
           ref={successRef}
-          className="
-            pointer-events-none
-            absolute
-            inset-x-7
-            bottom-7
-            top-[100px]
-            flex
-            flex-col
-            items-center
-            justify-center
-            rounded-2xl
-            border
-            border-cyan-400/20
-            bg-[#151515]/95
-            backdrop-blur-md
-          "
+          className="pointer-events-none absolute inset-x-7 bottom-7 top-[100px] flex flex-col items-center justify-center rounded-2xl border border-cyan-400/20 bg-[#151515]/95 backdrop-blur-md"
         >
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-cyan-400/10">
             <LuCheck size={28} className="text-cyan-300" />

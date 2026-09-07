@@ -14,41 +14,14 @@ const NotFound = () => {
       <main className="relative flex flex-1 items-center justify-center overflow-hidden px-5 py-24 sm:px-6 sm:py-32">
         {/* Background glow */}
         <div
-          className="
-            pointer-events-none
-            absolute
-            left-1/2
-            top-1/2
-            h-[320px]
-            w-[320px]
-            -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            bg-white/[0.025]
-            blur-[100px]
-            sm:h-[450px]
-            sm:w-[450px]
-          "
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.025] blur-[100px] sm:h-[450px] sm:w-[450px]"
         />
 
         <div className="relative z-10 flex w-full max-w-xl flex-col items-center text-center">
 
           {/* 404 icon */}
           <div
-            className="
-              flex
-              h-24
-              w-24
-              items-center
-              justify-center
-              rounded-3xl
-              border
-              border-white/[0.08]
-              bg-white/[0.035]
-              shadow-[0_20px_60px_rgba(0,0,0,0.35)]
-              sm:h-28
-              sm:w-28
-            "
+            className="flex h-24 w-24 items-center justify-center rounded-3xl border border-white/[0.08] bg-white/[0.035] shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:h-28 sm:w-28"
           >
             <TbError404
               className="h-14 w-14 text-white/70 sm:h-16 sm:w-16"
@@ -74,25 +47,7 @@ const NotFound = () => {
           {/* CTA */}
           <Link
             to="/"
-            className="
-              group
-              mt-8
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              bg-white
-              px-6
-              py-3.5
-              text-sm
-              font-medium
-              text-black
-              transition-all
-              duration-300
-              hover:-translate-y-0.5
-              hover:bg-white/90
-              hover:shadow-[0_15px_40px_rgba(255,255,255,0.10)]
-            "
+            className="group mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-[0_15px_40px_rgba(255,255,255,0.10)]"
           >
             <LuArrowLeft
               size={15}

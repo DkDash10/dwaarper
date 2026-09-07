@@ -207,20 +207,7 @@ export default function Services() {
               {Array.from({ length: 4 }).map((_, index) => (
                 <div
                   key={index}
-                  className="
-                    w-[300px]
-                    min-w-[300px]
-                    shrink-0
-                    overflow-hidden
-                    rounded-3xl
-                    border
-                    border-white/[0.06]
-                    bg-white/[0.02]
-                    sm:w-[340px]
-                    sm:min-w-[340px]
-                    lg:w-[360px]
-                    lg:min-w-[360px]
-                  "
+                  className="w-[300px] min-w-[300px] shrink-0 overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.02] sm:w-[340px] sm:min-w-[340px] lg:w-[360px] lg:min-w-[360px]"
                 >
                   <div className="aspect-[16/10] animate-pulse bg-white/[0.04]" />
 
@@ -244,19 +231,7 @@ export default function Services() {
               <button
                 type="button"
                 onClick={loadData}
-                className="
-                  mt-5
-                  rounded-full
-                  bg-white
-                  px-6
-                  py-3
-                  text-sm
-                  font-medium
-                  text-black
-                  transition-all
-                  duration-300
-                  hover:-translate-y-0.5
-                "
+                className="mt-5 rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:-translate-y-0.5"
               >
                 Try Again
               </button>
@@ -292,28 +267,12 @@ export default function Services() {
                     <div className="relative">
                       <div
                         id={rowId}
-                        className="
-                          flex
-                          gap-6
-                          overflow-x-auto
-                          scroll-smooth
-                          pb-4
-                          pr-2
-                          [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden
-                        "
+                        className="flex gap-6 overflow-x-auto scroll-smooth pb-4 pr-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                       >
                         {services.map((service) => (
                           <div
                             key={service._id || `${service.CategoryName}-${service.name}`}
-                            className="
-                              w-[300px]
-                              min-w-[300px]
-                              shrink-0
-                              sm:w-[340px]
-                              sm:min-w-[340px]
-                              lg:w-[360px]
-                              lg:min-w-[360px]
-                            "
+                            className="w-[300px] min-w-[300px] shrink-0 sm:w-[340px] sm:min-w-[340px] lg:w-[360px] lg:min-w-[360px]"
                           >
                             <ServiceCard
                               service={service}
@@ -337,29 +296,7 @@ export default function Services() {
                           type="button"
                           onClick={() => scrollServices(category, "left")}
                           aria-label={`Previous ${category} services`}
-                          className="
-      absolute
-      left-2
-      top-1/2
-      z-10
-      flex
-      h-10
-      w-10
-      -translate-y-1/2
-      items-center
-      justify-center
-      rounded-full
-      border
-      border-white/10
-      bg-black/80
-      text-white/70
-      backdrop-blur-md
-      transition-colors
-      duration-200
-      hover:border-white/20
-      hover:bg-black
-      hover:text-white
-    "
+                          className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/80 text-white/70 backdrop-blur-md transition-colors duration-200 hover:border-white/20 hover:bg-black hover:text-white"
                         >
                           ←
                         </button>
@@ -370,29 +307,7 @@ export default function Services() {
                           type="button"
                           onClick={() => scrollServices(category, "right")}
                           aria-label={`Next ${category} services`}
-                          className="
-      absolute
-      right-2
-      top-1/2
-      z-10
-      flex
-      h-10
-      w-10
-      -translate-y-1/2
-      items-center
-      justify-center
-      rounded-full
-      border
-      border-white/10
-      bg-black/80
-      text-white/70
-      backdrop-blur-md
-      transition-colors
-      duration-200
-      hover:border-white/20
-      hover:bg-black
-      hover:text-white
-    "
+                          className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/80 text-white/70 backdrop-blur-md transition-colors duration-200 hover:border-white/20 hover:bg-black hover:text-white"
                         >
                           →
                         </button>
@@ -413,23 +328,7 @@ export default function Services() {
                   setSearch("");
                   setActiveCategory("All");
                 }}
-                className="
-                  mt-5
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-white/[0.03]
-                  px-6
-                  py-3
-                  text-sm
-                  font-medium
-                  text-white/75
-                  transition-all
-                  duration-300
-                  hover:border-white/20
-                  hover:bg-white/[0.06]
-                  hover:text-white
-                "
+                className="mt-5 rounded-full border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/75 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
               >
                 Clear Filters
               </button>

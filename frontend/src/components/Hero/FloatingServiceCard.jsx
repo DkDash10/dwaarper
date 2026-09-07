@@ -35,11 +35,7 @@ export default function FloatingServiceCard({
         onMouseLeave={onLeave}
       >
         <div
-          className={`group cursor-pointer hover:scale-105 w-60 rounded-[30px] border border-white/10 ${
-            isActive
-              ? "bg-cyan-500/10 border-cyan-400/40 shadow-[0_0_50px_rgba(34,211,238,.25)]"
-              : "bg-white/[0.06] border-white/10"
-          } backdrop-blur-3xl p-6 transition-all duration-500 shadow-[0_30px_80px_rgba(0,0,0,.35)] hover:-translate-y-5 hover:shadow-[0_40px_120px_rgba(34,211,238,.20)] hover:rotate-0 hover:bg-white/[0.09] hover:border-white/20 ${rotate}`}
+          className={`group cursor-pointer hover:scale-105 w-60 rounded-[30px] border border-white/10 ${isActive ? "bg-cyan-500/10 border-cyan-400/40 shadow-[0_0_50px_rgba(34,211,238,.25)]" : "bg-white/[0.06] border-white/10"} backdrop-blur-3xl p-6 transition-all duration-500 shadow-[0_30px_80px_rgba(0,0,0,.35)] hover:-translate-y-5 hover:shadow-[0_40px_120px_rgba(34,211,238,.20)] hover:rotate-0 hover:bg-white/[0.09] hover:border-white/20 ${rotate}`}
         >
           <div className="flex items-start justify-between">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">

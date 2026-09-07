@@ -148,27 +148,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={handleGoogleSignup}
-            className="
-  w-full
-  rounded-full
-  border
-  border-white/10
-  bg-transparent
-  px-6
-  py-3
-  text-sm
-  font-medium
-  text-white/75
-  flex
-  items-center
-  justify-center
-  gap-3
-  transition-all
-  duration-300
-  hover:border-white/20
-  hover:bg-white/[0.04]
-  hover:text-white
-"
+            className="w-full rounded-full border border-white/10 bg-transparent px-6 py-3 text-sm font-medium text-white/75 flex items-center justify-center gap-3 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:text-white"
           >
             <FcGoogle size={20} />
             Continue with Google
@@ -212,26 +192,7 @@ export default function Signup() {
             <button
               type="submit"
               disabled={loading}
-              className="
-    w-full
-    rounded-full
-    bg-white
-    px-6
-    py-3
-    text-sm
-    font-medium
-    text-black
-    flex
-    items-center
-    justify-center
-    gap-2
-    transition-all
-    duration-300
-    hover:-translate-y-0.5
-    hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]
-    disabled:cursor-not-allowed
-    disabled:opacity-50
-  "
+              className="w-full rounded-full bg-white px-6 py-3 text-sm font-medium text-black flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(255,255,255,.12)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? "Creating account..." : "Create account"}
             </button>

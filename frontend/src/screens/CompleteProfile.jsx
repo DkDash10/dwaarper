@@ -215,15 +215,7 @@ export default function CompleteProfile() {
                 <button
                   type="button"
                   onClick={detectLocation}
-                  className="
-    absolute
-    right-4
-    top-1/2
-    -translate-y-1/2
-    text-cyan-300
-    transition
-    hover:text-cyan-200
-  "
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-cyan-300 transition hover:text-cyan-200"
                 >
                   <IoLocationOutline size={22} />
                 </button>
@@ -255,26 +247,7 @@ export default function CompleteProfile() {
             <button
               type="submit"
               disabled={loading}
-              className="
-    w-full
-    rounded-full
-    bg-white
-    px-6
-    py-3
-    text-sm
-    font-medium
-    text-black
-    flex
-    items-center
-    justify-center
-    gap-2
-    transition-all
-    duration-300
-    hover:-translate-y-0.5
-    hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]
-    disabled:cursor-not-allowed
-    disabled:opacity-50
-  "
+              className="w-full rounded-full bg-white px-6 py-3 text-sm font-medium text-black flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(255,255,255,.12)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? "Saving..." : "Complete setup"}
             </button>

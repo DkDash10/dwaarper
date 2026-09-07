@@ -278,10 +278,7 @@ export default function SearchScreen({ active }) {
           return (
             <div
               key={service.title}
-              className={`group rounded-2xl border p-3 transition-all duration-500
-                      ${
-                        activeCard === index ? "border-cyan-400/40 bg-white/[0.05] scale-[1.01]" : "border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-white/[0.05]"
-                      }`}
+              className={`group rounded-2xl border p-3 transition-all duration-500 ${activeCard === index ? "border-cyan-400/40 bg-white/[0.05] scale-[1.01]" : "border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-white/[0.05]"}`}
             >
               <div className="flex items-center gap-3">
                 <div data-icon className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${service.color}`}>

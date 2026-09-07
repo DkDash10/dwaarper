@@ -237,19 +237,7 @@ export default function GuaranteeCard() {
 
       <div
         ref={glowRef}
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-1/3
-          h-40
-          w-40
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-cyan-500/10
-          blur-[80px]
-        "
+        className="pointer-events-none absolute left-1/2 top-1/3 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[80px]"
       />
 
       <div className="relative z-10 flex h-full flex-col">
@@ -307,15 +295,7 @@ export default function GuaranteeCard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
-                className="
-        flex
-        h-10
-        w-10
-        items-center
-        justify-center
-        rounded-full
-        bg-cyan-400/10
-      "
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-400/10"
               >
                 <LuShieldCheck size={20} className="text-cyan-300" />
               </div>
@@ -342,15 +322,7 @@ export default function GuaranteeCard() {
 
           <div
             ref={badgeRef}
-            className="
-              flex
-              h-7
-              w-7
-              items-center
-              justify-center
-              rounded-full
-              bg-cyan-400/10
-            "
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-cyan-400/10"
           >
             <LuBadgeCheck size={17} className="text-cyan-300" />
           </div>

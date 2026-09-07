@@ -250,19 +250,7 @@ export default function RatingCard() {
 
       <div
         ref={glowRef}
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-1/2
-          h-48
-          w-48
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-cyan-500/10
-          blur-[90px]
-        "
+        className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[90px]"
       />
 
       <div className="relative z-10 flex h-full flex-col">
@@ -317,13 +305,7 @@ export default function RatingCard() {
                   ref={(el) => {
                     barsRef.current[index] = el;
                   }}
-                  className="
-                    h-full
-                    rounded-full
-                    bg-gradient-to-r
-                    from-cyan-400
-                    to-blue-500
-                  "
+                  className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
                   style={{
                     width: `${rating.percentage}%`,
                   }}

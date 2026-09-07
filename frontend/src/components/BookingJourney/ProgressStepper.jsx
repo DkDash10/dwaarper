@@ -15,27 +15,7 @@ export default function ProgressStepper({ activeStep = 0 }) {
           {/* Circle */}
 
           <div
-            className={`
-              relative
-              z-10
-              flex
-              h-9
-              w-9
-              items-center
-              justify-center
-              rounded-full
-              border
-              transition-all
-              duration-500
-
-              ${
-                index < activeStep
-                  ? "border-cyan-400 bg-cyan-400 text-black"
-                  : index === activeStep
-                  ? "border-cyan-400 bg-cyan-400/15 text-cyan-300"
-                  : "border-white/15 bg-[#111] text-white/35"
-              }
-            `}
+            className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-500 ${ index < activeStep ? "border-cyan-400 bg-cyan-400 text-black" : index === activeStep ? "border-cyan-400 bg-cyan-400/15 text-cyan-300" : "border-white/15 bg-[#111] text-white/35" }`}
           >
             {index < activeStep ? (
               <LuCheck size={16} />
@@ -48,22 +28,7 @@ export default function ProgressStepper({ activeStep = 0 }) {
 
           {index !== bookingSteps.length - 1 && (
             <div
-              className={`
-                absolute
-                left-[17.5px]
-                top-10
-                h-[75px]
-                w-[2px]
-                -translate-x-1/2
-                transition-all
-                duration-700
-
-                ${
-                  index < activeStep
-                    ? "bg-cyan-400"
-                    : "bg-white/10"
-                }
-              `}
+              className={`absolute left-[17.5px] top-10 h-[75px] w-[2px] -translate-x-1/2 transition-all duration-700 ${ index < activeStep ? "bg-cyan-400" : "bg-white/10" }`}
             />
           )}
 
@@ -72,17 +37,7 @@ export default function ProgressStepper({ activeStep = 0 }) {
           <div>
 
             <h4
-              className={`
-                text-lg
-                font-medium
-                transition-all
-
-                ${
-                  index === activeStep
-                    ? "text-white"
-                    : "text-white/45"
-                }
-              `}
+              className={`text-lg font-medium transition-all ${ index === activeStep ? "text-white" : "text-white/45" }`}
             >
               {step.label}
             </h4>

@@ -7,7 +7,7 @@ import Signup from "./screens/Signup";
 import CompleteProfile from "./screens/CompleteProfile";
 import GoogleSuccess from "./screens/GoogleSuccess";
 import Cart from "./screens/Cart";
-import MyOrders from "./screens/MyOrders";
+import MyBookings from "./screens/Bookings/MyBookings";
 import { CartProvider } from "./components/ContextReducer";
 import Cancel from "./screens/Cancel";
 import Success from "./screens/Success";
@@ -17,7 +17,8 @@ import WhoAreWe from "./screens/WhoAreWe";
 import ConnectWithUs from "./screens/ConnectWithUs";
 import BackToTopButton from "./components/BackToTop";
 import Profile from "./screens/Profile/Profile";
-import Services from "./screens/Services/Services"
+import Services from "./screens/Services/Services";
+import BookingDetails from "./screens/Bookings/BookingDetails";
 
 function App() {
   return (
@@ -31,13 +32,14 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/complete-profile" element={<CompleteProfile />} />
             <Route path="/google-success" element={<GoogleSuccess />} />
-            <Route path="/services" element={<Services />}/>
+            <Route path="/services" element={<Services />} />
 
             {/* Protected */}
             <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<Profile />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path="/myorders" element={<MyOrders />} />
+              <Route path="/mybookings" element={<MyBookings />} />
+              <Route path="/mybookings/:orderId" element={<BookingDetails />} />
             </Route>
 
             {/* Other public pages */}

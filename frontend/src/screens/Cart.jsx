@@ -7,27 +7,27 @@ import Footer from "../components/Footer";
 
 const getNext14Days = () => {
   const days = [];
-  const today = new Date();
+  const now = new Date();
 
   for (let i = 0; i < 14; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const dayNumber = String(date.getDate()).padStart(2, "0");
+    const date = new Date(now);
+    date.setDate(now.getDate() + i);
 
     days.push({
-      value: `${year}-${month}-${dayNumber}`,
+      value: [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-"),
+
       day: date.toLocaleDateString("en-IN", {
         weekday: "short",
       }),
+
       date: date.toLocaleDateString("en-IN", {
         day: "numeric",
       }),
+
       month: date.toLocaleDateString("en-IN", {
         month: "short",
       }),
+
       isToday: i === 0,
     });
   }
@@ -46,6 +46,27 @@ const TIME_SLOTS = Array.from({ length: 12 }, (_, index) => {
     label: `${displayHour}:00 ${period}`,
   };
 });
+
+const getAvailableTimeSlots = (dateValue) => {
+  const now = new Date();
+
+  const todayValue = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-");
+
+  // Future dates get every slot
+  if (dateValue !== todayValue) {
+    return TIME_SLOTS;
+  }
+
+  // Today — remove slots that have already passed
+  return TIME_SLOTS.filter((slot) => {
+    const [hours, minutes] = slot.value.split(":").map(Number);
+
+    const slotTime = new Date(now);
+    slotTime.setHours(hours, minutes, 0, 0);
+
+    return slotTime > now;
+  });
+};
 
 const RECOMMENDED_PROFESSIONALS = [
   {
@@ -86,6 +107,9 @@ export default function Cart() {
     }, 0);
   }, [data]);
 
+  const discount = totalPrice * 0.2;
+  const finalPrice = totalPrice - discount;
+
   const updateBooking = (index, field, value) => {
     setBookingDetails((prev) => ({
       ...prev,
@@ -99,8 +123,7 @@ export default function Cart() {
   const removeService = (item) => {
     dispatch({
       type: "REMOVE",
-      id: item.id,
-      service: item.service,
+      itemId: item._id,
     });
 
     setBookingDetails((prev) => {
@@ -116,15 +139,79 @@ export default function Cart() {
     return booking?.date && booking?.time;
   });
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
     if (!isBookingComplete) return;
 
-    navigate("/checkout", {
-      state: {
-        items: data,
-        bookingDetails,
-      },
-    });
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Please login before checkout.");
+        navigate("/login");
+        return;
+      }
+
+      const API_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
+
+      // Get the currently logged-in user's details
+      const userResponse = await fetch(`${API_URL}/api/auth/me`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+      });
+
+      const userData = await userResponse.json();
+
+      if (!userResponse.ok || !userData.success || !userData.user?.email) {
+        throw new Error("Unable to get your account information.");
+      }
+
+      // Prepare products with booking details
+      const products = data.map((item, index) => ({
+        id: item.id,
+        serviceId: item.serviceId,
+        name: item.name,
+        img: item.img,
+        service: item.service,
+        price: Number(item.price) || 0,
+
+        booking: {
+          date: bookingDetails[index]?.date || null,
+          time: bookingDetails[index]?.time || null,
+          professional: bookingDetails[index]?.professional || null,
+        },
+      }));
+
+      // Save cart data for Success.jsx
+      localStorage.setItem("cartData", JSON.stringify(products));
+
+      // Create Stripe Checkout Session through backend
+      const response = await fetch(`${API_URL}/api/create-checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          products,
+          email: userData.user.email,
+          order_date: new Date().toLocaleDateString("en-IN"),
+        }),
+      });
+
+      const session = await response.json();
+
+      if (!response.ok || !session.id || !session.url) {
+        throw new Error(session.error || "Unable to create Stripe checkout session.");
+      }
+
+      // Redirect directly to Stripe Checkout
+      window.location.href = session.url;
+    } catch (error) {
+      console.error("Checkout Error:", error);
+      alert(error.message || "Something went wrong during checkout.");
+    }
   };
 
   if (data.length === 0) {
@@ -186,17 +273,7 @@ export default function Cart() {
                 return (
                   <article
                     key={`${item.id}-${item.service}`}
-                    className={`
-   relative
-  min-w-0
-  max-w-full
-  overflow-visible
-  rounded-3xl
-  border
-  border-white/[0.07]
-  bg-white/[0.025]
-  ${openProfessional === index ? "z-40" : "z-0"}
-  `}
+                    className={`relative min-w-0 max-w-full overflow-visible rounded-3xl border border-white/[0.07] bg-white/[0.025] ${openProfessional === index ? "z-40" : "z-0"}`}
                   >
                     {/* Service header */}
                     <div className="flex min-w-0 gap-3 p-4 sm:gap-4 sm:p-6">
@@ -204,15 +281,7 @@ export default function Cart() {
                       <img
                         src={item.img}
                         alt={item.name}
-                        className="
-                         h-20
-  w-20
-  shrink-0
-  rounded-2xl
-  object-cover
-  sm:h-28
-  sm:w-28
-                        "
+                        className="h-20 w-20 shrink-0 rounded-2xl object-cover sm:h-28 sm:w-28"
                       />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-3">
@@ -225,23 +294,7 @@ export default function Cart() {
                           <button
                             type="button"
                             onClick={() => removeService(item)}
-                            className="
-                              flex
-                              h-9
-                              w-9
-                              shrink-0
-                              items-center
-                              justify-center
-                              rounded-full
-                              border
-                              border-red-400/10
-                              bg-red-400/[0.06]
-                              text-red-400/70
-                              transition
-                              hover:border-red-400/20
-                              hover:bg-red-400/10
-                              hover:text-red-400
-                            "
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-red-400/10 bg-red-400/[0.06] text-red-400/70 transition hover:border-red-400/20 hover:bg-red-400/10 hover:text-red-400"
                             aria-label={`Remove ${item.name}`}
                           >
                             <LuTrash2 size={15} />
@@ -270,35 +323,27 @@ export default function Cart() {
                               <label className="mb-3 block text-[11px] font-medium uppercase tracking-wider text-white/30">Choose date</label>
 
                               <div className="booking-scrollbar flex w-full min-w-0 gap-2 overflow-x-auto pb-2">
-                                {getNext14Days().map((date) => {
-                                  const booking = bookingDetails[index] || {};
-                                  const selected = booking.date === date.value;
+                                {getNext14Days()
+                                  .filter((date) => getAvailableTimeSlots(date.value).length > 0)
+                                  .map((date) => {
+                                    const booking = bookingDetails[index] || {};
+                                    const selected = booking.date === date.value;
 
-                                  return (
-                                    <button
-                                      key={date.value}
-                                      type="button"
-                                      onClick={() => updateBooking(index, "date", date.value)}
-                                      className={`
-          min-w-[62px]
-          shrink-0
-          rounded-2xl
-          border
-          px-2
-          py-2
-          text-center
-          transition
-          ${selected ? "border-white/20 bg-white text-black" : "border-white/[0.07] bg-white/[0.035] text-white/60 hover:border-white/15 hover:bg-white/[0.06]"}
-        `}
-                                    >
-                                      <span className="block text-[10px] font-medium uppercase">{date.isToday ? "Today" : date.day}</span>
+                                    return (
+                                      <button
+                                        key={date.value}
+                                        type="button"
+                                        onClick={() => updateBooking(index, "date", date.value)}
+                                        className={`min-w-[62px] shrink-0 rounded-2xl border px-2 py-2 text-center transition ${selected ? "border-white/20 bg-white text-black" : "border-white/[0.07] bg-white/[0.035] text-white/60 hover:border-white/15 hover:bg-white/[0.06]"}`}
+                                      >
+                                        <span className="block text-[10px] font-medium uppercase">{date.isToday ? "Today" : date.day}</span>
 
-                                      <span className="mt-1 block text-lg font-semibold">{date.date}</span>
+                                        <span className="mt-1 block text-lg font-semibold">{date.date}</span>
 
-                                      <span className="block text-[10px] text-current opacity-50">{date.month}</span>
-                                    </button>
-                                  );
-                                })}
+                                        <span className="block text-[10px] text-current opacity-50">{date.month}</span>
+                                      </button>
+                                    );
+                                  })}
                               </div>
                             </div>
                           </div>
@@ -309,30 +354,25 @@ export default function Cart() {
                           <label className="mb-3 block text-[11px] font-medium uppercase tracking-wider text-white/30">Choose time</label>
                           <div className="booking-scrollbar grid w-full min-w-0 max-h-[80px] grid-cols-2 gap-2 overflow-y-auto pr-2 sm:grid-cols-4">
                             {" "}
-                            {TIME_SLOTS.map((slot) => {
-                              const booking = bookingDetails[index] || {};
-                              const selected = booking.time === slot.value;
+                            {!bookingDetails[index]?.date ? (
+                              <p className="col-span-full py-4 text-center text-xs text-white/25">Select a date first</p>
+                            ) : (
+                              getAvailableTimeSlots(bookingDetails[index].date).map((slot) => {
+                                const booking = bookingDetails[index] || {};
+                                const selected = booking.time === slot.value;
 
-                              return (
-                                <button
-                                  key={slot.value}
-                                  type="button"
-                                  onClick={() => updateBooking(index, "time", slot.value)}
-                                  className={`
-            rounded-xl
-            border
-            px-2
-            py-3
-            text-xs
-            font-medium
-            transition
-            ${selected ? "border-white/20 bg-white text-black" : "border-white/[0.07] bg-white/[0.035] text-white/55 hover:border-white/15 hover:bg-white/[0.06] hover:text-white"}
-          `}
-                                >
-                                  {slot.label}
-                                </button>
-                              );
-                            })}
+                                return (
+                                  <button
+                                    key={slot.value}
+                                    type="button"
+                                    onClick={() => updateBooking(index, "time", slot.value)}
+                                    className={`rounded-xl border px-2 py-3 text-xs font-medium transition ${selected ? "border-white/20 bg-white text-black" : "border-white/[0.07] bg-white/[0.035] text-white/55 hover:border-white/15 hover:bg-white/[0.06] hover:text-white"}`}
+                                  >
+                                    {slot.label}
+                                  </button>
+                                );
+                              })
+                            )}
                           </div>
                         </div>
                       </div>
@@ -346,21 +386,7 @@ export default function Cart() {
                           <button
                             type="button"
                             onClick={() => setOpenProfessional(openProfessional === index ? null : index)}
-                            className="
-        flex
-        w-full
-        items-center
-        justify-between
-        rounded-2xl
-        border
-        border-white/[0.07]
-        bg-white/[0.035]
-        px-4
-        py-4
-        text-left
-        transition
-        hover:border-white/15
-      "
+                            className="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.035] px-4 py-4 text-left transition hover:border-white/15"
                           >
                             <div className="min-w-0">
                               {booking?.professional ? (
@@ -386,35 +412,14 @@ export default function Cart() {
 
                             <LuChevronDown
                               size={16}
-                              className={`
-          shrink-0
-          text-white/35
-          transition-transform
-          duration-200
-          ${openProfessional === index ? "rotate-180" : ""}
-        `}
+                              className={`shrink-0 text-white/35 transition-transform duration-200 ${openProfessional === index ? "rotate-180" : ""}`}
                             />
                           </button>
 
                           {/* Dropdown */}
                           {openProfessional === index && (
                             <div
-                              className="
-  absolute
-  left-0
-  right-0
- bottom-[calc(100%+8px)]
-  z-30
-  w-full
-  max-w-full
-  overflow-hidden
-  rounded-2xl
-  border
-  border-white/[0.08]
-  bg-[#111111]
-  p-1.5
-  shadow-[0_20px_60px_rgba(0,0,0,0.5)]
-"
+                              className="absolute left-0 right-0 bottom-[calc(100%+8px)] z-30 w-full max-w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111111] p-1.5 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
                             >
                               <div className="px-3 pb-2 pt-2">
                                 <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/30">Recommended professionals</p>
@@ -433,34 +438,11 @@ export default function Cart() {
 
                                         setOpenProfessional(null);
                                       }}
-                                      className={`
-                  flex
-                  w-full
-                  items-center
-                  gap-3
-                  rounded-xl
-                  px-3
-                  py-3
-                  text-left
-                  transition
-                  ${selected ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}
-                `}
+                                      className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${selected ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}`}
                                     >
                                       {/* Avatar */}
                                       <div
-                                        className="
-                    flex
-                    h-10
-                    w-10
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-white/[0.08]
-                    text-sm
-                    font-semibold
-                    text-white/70
-                  "
+                                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-sm font-semibold text-white/70"
                                       >
                                         {professional.name.charAt(0)}
                                       </div>
@@ -480,17 +462,7 @@ export default function Cart() {
 
                                       {/* Selection indicator */}
                                       <div
-                                        className={`
-                    flex
-                    h-5
-                    w-5
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    ${selected ? "border-white bg-white" : "border-white/15"}
-                  `}
+                                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${selected ? "border-white bg-white" : "border-white/15"}`}
                                       >
                                         {selected && <span className="h-2 w-2 rounded-full bg-black" />}
                                       </div>
@@ -533,33 +505,30 @@ export default function Cart() {
                     </div>
                   ))}
                 </div>
-                <div className="border-t border-white/[0.07] pt-5">
+                <div className="border-t border-white/[0.07] pt-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-white/40">Total</span>
+                    <span className="text-sm text-white/40">Subtotal</span>
 
-                    <span className="text-xl font-semibold text-white">₹{totalPrice.toLocaleString("en-IN")}</span>
+                    <span className="text-sm text-white/70">₹{totalPrice.toLocaleString("en-IN")}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-white/40">Discount (20%)</span>
+
+                    <span className="text-sm text-green-400">-₹{discount.toLocaleString("en-IN")}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between border-t border-white/[0.06] pt-3">
+                    <span className="text-sm font-medium text-white/60">Final Price</span>
+
+                    <span className="text-xl font-semibold text-white">₹{finalPrice.toLocaleString("en-IN")}</span>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={handleProceed}
                   disabled={!isBookingComplete}
-                  className="
-                    mt-6
-                    w-full
-                    rounded-full
-                    bg-white
-                    px-5
-                    py-3.5
-                    text-sm
-                    font-medium
-                    text-black
-                    transition
-                    hover:bg-white/90
-                    disabled:cursor-not-allowed
-                    disabled:bg-white/10
-                    disabled:text-white/30
-                  "
+                  className="mt-6 w-full rounded-full bg-white px-5 py-3.5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/30"
                 >
                   {isBookingComplete ? "Proceed to Checkout" : "Select all slots"}
                 </button>

@@ -8,16 +8,7 @@ export default function ScreenWrapper({
   return (
     <div
       ref={screenRef}
-      className={`
-        absolute
-        inset-0
-        will-change-transform
-        ${
-          active
-            ? "pointer-events-auto z-20"
-            : "pointer-events-none z-10"
-        }
-      `}
+      className={`absolute inset-0 will-change-transform ${ active ? "pointer-events-auto z-20" : "pointer-events-none z-10" }`}
     >
       {children}
     </div>

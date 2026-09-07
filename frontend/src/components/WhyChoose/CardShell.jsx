@@ -4,23 +4,7 @@ const CardShell = forwardRef(({ children, className = "" }, ref) => {
   return (
     <div
       ref={ref}
-      className={`
-          group
-          relative
-          h-full
-          overflow-hidden
-          rounded-[32px]
-          border
-          border-white/15
-          bg-[#101010]
-          shadow-[0_10px_30px_rgba(0,0,0,.25)]
-          transition-all
-          duration-500
-          hover:-translate-y-2
-          hover:border-cyan-400/30
-          hover:shadow-[0_20px_60px_rgba(34,211,238,.12)]
-          ${className}
-        `}
+      className={`group relative h-full overflow-hidden rounded-[32px] border border-white/15 bg-[#101010] shadow-[0_10px_30px_rgba(0,0,0,.25)] transition-all duration-500 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_20px_60px_rgba(34,211,238,.12)] ${className}`}
     >
       {/* Background Glow */}
       <div className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-400/15 blur-[140px]" />

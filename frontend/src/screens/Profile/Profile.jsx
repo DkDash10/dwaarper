@@ -245,29 +245,10 @@ export default function Profile() {
     
       {showLogoutModal && (
         <div
-          className="
-      fixed
-      inset-0
-      z-[100]
-      flex
-      items-center
-      justify-center
-      bg-black/70
-      px-6
-      backdrop-blur-md
-    "
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-md"
         >
           <div
-            className="
-        w-full
-        max-w-md
-        rounded-3xl
-        border
-        border-white/[0.08]
-        bg-[#111]
-        p-7
-        shadow-2xl
-      "
+            className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-7 shadow-2xl"
           >
             <div>
               <h3 className="text-xl font-semibold text-white">Sign out of DwaarPer?</h3>
@@ -279,24 +260,7 @@ export default function Profile() {
               <button
                 type="button"
                 onClick={() => setShowLogoutModal(false)}
-                className="
-            w-full
-            rounded-full
-            border
-            border-white/10
-            bg-white/[0.03]
-            px-6
-            sm:w-auto
-            py-3
-            text-sm
-            font-medium
-            text-white/70
-            transition-all
-            duration-300
-            hover:border-white/20
-            hover:bg-white/[0.06]
-            hover:text-white
-          "
+                className="w-full rounded-full border border-white/10 bg-white/[0.03] px-6 sm:w-auto py-3 text-sm font-medium text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
               >
                 Cancel
               </button>
@@ -304,21 +268,7 @@ export default function Profile() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="
-            w-full
-            rounded-full
-            bg-white
-            px-6
-            sm:w-auto
-            py-3
-            text-sm
-            font-medium
-            text-black
-            transition-all
-            duration-300
-            hover:-translate-y-0.5
-            hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]
-          "
+                className="w-full rounded-full bg-white px-6 sm:w-auto py-3 text-sm font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]"
               >
                 Logout
               </button>
@@ -330,29 +280,10 @@ export default function Profile() {
 
       {showDeleteModal && (
         <div
-          className="
-      fixed
-      inset-0
-      z-[100]
-      flex
-      items-center
-      justify-center
-      bg-black/70
-      px-6
-      backdrop-blur-md
-    "
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-md"
         >
           <div
-            className="
-        w-full
-        max-w-md
-        rounded-3xl
-        border
-        border-white/[0.08]
-        bg-[#111]
-        p-7
-        shadow-2xl
-      "
+            className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-7 shadow-2xl"
           >
             {/* Header */}
 
@@ -373,20 +304,7 @@ export default function Profile() {
                 onChange={(e) => setDeleteConfirmation(e.target.value)}
                 placeholder="DELETE"
                 autoComplete="off"
-                className="
-            mt-2
-            w-full
-            px-4
-            py-3
-            bg-zinc-900
-            text-white
-            rounded-lg
-            placeholder:text-zinc-500
-            focus:outline-none
-            focus:ring-1
-            focus:ring-red-500/40
-            transition
-          "
+                className="mt-2 w-full px-4 py-3 bg-zinc-900 text-white rounded-lg placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-red-500/40 transition"
               />
             </div>
 
@@ -400,25 +318,7 @@ export default function Profile() {
                   setDeleteConfirmation("");
                 }}
                 disabled={deleting}
-                className="
-            w-full
-            rounded-full
-            border
-            border-white/10
-            bg-white/[0.03]
-            px-6
-            sm:w-auto
-            py-3
-            text-sm
-            font-medium
-            text-white/70
-            transition-all
-            duration-300
-            hover:border-white/20
-            hover:bg-white/[0.06]
-            hover:text-white
-            disabled:opacity-50
-          "
+                className="w-full rounded-full border border-white/10 bg-white/[0.03] px-6 sm:w-auto py-3 text-sm font-medium text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] hover:text-white disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -427,22 +327,7 @@ export default function Profile() {
                 type="button"
                 onClick={handleDeleteAccount}
                 disabled={deleteConfirmation !== "DELETE" || deleting}
-                className="
-            w-full
-            rounded-full
-            bg-red-500
-            px-6
-            sm:w-auto
-            py-3
-            text-sm
-            font-medium
-            text-white
-            transition-all
-            duration-300
-            hover:bg-red-400
-            disabled:cursor-not-allowed
-            disabled:opacity-30
-          "
+                className="w-full rounded-full bg-red-500 px-6 sm:w-auto py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-30"
               >
                 {deleting ? "Deleting..." : "Delete Account"}
               </button>
@@ -456,31 +341,11 @@ export default function Profile() {
 
         <div className="pointer-events-none fixed inset-0">
           <div
-            className="
-            absolute
-            left-1/2
-            top-0
-            h-[500px]
-            w-[500px]
-            -translate-x-1/2
-            rounded-full
-            bg-cyan-500/[0.04]
-            blur-[140px]
-            "
+            className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-cyan-500/[0.04] blur-[140px]"
           />
         </div>
 
-        <div className="
-            relative
-            mx-auto
-            max-w-7xl
-            px-4
-            sm:px-6
-            pb-16
-            sm:pb-24
-            pt-24
-            sm:pt-32
-          ">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 pb-16 sm:pb-24 pt-24 sm:pt-32">
           {/* Header */}
 
           <ProfileHeader user={user} onEdit={() => setEditing(true)} />
@@ -533,22 +398,7 @@ export default function Profile() {
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="
-    rounded-full
-    border
-    border-white/10
-    bg-white/[0.03]
-    px-6
-    py-3
-    text-sm
-    font-medium
-    text-white/70
-    transition-all
-    duration-300
-    hover:border-white/20
-    hover:bg-white/[0.06]
-    hover:text-white
-  "
+                  className="rounded-full border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
                 >
                   Cancel
                 </button>
@@ -557,21 +407,7 @@ export default function Profile() {
                   type="button"
                   onClick={handleSave}
                   disabled={saving}
-                  className="
-    rounded-full
-    bg-white
-    px-6
-    py-3
-    text-sm
-    font-medium
-    text-black
-    transition-all
-    duration-300
-    hover:-translate-y-0.5
-    hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]
-    disabled:cursor-not-allowed
-    disabled:opacity-50
-  "
+                  className="rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(255,255,255,.12)] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
@@ -582,32 +418,11 @@ export default function Profile() {
 
             <ProfileSection title="Security" description="Manage your account security.">
               <div
-                className="
-                flex
-                flex-col
-                gap-4
-                rounded-2xl
-                border
-                border-white/[0.08]
-                bg-white/[0.02]
-                p-4
-                sm:flex-row
-                sm:items-center
-                sm:justify-between
-                sm:p-5
-                "
+                className="flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
               >
                 <div className="flex items-center gap-4">
                   <div
-                    className="
-                    flex
-                    h-10
-                    w-10
-                    items-center
-                    justify-center
-                    rounded-xl
-                    bg-white/[0.04]
-                    "
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04]"
                   >
                     <LuLock size={17} className="text-white/50" />
                   </div>
@@ -638,35 +453,11 @@ export default function Profile() {
                 <button
                   type="button"
                   onClick={() => setShowLogoutModal(true)}
-                  className="
-        flex
-        w-full
-        items-center
-        justify-between
-        rounded-2xl
-        border
-        border-white/[0.08]
-        bg-white/[0.02]
-        p-4
-        sm:p-5
-        text-left
-        transition-all
-        duration-300
-        hover:border-white/[0.14]
-        hover:bg-white/[0.04]
-      "
+                  className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-5 text-left transition-all duration-300 hover:border-white/[0.14] hover:bg-white/[0.04]"
                 >
                   <div className="flex items-center gap-4">
                     <div
-                      className="
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-xl
-            bg-white/[0.04]
-          "
+                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04]"
                     >
                       <LuLogOut size={17} className="text-white/50" />
                     </div>
@@ -686,36 +477,11 @@ export default function Profile() {
                 <button
                   type="button"
                   onClick={() => setShowDeleteModal(true)}
-                  className="
-    flex
-    w-full
-    items-center
-    justify-between
-    rounded-2xl
-    border
-    border-red-500/10
-    bg-red-500/[0.02]
-    p-4
-    text-left
-    transition-all
-    duration-300
-    hover:border-red-500/20
-    hover:bg-red-500/[0.04]
-    disabled:cursor-not-allowed
-    disabled:opacity-50
-  "
+                  className="flex w-full items-center justify-between rounded-2xl border border-red-500/10 bg-red-500/[0.02] p-4 text-left transition-all duration-300 hover:border-red-500/20 hover:bg-red-500/[0.04] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <div className="flex items-center gap-4">
                     <div
-                      className="
-        flex
-        h-10
-        w-10
-        items-center
-        justify-center
-        rounded-xl
-        bg-red-500/[0.06]
-      "
+                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06]"
                     >
                       <LuTrash2 size={17} className="text-red-300/70" />
                     </div>
@@ -757,22 +523,7 @@ function InputField({ label, name, value, onChange, disabled = false, placeholde
         onChange={onChange}
         disabled={disabled}
         placeholder={placeholder}
-        className="
-          mt-2
-          w-full
-          px-4
-          py-3
-          bg-zinc-900
-          text-white
-          rounded-lg
-          placeholder:text-zinc-500
-          focus:outline-none
-          focus:ring-1
-          focus:ring-zinc-600
-          transition
-          disabled:cursor-not-allowed
-          disabled:opacity-40
-        "
+        className="mt-2 w-full px-4 py-3 bg-zinc-900 text-white rounded-lg placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600 transition disabled:cursor-not-allowed disabled:opacity-40"
       />
     </label>
   );
@@ -788,17 +539,7 @@ function InfoItem({ icon, label, value }) {
   return (
     <div className="flex items-start gap-4">
       <div
-        className="
-        flex
-        h-10
-        w-10
-        shrink-0
-        items-center
-        justify-center
-        rounded-xl
-        bg-white/[0.04]
-        text-white/45
-      "
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/45"
       >
         {icon}
       </div>

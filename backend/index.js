@@ -6,9 +6,11 @@ const mongoDB = require("./db");
 require("dotenv").config();
 const passport = require("passport");
 require("./config/passport");
+const professionalRoutes = require("./Routes/Professional");
+const { startBookingLifecycle } = require("./services/BookingLifecycle");
 
 mongoDB();
-
+startBookingLifecycle();
 const allowedOrigins = ["http://localhost:3000", "http://localhost:3001", "https://dwaarper-wow5.onrender.com", "https://dwaarper.onrender.com", process.env.FRONTEND_URL].filter(
   Boolean,
 );
@@ -54,7 +56,8 @@ app.use("/api", require("./Routes/DisplayServices"));
 app.use("/api", require("./Routes/Checkout"));
 app.use("/api", require("./Routes/OrderData"));
 app.use("/api", require("./Routes/Contact"));
-app.use('/api/cart', require('./Routes/Cart'));
+app.use("/api/cart", require("./Routes/Cart"));
+app.use("/api", professionalRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

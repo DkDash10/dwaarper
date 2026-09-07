@@ -268,19 +268,7 @@ export default function ArrivalCard() {
       {/* Cursor-follow glow */}
       <div
         ref={glowRef}
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-1/2
-          h-48
-          w-48
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-cyan-500/10
-          blur-[90px]
-        "
+        className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[90px]"
       />
 
       <div className="relative flex h-full flex-col p-7">
