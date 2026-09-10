@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LuShoppingCart, LuX, LuMenu, LuPackage, LuLogOut, LuMapPin } from "react-icons/lu";
 import { useCart } from "./ContextReducer";
 
@@ -22,6 +22,17 @@ export default function Navigationbar() {
   const [isTop, setIsTop] = useState(true);
 
   const lastScrollY = useRef(0);
+
+  const location = useLocation();
+
+  const handleFooterNavigation = () => {
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+  };
 
   /*
   |--------------------------------------------------------------------------
@@ -258,15 +269,8 @@ export default function Navigationbar() {
       {/* ================================================================== */}
 
       {showLogoutModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-5 backdrop-blur-md"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="logout-title"
-        >
-          <div
-            className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-6 sm:p-7 shadow-2xl"
-          >
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-5 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+          <div className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-6 sm:p-7 shadow-2xl">
             <div>
               <h3 id="logout-title" className="text-xl font-semibold text-white">
                 Sign out of DwaarPer?
@@ -275,9 +279,7 @@ export default function Navigationbar() {
               <p className="mt-2 text-sm leading-relaxed text-white/45">You'll need to sign in again to access your account.</p>
             </div>
 
-            <div
-              className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"
-            >
+            <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={() => setShowLogoutModal(false)}
@@ -306,16 +308,13 @@ export default function Navigationbar() {
         className={`fixed left-0 right-0 z-50 px-3 sm:px-5 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${showNavbar ? "translate-y-0 opacity-100 top-2" : "-translate-y-24 opacity-0 top-2"}`}
       >
         <div
-          className={`mx-auto max-w-7xl flex items-center justify-between rounded-2xl px-4 sm:px-6 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${ isTop ? ` py-2.5 sm:py-3 bg-transparent backdrop-blur-0 border-transparent shadow-none ` : ` py-2.5 sm:py-3 bg-black/45 backdrop-blur-2xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,.35)] ` }`}
+          className={`mx-auto max-w-7xl flex items-center justify-between rounded-2xl px-4 sm:px-6 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${isTop ? ` py-2.5 sm:py-3 bg-transparent backdrop-blur-0 border-transparent shadow-none ` : ` py-2.5 sm:py-3 bg-black/45 backdrop-blur-2xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,.35)] `}`}
         >
           {/* ============================================================ */}
           {/* LOGO */}
           {/* ============================================================ */}
 
-          <Link
-            to="/"
-            className="uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[11px] sm:text-xs text-white shrink-0"
-          >
+          <Link to="/" className="uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[11px] sm:text-xs text-white shrink-0">
             DWAARPER
           </Link>
 
@@ -332,15 +331,12 @@ export default function Navigationbar() {
                   to="/cart"
                   className="relative h-11 w-11 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
                   aria-label={`Cart${cartCount > 0 ? `, ${cartCount} items` : ""}`}
+                  onClick={handleFooterNavigation}
                 >
                   <LuShoppingCart className="text-white" size={18} />
 
                   {cartCount > 0 && (
-                    <span
-                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-white text-black text-[10px] flex items-center justify-center font-bold"
-                    >
-                      {cartCount}
-                    </span>
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-white text-black text-[10px] flex items-center justify-center font-bold">{cartCount}</span>
                   )}
                 </Link>
 
@@ -354,9 +350,7 @@ export default function Navigationbar() {
                     aria-expanded={dropdownOpen}
                     className="flex items-center gap-3 rounded-full bg-white/5 hover:bg-white/10 px-2 py-2 transition-colors"
                   >
-                    <div
-                      className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-white text-sm font-semibold"
-                    >
+                    <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-white text-sm font-semibold">
                       {user?.name?.[0]?.toUpperCase() || "U"}
                     </div>
                   </button>
@@ -364,19 +358,13 @@ export default function Navigationbar() {
                   {/* PROFILE DROPDOWN */}
 
                   {dropdownOpen && (
-                    <div
-                      className="absolute right-0 top-14 w-72 rounded-2xl bg-zinc-950 border border-white/5 overflow-hidden shadow-2xl"
-                    >
+                    <div className="absolute right-0 top-14 w-72 rounded-2xl bg-zinc-950 border border-white/5 overflow-hidden shadow-2xl">
                       {/* USER */}
 
-                      <div
-                        className="px-5 pt-4 pb-3 border-b border-white/5"
-                      >
+                      <div className="px-5 pt-4 pb-3 border-b border-white/5">
                         <h3 className="text-white font-medium text-[15px]">{user?.name || "User"}</h3>
 
-                        <div
-                          className="flex items-center gap-1 mt-1 text-xs text-white/50"
-                        >
+                        <div className="flex items-center gap-1 mt-1 text-xs text-white/50">
                           <LuMapPin size={12} />
 
                           {user?.location || "India"}
@@ -429,17 +417,11 @@ export default function Navigationbar() {
               /* ======================================================== */
 
               <div className="flex items-center gap-3">
-                <Link
-                  className="text-white/70 hover:text-white transition-colors"
-                  to="/login"
-                >
+                <Link className="text-white/70 hover:text-white transition-colors" to="/login">
                   Login
                 </Link>
 
-                <Link
-                  className="rounded-full bg-white text-black px-4 py-2 font-medium"
-                  to="/signup"
-                >
+                <Link className="rounded-full bg-white text-black px-4 py-2 font-medium" to="/signup">
                   Get Started
                 </Link>
               </div>
@@ -461,9 +443,7 @@ export default function Navigationbar() {
                 <LuShoppingCart className="text-white" size={18} />
 
                 {cartCount > 0 && (
-                  <span
-                    className="absolute -top-0.5 -right-0.5 h-[18px] w-[18px] rounded-full bg-white text-black text-[9px] flex items-center justify-center font-bold"
-                  >
+                  <span className="absolute -top-0.5 -right-0.5 h-[18px] w-[18px] rounded-full bg-white text-black text-[9px] flex items-center justify-center font-bold">
                     {cartCount}
                   </span>
                 )}
@@ -503,15 +483,8 @@ export default function Navigationbar() {
       >
         {/* CLOSE */}
 
-        <div
-          className="flex justify-end px-3 py-3 border-b border-white/5"
-        >
-          <button
-            type="button"
-            onClick={closeMobileMenu}
-            className="h-9 w-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center"
-            aria-label="Close menu"
-          >
+        <div className="flex justify-end px-3 py-3 border-b border-white/5">
+          <button type="button" onClick={closeMobileMenu} className="h-9 w-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center" aria-label="Close menu">
             <LuX className="text-white" size={18} />
           </button>
         </div>
@@ -519,36 +492,20 @@ export default function Navigationbar() {
         {/* USER */}
 
         {loggedIn && (
-          <div
-            className="px-3 py-3 border-b border-white/5"
-          >
+          <div className="px-3 py-3 border-b border-white/5">
             <div className="flex items-center gap-3">
-              <div
-                className="h-11 w-11 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white text-sm font-semibold"
-              >
+              <div className="h-11 w-11 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white text-sm font-semibold">
                 {user?.name?.[0]?.toUpperCase() || "U"}
               </div>
 
               <div className="min-w-0">
-                <div
-                  className="truncate text-sm font-medium text-white"
-                >
-                  {user?.name || "User"}
-                </div>
+                <div className="truncate text-sm font-medium text-white">{user?.name || "User"}</div>
 
-                <div
-                  className="truncate text-xs text-white/40"
-                >
-                  {user?.location || "India"}
-                </div>
+                <div className="truncate text-xs text-white/40">{user?.location || "India"}</div>
               </div>
             </div>
 
-            <Link
-              to="/profile"
-              onClick={closeMobileMenu}
-              className="mt-4 flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 transition-all hover:bg-white/10"
-            >
+            <Link to="/profile" onClick={closeMobileMenu} className="mt-4 flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 transition-all hover:bg-white/10">
               <p className="text-sm font-medium text-white">Manage your profile</p>
             </Link>
           </div>
@@ -571,13 +528,7 @@ export default function Navigationbar() {
                   Cart
                 </span>
 
-                {cartCount > 0 && (
-                  <span
-                    className="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-black"
-                  >
-                    {cartCount}
-                  </span>
-                )}
+                {cartCount > 0 && <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-black">{cartCount}</span>}
               </Link>
 
               {/* ORDERS */}
@@ -619,11 +570,7 @@ export default function Navigationbar() {
                 Login
               </Link>
 
-              <Link
-                to="/signup"
-                onClick={closeMobileMenu}
-                className="block rounded-full bg-white py-3 text-center text-sm font-medium text-black"
-              >
+              <Link to="/signup" onClick={closeMobileMenu} className="block rounded-full bg-white py-3 text-center text-sm font-medium text-black">
                 Get Started
               </Link>
             </div>

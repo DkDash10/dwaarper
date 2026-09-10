@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarDays, Clock3, ChevronRight, PackageCheck, CircleAlert, Loader2, MapPin } from "lucide-react";
+import { CalendarDays, Clock3, ChevronLeft, ChevronRight, PackageCheck, CircleAlert, Loader2, MapPin } from "lucide-react";
 import Navigationbar from "../../components/Navigationbar";
+import Footer from "../../components/Footer";
 
 const API_BASE_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
 
@@ -10,6 +11,9 @@ const MyBookings = () => {
   const [activeFilter, setActiveFilter] = useState("upcoming");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ORDERS_PER_PAGE = 5;
 
   useEffect(() => {
     let isMounted = true;
@@ -108,7 +112,7 @@ const MyBookings = () => {
   };
 
   const getOrderCreatedDate = (order) => {
-    return order?.createdAt || order?.orderDate || order?.Order_date || order?.date || null;
+    return order?.orderCreatedAt || order?.createdAt || order?.orderDate || order?.Order_date || order?.date || null;
   };
 
   const isCompleted = (order) => {
@@ -154,6 +158,25 @@ const MyBookings = () => {
 
     return filtered;
   }, [orders, activeFilter]);
+
+  // =========================================================
+  // PAGINATION
+  // =========================================================
+
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / ORDERS_PER_PAGE));
+
+  const paginatedOrders = useMemo(() => {
+    const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
+    return filteredOrders.slice(startIndex, startIndex + ORDERS_PER_PAGE);
+  }, [filteredOrders, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilter]);
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   const formatDate = (date) => {
     if (!date) return "Date not available";
@@ -295,11 +318,11 @@ const MyBookings = () => {
     <>
       <Navigationbar />
 
-      <main className="min-h-screen bg-[#080808] px-5 pb-24 pt-28 text-white">
-        <div className="mx-auto max-w-7xl">
+      <main className="min-h-screen bg-[#080808] text-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pb-20 pt-24 sm:pt-32">
           {/* Header */}
           <div className="mb-10">
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">DWAARPER</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/70">DWAARPER BOOKINGS</p>
 
             <div className="mt-3 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
@@ -369,7 +392,7 @@ const MyBookings = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredOrders.map((order, index) => {
+              {paginatedOrders.map((order, index) => {
                 const status = getStatus(order);
                 const professional = getProfessional(order);
 
@@ -456,6 +479,58 @@ const MyBookings = () => {
             </div>
           )}
 
+          {/* Pagination */}
+          {filteredOrders.length > 0 && totalPages > 1 && (
+            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+              <p className="text-[11px] text-white/25">
+                Showing {(currentPage - 1) * ORDERS_PER_PAGE + 1}
+                {"–"}
+                {Math.min(currentPage * ORDERS_PER_PAGE, filteredOrders.length)} of {filteredOrders.length} bookings
+              </p>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  disabled={currentPage === 1}
+                  className="inline-flex h-9 items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.025] px-3 text-xs font-medium text-white/55 transition hover:bg-white/[0.07] hover:text-white disabled:cursor-not-allowed disabled:opacity-25"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                  Previous
+                </button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, index) => {
+                    const page = index + 1;
+
+                    return (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() => setCurrentPage(page)}
+                        className={`h-9 min-w-9 rounded-full border px-3 text-xs font-medium transition ${
+                          currentPage === page ? "border-white bg-white text-black" : "border-white/[0.08] bg-white/[0.025] text-white/45 hover:bg-white/[0.07] hover:text-white"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  disabled={currentPage === totalPages}
+                  className="inline-flex h-9 items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.025] px-3 text-xs font-medium text-white/55 transition hover:bg-white/[0.07] hover:text-white disabled:cursor-not-allowed disabled:opacity-25"
+                >
+                  Next
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Bottom note */}
           {filteredOrders.length > 0 && (
             <div className="mt-8 flex items-center justify-center gap-2 text-center text-[11px] text-white/20">
@@ -465,6 +540,7 @@ const MyBookings = () => {
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 };

@@ -21,7 +21,7 @@ router.post("/order-data", async (req, res) => {
 
     const orderData = await Order.findOne({
       email,
-    });
+    }).lean();
 
     if (!orderData || !orderData.order_data) {
       return res.json({
@@ -50,22 +50,14 @@ router.post("/order-data", async (req, res) => {
         ...serviceInfo,
 
         // Service-specific date
-        date:
-          serviceInfo?.booking?.date ||
-          dateInfo.Order_date ||
-          null,
+        date: serviceInfo?.booking?.date || dateInfo.Order_date || null,
 
         // Original order creation time
-        orderCreatedAt:
-          dateInfo.orderCreatedAt ||
-          null,
+        orderCreatedAt: dateInfo.orderCreatedAt || null,
 
         // IMPORTANT:
-        // Use the service's own status first.
-        status:
-          serviceInfo?.booking?.status ||
-          dateInfo.status ||
-          "pending",
+        // Always use service status first.
+        status: serviceInfo?.booking?.status || dateInfo.status || "pending",
 
         // Main order ID
         orderId: dateInfo.id,
@@ -104,10 +96,7 @@ router.post("/order-data", async (req, res) => {
           break;
       }
 
-      allOrders = allOrders.filter(
-        (order) =>
-          new Date(order.date) >= filterDate
-      );
+      allOrders = allOrders.filter((order) => new Date(order.date) >= filterDate);
     }
 
     // =====================================================
@@ -115,17 +104,9 @@ router.post("/order-data", async (req, res) => {
     // =====================================================
 
     allOrders.sort((a, b) => {
-      const dateA = new Date(
-        a.orderCreatedAt ||
-        a.date ||
-        0
-      );
+      const dateA = new Date(a.orderCreatedAt || a.date || 0);
 
-      const dateB = new Date(
-        b.orderCreatedAt ||
-        b.date ||
-        0
-      );
+      const dateB = new Date(b.orderCreatedAt || b.date || 0);
 
       return dateB - dateA;
     });
@@ -137,10 +118,7 @@ router.post("/order-data", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(
-      "Error fetching order data:",
-      error
-    );
+    console.error("Error fetching order data:", error);
 
     return res.status(500).json({
       error: "Server Error",
@@ -153,338 +131,314 @@ router.post("/order-data", async (req, res) => {
 // CANCEL ONE SERVICE BOOKING
 // =========================================================
 
-router.post(
-  "/cancel-booking",
-  fetchUser,
-  async (req, res) => {
-    try {
-      const {
-        bookingId,
-        serviceIndex,
-      } = req.body;
+router.post("/cancel-booking", fetchUser, async (req, res) => {
+  try {
+    const { bookingId, serviceIndex } = req.body;
 
-      console.log(
-        "Cancel booking request:",
-        bookingId,
-        "serviceIndex:",
-        serviceIndex
-      );
+    console.log("Cancel booking request:", bookingId, "serviceIndex:", serviceIndex);
 
-      // ===================================================
-      // VALIDATE BOOKING ID
-      // ===================================================
+    // ===================================================
+    // VALIDATE BOOKING ID
+    // ===================================================
 
-      if (!bookingId) {
-        return res.status(400).json({
-          success: false,
-          error: "Booking ID is required.",
-        });
-      }
-
-      // ===================================================
-      // VALIDATE SERVICE INDEX
-      // ===================================================
-
-      const parsedServiceIndex = Number(
-        serviceIndex
-      );
-
-      if (
-        !Number.isInteger(parsedServiceIndex) ||
-        parsedServiceIndex < 0
-      ) {
-        return res.status(400).json({
-          success: false,
-          error: "A valid service index is required.",
-        });
-      }
-
-      // ===================================================
-      // GET AUTHENTICATED USER
-      // ===================================================
-
-      if (!req.user?.id) {
-        return res.status(401).json({
-          success: false,
-          error:
-            "Authentication information is missing.",
-        });
-      }
-
-      const user = await User.findById(
-        req.user.id
-      ).select("email");
-
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          error: "User account not found.",
-        });
-      }
-
-      if (!user.email) {
-        return res.status(401).json({
-          success: false,
-          error:
-            "Your account does not have an email address.",
-        });
-      }
-
-      // ===================================================
-      // FIND USER'S ORDER
-      // ===================================================
-
-      const order = await Order.findOne({
-        email: user.email,
-      });
-
-      if (!order) {
-        return res.status(404).json({
-          success: false,
-          error:
-            "No booking record was found for your account.",
-        });
-      }
-
-      // ===================================================
-      // FIND EXACT ORDER
-      // ===================================================
-
-      let targetOrderArray = null;
-      let targetArrayIndex = -1;
-
-      for (
-        let i = 0;
-        i < order.order_data.length;
-        i++
-      ) {
-        const orderArray =
-          order.order_data[i];
-
-        if (
-          !Array.isArray(orderArray) ||
-          orderArray.length === 0
-        ) {
-          continue;
-        }
-
-        const header = orderArray[0];
-
-        if (
-          header &&
-          String(header.id) ===
-            String(bookingId)
-        ) {
-          targetOrderArray = orderArray;
-          targetArrayIndex = i;
-          break;
-        }
-      }
-
-      if (
-        !targetOrderArray ||
-        targetArrayIndex === -1
-      ) {
-        return res.status(404).json({
-          success: false,
-          error:
-            "Booking not found in your account.",
-        });
-      }
-
-      // ===================================================
-      // FIND EXACT SERVICE
-      //
-      // serviceIndex 0 = first service
-      // serviceIndex 1 = second service
-      // serviceIndex 2 = third service
-      //
-      // orderArray[0] = booking header
-      // orderArray[1] = service 0
-      // orderArray[2] = service 1
-      // orderArray[3] = service 2
-      // ===================================================
-
-      const serviceArrayIndex =
-        parsedServiceIndex + 1;
-
-      const serviceItem =
-        targetOrderArray[
-          serviceArrayIndex
-        ];
-
-      if (!serviceItem) {
-        return res.status(404).json({
-          success: false,
-          error:
-            "Selected service booking was not found.",
-        });
-      }
-
-      // ===================================================
-      // CURRENT SERVICE STATUS
-      // ===================================================
-
-      const currentStatus =
-        serviceItem?.booking?.status ||
-        targetOrderArray[0]?.status ||
-        "pending";
-
-      console.log(
-        `Booking ${bookingId}, service ${parsedServiceIndex}, current status: ${currentStatus}`
-      );
-
-      // ===================================================
-      // CHECK CANCELLATION ELIGIBILITY
-      // ===================================================
-
-      const cancellableStatuses = [
-        "confirmed",
-        "assigning",
-        "assigned",
-      ];
-
-      if (
-        !cancellableStatuses.includes(
-          currentStatus
-        )
-      ) {
-        let message =
-          "This service can no longer be cancelled.";
-
-        switch (currentStatus) {
-          case "on_the_way":
-            message =
-              "This service cannot be cancelled because the professional is already on the way.";
-            break;
-
-          case "arrived":
-            message =
-              "This service cannot be cancelled because the professional has arrived.";
-            break;
-
-          case "in_progress":
-            message =
-              "This service cannot be cancelled because the service is already in progress.";
-            break;
-
-          case "completed":
-            message =
-              "A completed service cannot be cancelled.";
-            break;
-
-          case "cancelled":
-            message =
-              "This service has already been cancelled.";
-            break;
-        }
-
-        return res.status(400).json({
-          success: false,
-          error: message,
-        });
-      }
-
-      // ===================================================
-      // CANCEL ONLY THIS SERVICE
-      // ===================================================
-
-      const updatedOrderArray =
-        [...targetOrderArray];
-
-      updatedOrderArray[
-        serviceArrayIndex
-      ] = {
-        ...serviceItem,
-
-        booking: {
-          ...(serviceItem.booking || {}),
-          status: "cancelled",
-        },
-      };
-
-      // ===================================================
-      // CHECK WHETHER ALL SERVICES ARE CANCELLED
-      // ===================================================
-
-      const serviceStatuses =
-        updatedOrderArray
-          .slice(1)
-          .map(
-            (item) =>
-              item?.booking?.status ||
-              targetOrderArray[0]?.status ||
-              "pending"
-          );
-
-      const allCancelled =
-        serviceStatuses.length > 0 &&
-        serviceStatuses.every(
-          (status) =>
-            status === "cancelled"
-        );
-
-      // Keep header as cancelled only
-      // when every service is cancelled.
-      const updatedHeader = {
-        ...targetOrderArray[0],
-        ...(allCancelled
-          ? {
-              status: "cancelled",
-            }
-          : {}),
-      };
-
-      updatedOrderArray[0] =
-        updatedHeader;
-
-      // ===================================================
-      // REPLACE ONLY THIS ORDER ARRAY
-      // ===================================================
-
-      const updatedOrderData =
-        [...order.order_data];
-
-      updatedOrderData[
-        targetArrayIndex
-      ] = updatedOrderArray;
-
-      order.order_data =
-        updatedOrderData;
-
-      await order.save();
-
-      console.log(
-        `Service ${parsedServiceIndex} in booking ${bookingId} cancelled successfully for ${user.email}`
-      );
-
-      // ===================================================
-      // RESPONSE
-      // ===================================================
-
-      return res.json({
-        success: true,
-        message:
-          "Service booking cancelled successfully.",
-        bookingId,
-        serviceIndex:
-          parsedServiceIndex,
-        status: "cancelled",
-      });
-    } catch (error) {
-      console.error(
-        "Cancel booking error:",
-        error
-      );
-
-      return res.status(500).json({
+    if (!bookingId) {
+      return res.status(400).json({
         success: false,
-        error:
-          "Server error while cancelling booking.",
-        message: error.message,
+        error: "Booking ID is required.",
       });
     }
+
+    // ===================================================
+    // VALIDATE SERVICE INDEX
+    // ===================================================
+
+    const parsedServiceIndex = Number(serviceIndex);
+
+    if (!Number.isInteger(parsedServiceIndex) || parsedServiceIndex < 0) {
+      return res.status(400).json({
+        success: false,
+        error: "A valid service index is required.",
+      });
+    }
+
+    // ===================================================
+    // GET AUTHENTICATED USER
+    // ===================================================
+
+    if (!req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        error: "Authentication information is missing.",
+      });
+    }
+
+    const user = await User.findById(req.user.id).select("email");
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: "User account not found.",
+      });
+    }
+
+    if (!user.email) {
+      return res.status(401).json({
+        success: false,
+        error: "Your account does not have an email address.",
+      });
+    }
+
+    // ===================================================
+    // FIND USER'S ORDER
+    // ===================================================
+
+    const order = await Order.findOne({
+      email: user.email,
+    }).lean();
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        error: "No booking record was found for your account.",
+      });
+    }
+
+    // ===================================================
+    // FIND EXACT ORDER
+    // ===================================================
+
+    let targetOrderArray = null;
+
+    for (const orderArray of order.order_data || []) {
+      if (!Array.isArray(orderArray) || orderArray.length === 0) {
+        continue;
+      }
+
+      const header = orderArray[0];
+
+      if (header && String(header.id) === String(bookingId)) {
+        targetOrderArray = orderArray;
+        break;
+      }
+    }
+
+    if (!targetOrderArray) {
+      return res.status(404).json({
+        success: false,
+        error: "Booking not found in your account.",
+      });
+    }
+
+    // ===================================================
+    // FIND EXACT SERVICE
+    //
+    // serviceIndex 0 = first service
+    // serviceIndex 1 = second service
+    // serviceIndex 2 = third service
+    //
+    // orderArray[0] = booking header
+    // orderArray[1] = service 0
+    // orderArray[2] = service 1
+    // orderArray[3] = service 2
+    // ===================================================
+
+    const serviceArrayIndex = parsedServiceIndex + 1;
+
+    const serviceItem = targetOrderArray[serviceArrayIndex];
+
+    if (!serviceItem) {
+      return res.status(404).json({
+        success: false,
+        error: "Selected service booking was not found.",
+      });
+    }
+
+    // ===================================================
+    // CURRENT SERVICE STATUS
+    // ===================================================
+
+    const currentStatus = serviceItem?.booking?.status || targetOrderArray[0]?.status || "pending";
+
+    console.log(`Booking ${bookingId}, service ${parsedServiceIndex}, current status: ${currentStatus}`);
+
+    // ===================================================
+    // CHECK CANCELLATION ELIGIBILITY
+    // ===================================================
+
+    const cancellableStatuses = ["confirmed", "assigning", "assigned"];
+
+    if (!cancellableStatuses.includes(currentStatus)) {
+      let message = "This service can no longer be cancelled.";
+
+      switch (currentStatus) {
+        case "on_the_way":
+          message = "This service cannot be cancelled because the professional is already on the way.";
+          break;
+
+        case "arrived":
+          message = "This service cannot be cancelled because the professional has arrived.";
+          break;
+
+        case "in_progress":
+          message = "This service cannot be cancelled because the service is already in progress.";
+          break;
+
+        case "completed":
+          message = "A completed service cannot be cancelled.";
+          break;
+
+        case "cancelled":
+          message = "This service has already been cancelled.";
+          break;
+      }
+
+      return res.status(400).json({
+        success: false,
+        error: message,
+      });
+    }
+
+    // ===================================================
+    // CANCEL ONLY THIS SERVICE
+    //
+    // IMPORTANT:
+    // Atomic MongoDB update.
+    // No order.save().
+    // ===================================================
+
+    const serviceStatusPath = `order_data.$[booking].${serviceArrayIndex}.booking.status`;
+
+    const updateResult = await Order.updateOne(
+      {
+        email: user.email,
+
+        order_data: {
+          $elemMatch: {
+            $elemMatch: {
+              id: bookingId,
+            },
+          },
+        },
+      },
+      {
+        $set: {
+          [serviceStatusPath]: "cancelled",
+        },
+      },
+      {
+        arrayFilters: [
+          {
+            "booking.0.id": bookingId,
+
+            [`booking.${serviceArrayIndex}.booking.status`]: {
+              $in: cancellableStatuses,
+            },
+          },
+        ],
+      },
+    );
+
+    // ===================================================
+    // CHECK WHETHER UPDATE ACTUALLY HAPPENED
+    // ===================================================
+
+    if (updateResult.modifiedCount === 0) {
+      // Re-read the service to determine
+      // whether another process changed it.
+      const latestOrder = await Order.findOne({
+        email: user.email,
+      }).lean();
+
+      const latestOrderArray = latestOrder?.order_data?.find((array) => Array.isArray(array) && array[0] && String(array[0].id) === String(bookingId));
+
+      const latestService = latestOrderArray?.[serviceArrayIndex];
+
+      const latestStatus = latestService?.booking?.status;
+
+      if (latestStatus === "cancelled") {
+        return res.json({
+          success: true,
+          message: "Service booking was already cancelled.",
+          bookingId,
+          serviceIndex: parsedServiceIndex,
+          status: "cancelled",
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        error: "This service can no longer be cancelled.",
+      });
+    }
+
+    console.log(`Service ${parsedServiceIndex} in booking ${bookingId} cancelled successfully for ${user.email}`);
+
+    // ===================================================
+    // UPDATE HEADER ONLY IF ALL SERVICES ARE CANCELLED
+    // ===================================================
+
+    const latestOrder = await Order.findOne({
+      email: user.email,
+    }).lean();
+
+    const latestOrderArray = latestOrder?.order_data?.find((array) => Array.isArray(array) && array[0] && String(array[0].id) === String(bookingId));
+
+    if (latestOrderArray) {
+      const serviceStatuses = latestOrderArray
+        .slice(1)
+        .filter((item) => item?.booking)
+        .map((item) => item.booking.status || latestOrderArray[0]?.status || "pending");
+
+      const allCancelled = serviceStatuses.length > 0 && serviceStatuses.every((status) => status === "cancelled");
+
+      if (allCancelled) {
+        await Order.updateOne(
+          {
+            email: user.email,
+            order_data: {
+              $elemMatch: {
+                $elemMatch: {
+                  id: bookingId,
+                },
+              },
+            },
+          },
+          {
+            $set: {
+              "order_data.$[booking].0.status": "cancelled",
+            },
+          },
+          {
+            arrayFilters: [
+              {
+                "booking.0.id": bookingId,
+              },
+            ],
+          },
+        );
+      }
+    }
+
+    // ===================================================
+    // RESPONSE
+    // ===================================================
+
+    return res.json({
+      success: true,
+      message: "Service booking cancelled successfully.",
+      bookingId,
+      serviceIndex: parsedServiceIndex,
+      status: "cancelled",
+    });
+  } catch (error) {
+    console.error("Cancel booking error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Server error while cancelling booking.",
+      message: error.message,
+    });
   }
-);
+});
 
 module.exports = router;

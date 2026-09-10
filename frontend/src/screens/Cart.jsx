@@ -219,7 +219,7 @@ export default function Cart() {
       <>
         <Navigationbar />
 
-        <main className="min-h-[70vh] bg-black px-5 py-24 text-white">
+        <main className="min-h-screen flex items-center bg-black px-5 py-24 text-white">
           <div className="mx-auto flex max-w-xl flex-col items-center text-center">
             <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
               <LuCalendarDays size={26} className="text-white/50" />
@@ -244,9 +244,9 @@ export default function Cart() {
     <>
       <Navigationbar />
 
-      <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-black px-3 pb-16 pt-24 text-white sm:px-6 sm:pb-20 sm:pt-28">
+      <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-black  text-white">
         {" "}
-        <div className="mx-auto w-full min-w-0 max-w-7xl">
+        <div className="mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 pb-20 pt-24 sm:pt-32">
           {" "}
           {/* Header */}
           <div className="mb-8 sm:mb-10">
@@ -278,11 +278,7 @@ export default function Cart() {
                     {/* Service header */}
                     <div className="flex min-w-0 gap-3 p-4 sm:gap-4 sm:p-6">
                       {" "}
-                      <img
-                        src={item.img}
-                        alt={item.name}
-                        className="h-20 w-20 shrink-0 rounded-2xl object-cover sm:h-28 sm:w-28"
-                      />
+                      <img src={item.img} alt={item.name} className="h-20 w-20 shrink-0 rounded-2xl object-cover sm:h-28 sm:w-28" />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-3">
                           <div>
@@ -410,17 +406,12 @@ export default function Cart() {
                               )}
                             </div>
 
-                            <LuChevronDown
-                              size={16}
-                              className={`shrink-0 text-white/35 transition-transform duration-200 ${openProfessional === index ? "rotate-180" : ""}`}
-                            />
+                            <LuChevronDown size={16} className={`shrink-0 text-white/35 transition-transform duration-200 ${openProfessional === index ? "rotate-180" : ""}`} />
                           </button>
 
                           {/* Dropdown */}
                           {openProfessional === index && (
-                            <div
-                              className="absolute left-0 right-0 bottom-[calc(100%+8px)] z-30 w-full max-w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111111] p-1.5 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
-                            >
+                            <div className="absolute left-0 right-0 bottom-[calc(100%+8px)] z-30 w-full max-w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111111] p-1.5 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
                               <div className="px-3 pb-2 pt-2">
                                 <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/30">Recommended professionals</p>
                               </div>
@@ -441,9 +432,7 @@ export default function Cart() {
                                       className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${selected ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}`}
                                     >
                                       {/* Avatar */}
-                                      <div
-                                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-sm font-semibold text-white/70"
-                                      >
+                                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-sm font-semibold text-white/70">
                                         {professional.name.charAt(0)}
                                       </div>
 
@@ -452,7 +441,7 @@ export default function Cart() {
                                         <div className="flex items-center gap-2">
                                           <p className="min-w-0 truncate text-sm font-medium text-white/80">{professional.name}</p>
 
-                                          {professional.verified && <span className="text-[9px] text-cyan-300/80">Verified</span>}
+                                          {professional.verified && <span className="text-[9px] text-cyan-300/70">Verified</span>}
                                         </div>
 
                                         <p className="mt-1 text-xs text-white/35">

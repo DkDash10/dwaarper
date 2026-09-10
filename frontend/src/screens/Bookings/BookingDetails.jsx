@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { AlertTriangle, ArrowLeft, CalendarDays, Check, Clock3, MapPin, ShieldCheck, UserRound, ChevronRight, Loader2, CircleAlert } from "lucide-react";
+import { ArrowLeft, CalendarDays, Check, Clock3, MapPin, ShieldCheck, UserRound, ChevronRight, Loader2, CircleAlert } from "lucide-react";
 import Navigationbar from "../../components/Navigationbar";
+import Footer from "../../components/Footer";
 
 const API_BASE_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
 
@@ -383,7 +384,7 @@ const BookingDetails = () => {
 
           {/* Header */}
           <div className="mt-8">
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/80">{statusInfo.headerLabel}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/70">{statusInfo.headerLabel}</p>
 
             <div className="mt-3 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
@@ -392,7 +393,7 @@ const BookingDetails = () => {
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/40">{statusInfo.description}</p>
               </div>
 
-              <div className="flex items-center gap-2 rounded-full border border-cyan-400/15 bg-cyan-400/[0.05] px-3.5 py-2 text-[11px] text-cyan-300/80">
+              <div className="flex items-center gap-2 rounded-full border border-cyan-400/15 bg-cyan-400/[0.05] px-3.5 py-2 text-[11px] text-cyan-300/70">
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan-300" />
                 {statusInfo.label}
               </div>
@@ -662,6 +663,7 @@ const BookingDetails = () => {
           </div>
         </div>
       </main>
+      <Footer />
       {showCancelModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-md">
           <div className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-7 shadow-2xl">
