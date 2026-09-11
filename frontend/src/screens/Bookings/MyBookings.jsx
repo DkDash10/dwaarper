@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, Clock3, ChevronLeft, ChevronRight, PackageCheck, CircleAlert, Loader2, MapPin } from "lucide-react";
 import Navigationbar from "../../components/Navigationbar";
 import Footer from "../../components/Footer";
 
-const API_BASE_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
+const API_BASE_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
 
 const MyBookings = () => {
   const [orders, setOrders] = useState([]);
@@ -119,7 +120,7 @@ const MyBookings = () => {
     return order?.status === "completed";
   };
 
-  const isUpcoming = (order) => {
+  const isUpcoming = useCallback((order) => {
     if (isCompleted(order)) return false;
 
     const bookingDate = getBookingDate(order);
@@ -131,7 +132,7 @@ const MyBookings = () => {
     const dateTime = new Date(`${bookingDate}${bookingTime ? `T${bookingTime}` : "T23:59:59"}`);
 
     return dateTime >= new Date();
-  };
+  }, []);
 
   const filteredOrders = useMemo(() => {
     let filtered = [...orders];
@@ -157,7 +158,7 @@ const MyBookings = () => {
     });
 
     return filtered;
-  }, [orders, activeFilter]);
+  }, [orders, activeFilter, isUpcoming]);
 
   // =========================================================
   // PAGINATION

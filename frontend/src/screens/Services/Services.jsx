@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,7 +10,8 @@ import ServiceCard from "./ServiceCard";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const API_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
+const API_BASE_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
 
 /* -------------------------------------------------------
    Helpers
@@ -51,7 +52,7 @@ export default function Services() {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/api/service_data`, {
+      const response = await fetch(`${API_BASE_URL}/api/service_data`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -134,7 +135,7 @@ export default function Services() {
 
   const getRowId = (category) => `service-row-${slugify(category)}`;
 
-  const updateScrollState = (category) => {
+  const updateScrollState = useCallback((category) => {
     const row = document.getElementById(getRowId(category));
 
     if (!row) return;
@@ -150,7 +151,7 @@ export default function Services() {
         canScrollRight,
       },
     }));
-  };
+  }, []);
 
   const scrollServices = (category, direction) => {
     const row = document.getElementById(getRowId(category));
@@ -199,7 +200,7 @@ export default function Services() {
     return () => {
       cleanupFunctions.forEach((cleanup) => cleanup());
     };
-  }, [groupedServices]);
+  }, [groupedServices, updateScrollState]);
 
   /* -------------------------------------------------------
      GSAP animations

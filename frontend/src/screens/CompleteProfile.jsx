@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoLocationOutline } from "react-icons/io5";
 
-const API_BASE_URL = window.location.hostname === "localhost"
-  ? "http://localhost:5000"
-  : "https://dwaarper.onrender.com";
+const API_BASE_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
 
 export default function CompleteProfile() {
   const navigate = useNavigate();
@@ -212,11 +211,7 @@ export default function CompleteProfile() {
               <div className="relative">
                 <input type="text" name="location" placeholder="Mumbai, Maharashtra" value={form.location} onChange={handleChange} className={`${inputClass} pr-14`} required />
 
-                <button
-                  type="button"
-                  onClick={detectLocation}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-cyan-300 transition hover:text-cyan-200"
-                >
+                <button type="button" onClick={detectLocation} className="absolute right-4 top-1/2 -translate-y-1/2 text-cyan-300 transition hover:text-cyan-200">
                   <IoLocationOutline size={22} />
                 </button>
                 {errors.location && <p className="text-red-500 text-xs mt-2">{errors.location}</p>}

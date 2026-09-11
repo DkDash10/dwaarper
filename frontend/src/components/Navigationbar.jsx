@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LuShoppingCart, LuX, LuMenu, LuPackage, LuLogOut, LuMapPin } from "react-icons/lu";
 import { useCart } from "./ContextReducer";
 
-const API_BASE_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
+const API_BASE_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
 
 export default function Navigationbar() {
   const cart = useCart();
@@ -22,8 +23,6 @@ export default function Navigationbar() {
   const [isTop, setIsTop] = useState(true);
 
   const lastScrollY = useRef(0);
-
-  const location = useLocation();
 
   const handleFooterNavigation = () => {
     requestAnimationFrame(() => {
@@ -314,7 +313,7 @@ export default function Navigationbar() {
           {/* LOGO */}
           {/* ============================================================ */}
 
-          <Link to="/" className="uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[11px] sm:text-xs text-white shrink-0">
+          <Link to="/" className="uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[11px] sm:text-xs text-white shrink-0 nav-brand-target">
             DWAARPER
           </Link>
 
@@ -494,19 +493,19 @@ export default function Navigationbar() {
         {loggedIn && (
           <div className="px-3 py-3 border-b border-white/5">
             <div className="flex items-center gap-3">
-              <div className="h-11 w-11 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white text-sm font-semibold">
+              <div className="h-11 w-11 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white text-md font-semibold">
                 {user?.name?.[0]?.toUpperCase() || "U"}
               </div>
 
               <div className="min-w-0">
-                <div className="truncate text-sm font-medium text-white">{user?.name || "User"}</div>
+                <div className="truncate text-md font-medium text-white">{user?.name || "User"}</div>
 
-                <div className="truncate text-xs text-white/40">{user?.location || "India"}</div>
+                <div className="truncate text-sm text-white/40">{user?.location || "India"}</div>
               </div>
             </div>
 
             <Link to="/profile" onClick={closeMobileMenu} className="mt-4 flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 transition-all hover:bg-white/10">
-              <p className="text-sm font-medium text-white">Manage your profile</p>
+              <p className="text-md font-medium text-white">Manage your profile</p>
             </Link>
           </div>
         )}
@@ -516,27 +515,13 @@ export default function Navigationbar() {
         <div className="flex-1 overflow-y-auto px-4 py-4">
           {loggedIn ? (
             <div className="space-y-1">
-              {/* CART */}
-
-              <Link
-                to="/cart"
-                onClick={closeMobileMenu}
-                className="flex min-h-12 items-center justify-between rounded-xl px-3 py-3 text-sm text-white/70 transition-colors hover:bg-white/5 hover:text-white"
-              >
-                <span className="flex items-center gap-3">
-                  <LuShoppingCart size={18} />
-                  Cart
-                </span>
-
-                {cartCount > 0 && <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-black">{cartCount}</span>}
-              </Link>
 
               {/* ORDERS */}
 
               <Link
                 to="/mybookings"
                 onClick={closeMobileMenu}
-                className="flex min-h-12 items-center gap-3 rounded-xl py-3 text-sm text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                className="flex min-h-12 items-center gap-3 rounded-xl py-3 text-md text-white/70 transition-colors hover:bg-white/5 hover:text-white"
               >
                 <LuPackage size={18} />
                 My Bookings
@@ -550,7 +535,7 @@ export default function Navigationbar() {
                   setMobileOpen(false);
                   setShowLogoutModal(true);
                 }}
-                className="flex min-h-12 w-full items-center gap-3 rounded-xl py-3 text-left text-sm text-red-400 transition-colors hover:bg-red-500/10"
+                className="flex min-h-12 w-full items-center gap-3 rounded-xl py-3 text-left text-md text-red-400 transition-colors hover:bg-red-500/10"
               >
                 <LuLogOut size={18} />
                 Logout

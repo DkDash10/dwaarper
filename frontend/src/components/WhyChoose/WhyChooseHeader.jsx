@@ -1,7 +1,7 @@
 export default function WhyChooseHeader() {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <span className="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-300">WHY DWAARPER</span>
+      <span className="uppercase tracking-[0.35em] text-cyan-300">WHY DWAARPER</span>
 
       <h2 className="mt-5 text-5xl font-bold leading-tight text-white">
         Everything You Need,

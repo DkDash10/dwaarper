@@ -80,7 +80,7 @@ export default function ServiceFilters({ search, setSearch, categories, activeCa
         </div>
 
         {/* Categories */}
-        <div className="-mx-1 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="-mx-1 mt-2 overflow-x-auto pb-1 scrollbar-hide">
           <div className="flex min-w-max gap-2 px-1">
             {/* All */}
             <button

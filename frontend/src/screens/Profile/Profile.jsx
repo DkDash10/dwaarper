@@ -7,9 +7,8 @@ import Footer from "../../components/Footer";
 import ProfileHeader from "./ProfileHeader";
 import ProfileSection from "./ProfileSection";
 
-const API_URL = window.location.hostname === "localhost"
-  ? "http://localhost:5000"
-  : "https://dwaarper.onrender.com";
+const API_BASE_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -47,7 +46,7 @@ export default function Profile() {
       }
 
       try {
-        const response = await fetch(`${API_URL}/api/auth/me`, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
           method: "GET",
           headers: {
             "auth-token": token,
@@ -133,7 +132,7 @@ export default function Profile() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`${API_URL}/api/auth/profile`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
         method: "PUT",
 
         headers: {
@@ -186,7 +185,7 @@ export default function Profile() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`${API_URL}/api/auth/delete-account`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/delete-account`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -242,14 +241,9 @@ export default function Profile() {
 
   return (
     <>
-    
       {showLogoutModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-md"
-        >
-          <div
-            className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-7 shadow-2xl"
-          >
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-md">
+          <div className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-7 shadow-2xl">
             <div>
               <h3 className="text-xl font-semibold text-white">Sign out of DwaarPer?</h3>
 
@@ -277,14 +271,9 @@ export default function Profile() {
         </div>
       )}
 
-
       {showDeleteModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-md"
-        >
-          <div
-            className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-7 shadow-2xl"
-          >
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-md">
+          <div className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-7 shadow-2xl">
             {/* Header */}
 
             <div className="mt-6">
@@ -340,9 +329,7 @@ export default function Profile() {
         {/* Background */}
 
         <div className="pointer-events-none fixed inset-0">
-          <div
-            className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-cyan-500/[0.04] blur-[140px]"
-          />
+          <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-cyan-500/[0.04] blur-[140px]" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 pb-16 sm:pb-24 pt-24 sm:pt-32">
@@ -416,14 +403,10 @@ export default function Profile() {
 
             {/* Security */}
 
-            <ProfileSection title="Security" description="Manage your account security.">
-              <div
-                className="flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
-              >
+            {/* <ProfileSection title="Security" description="Manage your account security.">
+              <div className="flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
                 <div className="flex items-center gap-4">
-                  <div
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04]"
-                  >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04]">
                     <LuLock size={17} className="text-white/50" />
                   </div>
 
@@ -440,7 +423,7 @@ export default function Profile() {
                   </button>
                 )}
               </div>
-            </ProfileSection>
+            </ProfileSection> */}
 
             {/* Actions */}
 
@@ -456,9 +439,7 @@ export default function Profile() {
                   className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-5 text-left transition-all duration-300 hover:border-white/[0.14] hover:bg-white/[0.04]"
                 >
                   <div className="flex items-center gap-4">
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04]"
-                    >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04]">
                       <LuLogOut size={17} className="text-white/50" />
                     </div>
 
@@ -480,9 +461,7 @@ export default function Profile() {
                   className="flex w-full items-center justify-between rounded-2xl border border-red-500/10 bg-red-500/[0.02] p-4 text-left transition-all duration-300 hover:border-red-500/20 hover:bg-red-500/[0.04] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <div className="flex items-center gap-4">
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06]"
-                    >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06]">
                       <LuTrash2 size={17} className="text-red-300/70" />
                     </div>
 
@@ -538,11 +517,7 @@ function InputField({ label, name, value, onChange, disabled = false, placeholde
 function InfoItem({ icon, label, value }) {
   return (
     <div className="flex items-start gap-4">
-      <div
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/45"
-      >
-        {icon}
-      </div>
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/45">{icon}</div>
 
       <div className="min-w-0">
         <p className="text-[10px] uppercase tracking-[.18em] text-white/30">{label}</p>

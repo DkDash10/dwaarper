@@ -151,10 +151,10 @@ export default function Cart() {
         return;
       }
 
-      const API_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
-
+      const API_BASE_URL =
+        window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
       // Get the currently logged-in user's details
-      const userResponse = await fetch(`${API_URL}/api/auth/me`, {
+      const userResponse = await fetch(`${API_BASE_URL}/api/auth/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +188,7 @@ export default function Cart() {
       localStorage.setItem("cartData", JSON.stringify(products));
 
       // Create Stripe Checkout Session through backend
-      const response = await fetch(`${API_URL}/api/create-checkout-session`, {
+      const response = await fetch(`${API_BASE_URL}/api/create-checkout-session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

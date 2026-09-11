@@ -23,21 +23,16 @@ const Cancel = () => {
         }
 
         const API_BASE_URL =
-          window.location.hostname === "localhost"
-            ? "http://localhost:5000"
-            : "https://dwaarper.onrender.com";
+          window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
 
         // Get authenticated user
-        const userResponse = await fetch(
-          `${API_BASE_URL}/api/auth/me`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "auth-token": token,
-            },
-          }
-        );
+        const userResponse = await fetch(`${API_BASE_URL}/api/auth/me`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
 
         const userResult = await userResponse.json();
 
@@ -46,26 +41,21 @@ const Cancel = () => {
         }
 
         // Remove pending Stripe order
-        const response = await fetch(
-          `${API_BASE_URL}/api/cancel-payment`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              sessionId,
-              email: userResult.user.email,
-            }),
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/api/cancel-payment`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sessionId,
+            email: userResult.user.email,
+          }),
+        });
 
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(
-            result?.error || "Failed to cancel order."
-          );
+          throw new Error(result?.error || "Failed to cancel order.");
         }
 
         console.log("Order cancelled:", result);
@@ -92,7 +82,6 @@ const Cancel = () => {
 
       <div className="relative w-full max-w-[500px]">
         <div className="rounded-[28px] border border-white/[0.09] bg-[#111111]/90 backdrop-blur-2xl px-7 sm:px-12 py-12 sm:py-14 text-center shadow-[0_30px_100px_rgba(0,0,0,0.55)]">
-
           {/* Loading */}
           {status === "loading" && (
             <>
@@ -100,18 +89,11 @@ const Cancel = () => {
                 <div className="w-7 h-7 rounded-full border-2 border-white/15 border-t-white/80 animate-spin" />
               </div>
 
-              <span className="block mb-3 text-[10px] font-bold tracking-[0.25em] text-white/35">
-                DWAARPER
-              </span>
+              <span className="block mb-3 text-[10px] font-bold tracking-[0.25em] text-white/35">DWAARPER</span>
 
-              <h1 className="text-[28px] sm:text-[36px] leading-tight tracking-[-0.035em] font-semibold">
-                Updating your order
-              </h1>
+              <h1 className="text-[28px] sm:text-[36px] leading-tight tracking-[-0.035em] font-semibold">Updating your order</h1>
 
-              <p className="mt-4 text-sm leading-7 text-white/50 max-w-[380px] mx-auto">
-                We're safely updating your booking after the
-                checkout was cancelled.
-              </p>
+              <p className="mt-4 text-sm leading-7 text-white/50 max-w-[380px] mx-auto">We're safely updating your booking after the checkout was cancelled.</p>
 
               <div className="inline-flex items-center gap-2 mt-7 px-4 py-2 rounded-full border border-white/[0.07] bg-white/[0.035] text-[11px] text-white/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" />
@@ -127,18 +109,11 @@ const Cancel = () => {
                 <TbShoppingCartX className="w-9 h-9 stroke-[1.5]" />
               </div>
 
-              <span className="block mb-3 text-[10px] font-bold tracking-[0.25em] text-white/35">
-                DWAARPER
-              </span>
+              <span className="block mb-3 text-[10px] font-bold tracking-[0.25em] text-white/35">DWAARPER</span>
 
-              <h1 className="text-[29px] sm:text-[36px] leading-tight tracking-[-0.035em] font-semibold">
-                Payment cancelled
-              </h1>
+              <h1 className="text-[29px] sm:text-[36px] leading-tight tracking-[-0.035em] font-semibold">Payment cancelled</h1>
 
-              <p className="mt-4 text-sm leading-7 text-white/50 max-w-[380px] mx-auto">
-                No payment was completed and your order has not
-                been placed.
-              </p>
+              <p className="mt-4 text-sm leading-7 text-white/50 max-w-[380px] mx-auto">No payment was completed and your order has not been placed.</p>
 
               <div className="inline-flex items-center gap-2 mt-7 px-4 py-2 rounded-full border border-white/[0.07] bg-white/[0.035] text-[11px] text-white/50">
                 <span className="text-sm">×</span>
@@ -152,10 +127,7 @@ const Cancel = () => {
                 Return to cart
               </Link>
 
-              <Link
-                to="/"
-                className="block mt-5 text-[12px] text-white/35 transition-colors duration-300 hover:text-white/70"
-              >
+              <Link to="/" className="block mt-5 text-[12px] text-white/35 transition-colors duration-300 hover:text-white/70">
                 Back to home
               </Link>
             </>
@@ -168,18 +140,11 @@ const Cancel = () => {
                 <span className="text-2xl font-medium">!</span>
               </div>
 
-              <span className="block mb-3 text-[10px] font-bold tracking-[0.25em] text-white/35">
-                DWAARPER
-              </span>
+              <span className="block mb-3 text-[10px] font-bold tracking-[0.25em] text-white/35">DWAARPER</span>
 
-              <h1 className="text-[28px] sm:text-[35px] leading-tight tracking-[-0.035em] font-semibold">
-                Payment cancelled
-              </h1>
+              <h1 className="text-[28px] sm:text-[35px] leading-tight tracking-[-0.035em] font-semibold">Payment cancelled</h1>
 
-              <p className="mt-4 text-sm leading-7 text-white/50 max-w-[390px] mx-auto">
-                Your Stripe checkout was cancelled. You can
-                return to your cart and try again.
-              </p>
+              <p className="mt-4 text-sm leading-7 text-white/50 max-w-[390px] mx-auto">Your Stripe checkout was cancelled. You can return to your cart and try again.</p>
 
               <div className="flex flex-col items-center gap-3 mt-7">
                 <Link

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 
 const serviceLinks = [
@@ -24,8 +24,6 @@ const legalLinks = [
 const linkClass = "group inline-flex items-center gap-1.5 text-sm text-white/40 transition-all duration-300 hover:translate-x-1 hover:text-white";
 
 export default function Footer() {
-  const location = useLocation();
-
   const handleFooterNavigation = () => {
     requestAnimationFrame(() => {
       window.scrollTo({

@@ -11,6 +11,7 @@ const { startBookingLifecycle } = require("./services/BookingLifecycle");
 
 mongoDB();
 startBookingLifecycle();
+
 const allowedOrigins = ["http://localhost:3000", "http://localhost:3001", "https://dwaarper-wow5.onrender.com", "https://dwaarper.onrender.com", process.env.FRONTEND_URL].filter(
   Boolean,
 );
@@ -18,7 +19,9 @@ const allowedOrigins = ["http://localhost:3000", "http://localhost:3001", "https
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      const isLocalNetwork = origin && /^http:\/\/192\.168\.\d+\.\d+:3000$/.test(origin);
+
+      if (!origin || allowedOrigins.includes(origin) || isLocalNetwork) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
@@ -59,6 +62,6 @@ app.use("/api", require("./Routes/Contact"));
 app.use("/api/cart", require("./Routes/Cart"));
 app.use("/api", professionalRoutes);
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Example app listening on port ${port}`);
 });

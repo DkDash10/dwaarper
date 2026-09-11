@@ -4,15 +4,17 @@ import { ArrowLeft, CalendarDays, Check, Clock3, MapPin, ShieldCheck, UserRound,
 import Navigationbar from "../../components/Navigationbar";
 import Footer from "../../components/Footer";
 
-const API_BASE_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
+const API_BASE_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
 
 const BookingDetails = () => {
   const { orderId, serviceIndex } = useParams();
   const location = useLocation();
+  const hasInitialBooking = Boolean(location.state?.booking);
 
   const [booking, setBooking] = useState(location.state?.booking || null);
 
-  const [loading, setLoading] = useState(!location.state?.booking);
+  const [loading, setLoading] = useState(!hasInitialBooking);
 
   const [error, setError] = useState(null);
   const [cancelling, setCancelling] = useState(false);
@@ -106,7 +108,7 @@ const BookingDetails = () => {
      * If booking was passed from MyBookings, render immediately.
      * Then fetch again so the page gets the latest backend status.
      */
-    fetchBooking(!booking);
+    fetchBooking(!hasInitialBooking);
 
     // Refresh status every 30 seconds
     const interval = setInterval(() => {
@@ -117,7 +119,7 @@ const BookingDetails = () => {
       isMounted = false;
       clearInterval(interval);
     };
-  }, [orderId, serviceIndex]);
+  }, [hasInitialBooking, orderId, serviceIndex]);
 
   const bookings = useMemo(() => {
     if (!booking) return [];

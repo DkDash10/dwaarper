@@ -78,6 +78,16 @@ textarea:focus {
   scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
 }
 
+/* Hide scrollbars while keeping horizontal/vertical scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Chrome / Edge / Safari */
 .booking-scrollbar::-webkit-scrollbar {
   width: 4px;

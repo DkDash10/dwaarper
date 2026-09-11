@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { BiShow, BiHide } from "react-icons/bi";
 import { FcGoogle } from "react-icons/fc";
 
-const API_BASE_URL = window.location.hostname === "localhost"
-  ? "http://localhost:5000"
-  : "https://dwaarper.onrender.com";
+const API_BASE_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -165,7 +164,7 @@ export default function Signup() {
             {/* NAME */}
             <div>
               <label className="text-xs text-zinc-400 uppercase tracking-wide mb-1 block">Full Name</label>
-              <input type="text" name="name" placeholder="John Wick"  value={form.name} onChange={handleChange} className={inputClass} required />
+              <input type="text" name="name" placeholder="John Wick" value={form.name} onChange={handleChange} className={inputClass} required />
               {errors.name && <p className="text-red-500 text-xs mt-2">{errors.name}</p>}
             </div>
 
@@ -180,7 +179,15 @@ export default function Signup() {
             <div>
               <label className="text-xs text-zinc-400 uppercase tracking-wide mb-1 block">Password</label>
               <div className="relative">
-                <input type={showPassword ? "text" : "password"} name="password"  value={form.password} placeholder="••••••••" onChange={handleChange} className={`${inputClass} pr-12`} required />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={form.password}
+                  placeholder="••••••••"
+                  onChange={handleChange}
+                  className={`${inputClass} pr-12`}
+                  required
+                />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white">
                   {showPassword ? <BiHide className="text-cyan-300" size={22} /> : <BiShow className="text-cyan-300" size={22} />}
                 </button>

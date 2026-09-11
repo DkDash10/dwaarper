@@ -3,8 +3,9 @@ import React, { createContext, useContext, useEffect, useReducer, useCallback } 
 const CartStateContext = createContext();
 const CartDispatchContext = createContext();
 
-const API_URL = window.location.hostname === "localhost" ? "http://localhost:5000" : "https://dwaarper.onrender.com";
-
+const API_BASE_URL =
+  window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
+  
 /*
 |--------------------------------------------------------------------------
 | NORMALIZE CART
@@ -128,7 +129,7 @@ export const CartProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/cart`, {
+      const response = await fetch(`${API_BASE_URL}/api/cart`, {
         method: "GET",
 
         headers: {
@@ -219,7 +220,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-          const response = await fetch(`${API_URL}/api/cart/add`, {
+          const response = await fetch(`${API_BASE_URL}/api/cart/add`, {
             method: "POST",
 
             headers: {
@@ -301,7 +302,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-          const response = await fetch(`${API_URL}/api/cart/item/${itemId}`, {
+          const response = await fetch(`${API_BASE_URL}/api/cart/item/${itemId}`, {
             method: "DELETE",
 
             headers: {
@@ -356,7 +357,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-          const response = await fetch(`${API_URL}/api/cart/item/${action.itemId}`, {
+          const response = await fetch(`${API_BASE_URL}/api/cart/item/${action.itemId}`, {
             method: "PUT",
 
             headers: {
@@ -413,7 +414,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-          const response = await fetch(`${API_URL}/api/cart/clear`, {
+          const response = await fetch(`${API_BASE_URL}/api/cart/clear`, {
             method: "DELETE",
 
             headers: {

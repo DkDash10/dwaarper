@@ -1,9 +1,4 @@
-import {
-  LuSparkles,
-  LuDroplets,
-  LuZap,
-  LuSnowflake,
-} from "react-icons/lu";
+import { LuSparkles, LuDroplets, LuZap, LuSnowflake } from "react-icons/lu";
 
 export const HERO_SERVICES = [
   {
@@ -12,6 +7,7 @@ export const HERO_SERVICES = [
     phoneTitle: "Home Cleaning",
     subtitle: "Same-day service",
     price: "Starts ₹499",
+    categorySlug: "cleaning",
     color: "from-cyan-500/30 to-blue-500/10",
     icon: LuSparkles,
 
@@ -28,11 +24,12 @@ export const HERO_SERVICES = [
     phoneTitle: "Plumbing",
     subtitle: "Verified experts",
     price: "Starts ₹299",
+    categorySlug: "general-repair",
     color: "from-emerald-500/30 to-teal-500/10",
     icon: LuDroplets,
 
     position: {
-      className: "-right-24 top-24",
+      className: "-right-12 top-24",
       rotate: "rotate-6",
       delay: ".8s",
     },
@@ -44,6 +41,7 @@ export const HERO_SERVICES = [
     phoneTitle: "Electrician",
     subtitle: "30 min response",
     price: "Starts ₹249",
+    categorySlug: "general-repair",
     color: "from-yellow-500/30 to-orange-500/10",
     icon: LuZap,
 
@@ -60,11 +58,12 @@ export const HERO_SERVICES = [
     phoneTitle: "AC Repair",
     subtitle: "Quick diagnosis",
     price: "Starts ₹599",
+    categorySlug: "appliance-repair",
     color: "from-sky-500/30 to-indigo-500/10",
     icon: LuSnowflake,
 
     position: {
-      className: "-right-20 bottom-10",
+      className: "-right-12 bottom-10",
       rotate: "rotate-6",
       delay: "2.3s",
     },

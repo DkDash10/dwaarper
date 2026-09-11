@@ -64,7 +64,7 @@ export default function BookingJourney() {
   }, [activeStep]);
 
   return (
-    <section ref={sectionRef} className="relative py-8 overflow-hidden bg-[#090909]">
+    <section ref={sectionRef} className="relative pt-8 pb-8 md:pb-20 overflow-hidden bg-[#090909]">
       <div className="absolute left-0 top-20 h-[450px] w-[450px] rounded-full bg-cyan-500/10 blur-[180px]" />
 
       <div className="mx-auto max-w-7xl px-6">
