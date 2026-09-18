@@ -243,62 +243,53 @@ export default function SearchScreen({ active }) {
   }, []);
 
   return (
-    <div ref={rootRef} className="relative flex h-full flex-col bg-[#0b0b0b]">
+    <div ref={rootRef} className="relative flex justify-between min-h-[430px] w-full flex-col bg-[#0b0b0b] sm:min-h-[500px] lg:h-full">
       {/* Header */}
-
-      <div ref={titleRef} className="px-6 pt-16">
-        <h2 className="mt-2 text-3xl font-semibold text-white">Find Your Service</h2>
+      <div ref={titleRef} className="px-4 pt-6 sm:px-6 sm:pt-10 lg:pt-16">
+        <h2 className="mt-0 sm:mt-2 text-2xl font-semibold text-white sm:text-3xl">All Services</h2>
       </div>
-
       {/* Search */}
-
-      <div ref={searchRef} className="px-6 mt-6">
-        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 backdrop-blur-xl">
+      <div ref={searchRef} className="mt-4 px-4 sm:mt-6 sm:px-6">
+        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2.5 backdrop-blur-xl sm:py-3">
           <LuSearch data-search-icon className="text-white/40" />
-
           <span className="text-sm text-white/35">
             {typedText || "Search services..."}
             <span className="inline-block w-2">{cursorVisible ? "|" : ""}</span>
           </span>
         </div>
       </div>
-
       {/* Popular */}
-
-      <div ref={popularRef} className="mt-6 px-6">
+      <div ref={popularRef} className="mt-4 px-4 sm:mt-6 sm:px-6">
         <span className="text-sm tracking-[0.2em] uppercase text-cyan-300">Popular</span>
       </div>
-
       {/* Cards */}
-
-      <div ref={cardsRef} className="mt-4 flex-1 space-y-4 overflow-hidden px-6">
+      <div ref={cardsRef} className="mt-3 space-y-2 px-4 mb-6 sm:mb-2 sm:mt-4 sm:space-y-4 sm:px-6">
         {services.map((service, index) => {
           const Icon = service.icon;
 
           return (
             <div
               key={service.title}
-              className={`group rounded-2xl border p-3 transition-all duration-500 ${activeCard === index ? "border-cyan-400/40 bg-white/[0.05] scale-[1.01]" : "border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-white/[0.05]"}`}
+              className={`group rounded-2xl border p-3 transition-all duration-500 ${
+                activeCard === index ? "scale-[1.01] border-cyan-400/40 bg-white/[0.05]" : "border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-white/[0.05]"
+              }`}
             >
               <div className="flex items-center gap-3">
-                <div data-icon className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${service.color}`}>
+                <div data-icon className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br sm:h-14 sm:w-14 sm:rounded-2xl ${service.color}`}>
                   <Icon size={26} className="text-white" />
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-medium text-white">{service.title}</h3>
-
-                  <p className="mt-1 text-sm text-white/45">Available today</p>
+                  <h3 className="text-sm font-medium text-white sm:text-lg">{service.title}</h3>
+                  <p className="mt-0.5 text-[10px] text-white/45 sm:mt-1 sm:text-sm">Available today</p>
                 </div>
               </div>
             </div>
           );
         })}
       </div>
-
       {/* Bottom Nav */}
-
-      <div ref={navRef} className="mx-6">
+      <div ref={navRef} className="mx-6 hidden sm:block">
         <div className="flex items-center justify-around py-3">
           <LuHouse size={22} className="text-white" />
 

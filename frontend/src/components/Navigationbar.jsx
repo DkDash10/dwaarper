@@ -493,19 +493,19 @@ export default function Navigationbar() {
         {loggedIn && (
           <div className="px-3 py-3 border-b border-white/5">
             <div className="flex items-center gap-3">
-              <div className="h-11 w-11 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white text-md font-semibold">
+              <div className="h-11 w-11 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white text-base font-semibold">
                 {user?.name?.[0]?.toUpperCase() || "U"}
               </div>
 
               <div className="min-w-0">
-                <div className="truncate text-md font-medium text-white">{user?.name || "User"}</div>
+                <div className="truncate text-base font-medium text-white">{user?.name || "User"}</div>
 
                 <div className="truncate text-sm text-white/40">{user?.location || "India"}</div>
               </div>
             </div>
 
             <Link to="/profile" onClick={closeMobileMenu} className="mt-4 flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 transition-all hover:bg-white/10">
-              <p className="text-md font-medium text-white">Manage your profile</p>
+              <p className="text-base font-medium text-white">Manage your profile</p>
             </Link>
           </div>
         )}
@@ -515,13 +515,12 @@ export default function Navigationbar() {
         <div className="flex-1 overflow-y-auto px-4 py-4">
           {loggedIn ? (
             <div className="space-y-1">
-
               {/* ORDERS */}
 
               <Link
                 to="/mybookings"
                 onClick={closeMobileMenu}
-                className="flex min-h-12 items-center gap-3 rounded-xl py-3 text-md text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                className="flex min-h-12 items-center gap-3 rounded-xl py-3 text-base text-white/70 transition-colors hover:bg-white/5 hover:text-white"
               >
                 <LuPackage size={18} />
                 My Bookings
@@ -535,7 +534,7 @@ export default function Navigationbar() {
                   setMobileOpen(false);
                   setShowLogoutModal(true);
                 }}
-                className="flex min-h-12 w-full items-center gap-3 rounded-xl py-3 text-left text-md text-red-400 transition-colors hover:bg-red-500/10"
+                className="flex min-h-12 w-full items-center gap-3 rounded-xl py-3 text-left text-base text-red-400 transition-colors hover:bg-red-500/10"
               >
                 <LuLogOut size={18} />
                 Logout

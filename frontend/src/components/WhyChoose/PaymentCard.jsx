@@ -39,6 +39,7 @@ export default function PaymentCard() {
       });
 
       timeline
+
         // Payment panel appears
         .to(paymentRef.current, {
           y: 0,
@@ -95,7 +96,6 @@ export default function PaymentCard() {
         const y = event.clientY - rect.top;
 
         const rotateY = (x / rect.width - 0.5) * 5;
-
         const rotateX = -(y / rect.height - 0.5) * 5;
 
         gsap.to(card, {
@@ -133,14 +133,12 @@ export default function PaymentCard() {
       };
 
       card.addEventListener("mousemove", handleMouseMove);
-
       card.addEventListener("mouseleave", handleMouseLeave);
 
       return () => {
         observer.disconnect();
 
         card.removeEventListener("mousemove", handleMouseMove);
-
         card.removeEventListener("mouseleave", handleMouseLeave);
 
         timeline.kill();
@@ -151,51 +149,41 @@ export default function PaymentCard() {
   }, []);
 
   return (
-    <CardShell ref={cardRef} className="relative h-[267px] overflow-hidden p-7">
+    <CardShell ref={cardRef} className="relative h-[267px] overflow-hidden p-5 sm:p-7">
       {/* Cursor-follow glow */}
       <div
         ref={glowRef}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[90px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[70px] sm:h-48 sm:w-48 sm:blur-[90px]"
       />
 
       <div className="relative z-10 flex h-full flex-col">
         {/* Header */}
+        <p className="text-[10px] font-semibold uppercase tracking-[.25em] text-cyan-300 sm:text-xs">PAYMENTS</p>
 
-        <p className="text-xs font-semibold uppercase tracking-[.25em] text-cyan-300">PAYMENTS</p>
-
-        <h3 className="mt-3 text-2xl font-semibold text-white">Secure Checkout</h3>
+        <h3 className="mt-2 text-xl font-semibold leading-tight text-white sm:mt-3 sm:text-2xl">Secure Checkout</h3>
 
         {/* Payment panel */}
-
-        <div
-          ref={paymentRef}
-          className="relative mt-7 rounded-3xl border border-white/10 bg-[#151515] p-5"
-        >
+        <div ref={paymentRef} className="relative mt-5 rounded-2xl border border-white/10 bg-[#151515] p-4 sm:mt-7 sm:rounded-3xl sm:p-5">
           {/* Top row */}
+          <div className="flex items-center justify-between gap-3">
+            <span className="min-w-0 text-xs tracking-[.14em] text-white/70 sm:text-sm sm:tracking-[.18em]">**** **** **** 4582</span>
 
-          <div className="flex items-center justify-between">
-            <span className="text-sm tracking-[.18em] text-white/70">**** **** **** 4582</span>
-
-            <div
-              ref={shieldRef}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-cyan-500/10"
-            >
-              <LuShieldCheck size={18} className="text-cyan-300" />
+            <div ref={shieldRef} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-500/10 sm:h-9 sm:w-9">
+              <LuShieldCheck size={16} className="text-cyan-300 sm:h-[18px] sm:w-[18px]" />
             </div>
           </div>
 
           {/* Payment amount */}
-
-          <div className="mt-6 flex items-end justify-between">
+          <div className="mt-5 flex items-end justify-between gap-3 sm:mt-6">
             <div>
-              <p className="text-[10px] uppercase tracking-[.2em] text-white/35">Payment</p>
+              <p className="text-[9px] uppercase tracking-[.2em] text-white/35 sm:text-[10px]">Payment</p>
 
-              <p className="mt-1 text-xl font-semibold text-white">₹799</p>
+              <p className="mt-1 text-lg font-semibold text-white sm:text-xl">₹799</p>
             </div>
 
             <div
               ref={protectedRef}
-              className="rounded-full border border-green-400/20 bg-green-500/10 px-3 py-1 text-[10px] font-medium text-green-300"
+              className="shrink-0 rounded-full border border-green-400/20 bg-green-500/10 px-2.5 py-1 text-[9px] font-medium text-green-300 sm:px-3 sm:text-[10px]"
             >
               Protected
             </div>

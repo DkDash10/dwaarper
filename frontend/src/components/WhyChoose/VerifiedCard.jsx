@@ -118,22 +118,22 @@ export default function VerifiedCard() {
   }, []);
 
   return (
-    <CardShell ref={cardRef} className="h-[560px] bg-[#141414]">
-      <div className="flex h-full">
-        {/* LEFT */}
-
-        <div className="flex w-[58%] flex-col p-8">
-          <span className="text-xs font-semibold uppercase tracking-[.28em] text-cyan-300">VERIFIED PROFESSIONAL</span>
+    <CardShell ref={cardRef} className="h-auto bg-[#141414] lg:h-full">
+      {" "}
+      <div className="flex h-full justify-between flex-col p-6 sm:p-8">
+        {/* NAME / PROFESSIONAL — FULL WIDTH */}
+        <div className="w-full">
+          <span className="text-[10px] font-semibold uppercase tracking-[.25em] text-cyan-300 sm:text-xs">VERIFIED PROFESSIONAL</span>
 
           <div className="mt-8 flex items-center gap-5">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-3xl font-bold text-black">R</div>
+            <div className="flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-2xl sm:3xl font-bold text-black">R</div>
 
-            <div>
-              <h3 className="text-3xl font-bold text-white">Rahul Sharma</h3>
+            <div className="min-w-0">
+              <h3 className="text-xl font-bold text-white sm:text-3xl">Rahul Sharma</h3>
 
-              <p className="mt-1 text-white/60">Plumbing Specialist</p>
+              <p className="mt-1 text-xs text-white/60 sm:text-base">Plumbing Specialist</p>
 
-              <div className="mt-3 flex items-center gap-2 text-cyan-300">
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-cyan-300 sm:text-base">
                 <LuStar fill="currentColor" />
 
                 <span>4.9 Rating</span>
@@ -144,51 +144,60 @@ export default function VerifiedCard() {
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="mt-10 space-y-4">
+        {/* VERIFIED + SHIELD — FLEX BETWEEN */}
+        <div className="mt-10 flex items-center justify-between gap-8 lg:flex-1">
+          {" "}
+          {/* VERIFIED LIST */}
+          <div className="space-y-4">
             {["Police Verified", "Identity Verified", "Skill Certified", "Background Checked"].map((item) => (
               <div key={item} className="verify-item flex items-center gap-3">
-                <LuBadgeCheck className="text-cyan-300" />
+                <LuBadgeCheck className="shrink-0 text-cyan-300" />
 
-                <span className="text-white/70">{item}</span>
+                <span className="text-xs text-white/70 sm:text-base">{item}</span>
               </div>
             ))}
           </div>
+          {/* SHIELD */}
+          <div className="relative flex shrink-0 items-center justify-center">
+            <div ref={glowRef} className="absolute h-48 w-48 rounded-full bg-cyan-500/10 blur-[70px] sm:h-64 sm:w-64 sm:blur-[90px]" />
 
-          <div className="mt-auto">
-            <div className="flex items-center justify-between">
-              <span className="text-white/60">Customer Satisfaction</span>
-
-              <span className="text-cyan-300">98%</span>
-            </div>
-
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
-              <div ref={progressRef} className="h-full w-[98%] rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
-              <div className="absolute inset-0 overflow-hidden rounded-full">
-                <div className="progress-shine" />
+            <div className="relative flex h-28 w-28 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-500/10 sm:h-36 sm:w-36">
+              <div
+                ref={shieldRef}
+                className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 shadow-[0_0_60px_rgba(34,211,238,.35)] sm:h-24 sm:w-24"
+              >
+                <LuShieldCheck size={44} className="relative z-10 text-black sm:size-[54px]" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT */}
+        {/* BOTTOM — SATISFACTION + AVAILABLE TODAY */}
+        <div className="mt-8 flex items-end justify-between gap-6 sm:gap-12 lg:mt-auto">
+          {" "}
+          {/* SATISFACTION */}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-xs text-white/60 sm:text-base">Customer Satisfaction</span>
 
-        <div className="relative flex flex-1 items-center justify-center">
-          <div ref={glowRef} className="absolute h-64 w-64 rounded-full bg-cyan-500/10 blur-[90px]" />
+              <span className="text-sm text-cyan-300 sm:text-base">98%</span>
+            </div>
 
-          <div className="relative flex h-44 w-44 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-500/10">
-            <div
-              ref={shieldRef}
-              className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 shadow-[0_0_60px_rgba(34,211,238,.35)]"
-            >
-              <LuShieldCheck size={54} className="relative z-10 text-black" />
+            <div className="relative mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+              <div ref={progressRef} className="h-full w-[98%] rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
+
+              <div className="absolute inset-0 overflow-hidden rounded-full">
+                <div className="progress-shine" />
+              </div>
             </div>
           </div>
-
-          <div ref={statusRef} className="absolute bottom-16 flex items-center gap-2 rounded-full border border-cyan-400/20 bg-[#151515] px-5 py-2">
+          {/* AVAILABLE */}
+          <div ref={statusRef} className="flex shrink-0 items-center gap-2 rounded-full border border-cyan-400/20 bg-[#151515] px-4 py-2 sm:px-5">
             <LuCircle size={10} className="fill-green-400 text-green-400" />
 
-            <span className="text-sm text-white">Available Today</span>
+            <span className="whitespace-nowrap text-xs text-white sm:text-sm">Available Today</span>
           </div>
         </div>
       </div>

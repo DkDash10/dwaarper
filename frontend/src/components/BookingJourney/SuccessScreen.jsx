@@ -141,79 +141,66 @@ export default function SuccessScreen({ active }) {
   }, [active]);
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-[#0b0b0b]">
+    <div className="relative flex w-full flex-col overflow-hidden bg-[#0b0b0b] sm:min-h-[600px] lg:h-full">
       {/* Glow */}
-
       <div className="absolute left-1/2 top-24 h-52 w-52 -translate-x-1/2 rounded-full bg-cyan-500/20 blur-[120px]" />
-
       {/* Success Icon */}
-
-      <div ref={iconRef} className="relative mt-[4.5rem] flex justify-center">
-        <div className="flex h-28 w-28 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-500/10">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500">
+      <div ref={iconRef} className="relative mt-6 flex justify-center sm:mt-[4.5rem]">
+        <div className="flex h-24 w-24 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-500/10 sm:h-28 sm:w-28">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 sm:h-20 sm:w-20">
             <LuBadgeCheck size={42} className="text-black" />
           </div>
         </div>
       </div>
-
       {/* Heading */}
-
-      <div ref={headingRef} className="relative mt-6 px-8 text-center">
-        <h2 className="text-xl font-semibold text-white">Booking Confirmed</h2>
-
-        <p className="text-sm mt-2 leading-5 text-white/55">Your professional has been scheduled successfully. We'll notify you before arrival.</p>
+      <div ref={headingRef} className="relative mt-5 px-5 text-center sm:mt-6 sm:px-8">
+        <h2 className="text-xl font-semibold text-white sm:text-2xl">Booking Confirmed</h2>
+        <p className="text-xs sm:text-sm mt-2 leading-5 text-white/55">Your professional has been scheduled successfully. We'll notify you before arrival.</p>
       </div>
-
       {/* Booking Card */}
-
-      <div ref={cardRef} className="relative mt-6 px-6">
-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-3 backdrop-blur-xl">
+      <div ref={cardRef} className="relative mt-5 px-4 sm:mt-6 sm:px-6">
+        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-xl">
           <div className="flex items-center justify-between">
-            <span className="text-white/40">Booking ID</span>
+            <span className="text-sm sm:text-base text-white/40">Booking ID</span>
 
-            <span className="font-medium text-cyan-300">#DW24871</span>
+            <span className="text-sm sm:text-base font-medium text-cyan-300">#DW24871</span>
           </div>
 
           <div className="mt-2 space-y-2">
             <div className="flex items-center gap-4">
               <LuCalendarDays className="text-cyan-300" />
 
-              <span className="text-white">26 June 2026</span>
+              <span className="text-xs sm:text-sm text-white">26 June 2026</span>
             </div>
 
             <div className="flex items-center gap-4">
               <LuClock3 className="text-cyan-300" />
 
-              <span className="text-white">12:00 PM</span>
+              <span className="text-xs sm:text-sm text-white">12:00 PM</span>
             </div>
 
             <div className="flex items-center gap-4">
               <LuMapPin className="text-cyan-300" />
 
-              <span className="text-white">Mumbai, Maharashtra</span>
+              <span className="text-xs sm:text-sm text-white">Mumbai, Maharashtra</span>
             </div>
           </div>
         </div>
       </div>
-
       {/* Progress */}
-
-      <div ref={progressRef} className="mt-3 px-6">
+      <div ref={progressRef} className="mt-3 px-4 sm:px-6">
         <div className="mb-3 flex items-center justify-between">
-          <span className="text-white/40">Professional Status</span>
+          <span className="text-sm sm:text-base text-white/40">Professional Status</span>
 
-          <span className="text-cyan-300">On the way</span>
+          <span className="text-sm sm:text-base text-cyan-300">On the way</span>
         </div>
-
         <div className="h-2 overflow-hidden rounded-full bg-white/10">
           <div ref={progressFillRef} className="h-full w-2/3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
         </div>
       </div>
-
       {/* CTA */}
-
-      <div ref={buttonRef} className="mt-6 px-6">
-        <button className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 py-3 font-semibold text-black shadow-[0_20px_60px_rgba(34,211,238,.35)]">
+      <div ref={buttonRef} className="mt-5 mb-6 sm:mb-0 px-4 sm:mt-6 sm:px-6">
+        <button className="flex w-full ext-sm sm:text-base items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 py-3 font-semibold text-black">
           Track Professional
           <LuArrowRight size={20} />
         </button>

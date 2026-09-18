@@ -245,62 +245,56 @@ export default function RatingCard() {
   ];
 
   return (
-    <CardShell ref={cardRef} className="relative h-[320px] overflow-hidden p-7">
+    <CardShell ref={cardRef} className="relative h-[320px] overflow-hidden p-5 sm:p-7">
       {/* Glow */}
-
       <div
         ref={glowRef}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[90px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[70px] sm:h-48 sm:w-48 sm:blur-[90px]"
       />
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div className="relative z-10 flex h-full min-w-0 flex-col">
         {/* Header */}
-
-        <p className="text-xs font-semibold uppercase tracking-[.25em] text-cyan-300">CUSTOMER RATING</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[.25em] text-cyan-300 sm:text-xs">CUSTOMER RATING</p>
 
         {/* Rating summary */}
-
-        <div className="mt-6 flex items-end gap-5">
-          <div>
-            <div ref={ratingRef} className="text-6xl font-bold leading-none text-white">
+        <div className="mt-4 flex items-end gap-3 sm:mt-6 sm:gap-5">
+          <div className="shrink-0">
+            <div ref={ratingRef} className="text-5xl font-bold leading-none text-white sm:text-6xl">
               0.0
             </div>
 
-            <p className="mt-2 text-xs text-white/40">Average rating</p>
+            <p className="mt-1.5 text-[10px] text-white/40 sm:mt-2 sm:text-xs">Average rating</p>
           </div>
 
-          <div className="pb-1">
-            <div className="flex gap-1">
+          <div className="min-w-0 pb-1">
+            <div className="flex gap-0.5 sm:gap-1">
               {Array.from({ length: 5 }).map((_, index) => (
                 <LuStar
                   key={index}
                   ref={(el) => {
                     starsRef.current[index] = el;
                   }}
-                  size={17}
-                  className="fill-cyan-300 text-cyan-300"
+                  size={14}
+                  className="fill-cyan-300 text-cyan-300 sm:h-[17px] sm:w-[17px]"
                 />
               ))}
             </div>
 
-            <p className="mt-2 text-[10px] text-white/35">Based on customer reviews</p>
+            <p className="mt-1.5 text-[9px] text-white/35 sm:mt-2 sm:text-[10px]">Based on customer reviews</p>
           </div>
         </div>
 
         {/* Rating Distribution */}
-
-        <div className="mt-7 space-y-2.5">
+        <div className="mt-5 space-y-1.5 sm:mt-7 sm:space-y-2.5">
           {ratings.map((rating, index) => (
-            <div key={rating.stars} className="flex items-center gap-3">
+            <div key={rating.stars} className="flex items-center gap-2 sm:gap-3">
               {/* Star number */}
+              <span className="w-2.5 text-[9px] font-medium text-white/50 sm:w-3 sm:text-[10px]">{rating.stars}</span>
 
-              <span className="w-3 text-[10px] font-medium text-white/50">{rating.stars}</span>
-
-              <LuStar size={11} className="fill-white/30 text-white/30" />
+              <LuStar size={10} className="shrink-0 fill-white/30 text-white/30 sm:h-[11px] sm:w-[11px]" />
 
               {/* Bar */}
-
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.07]">
+              <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-white/[0.07]">
                 <div
                   ref={(el) => {
                     barsRef.current[index] = el;
@@ -313,12 +307,11 @@ export default function RatingCard() {
               </div>
 
               {/* Percentage */}
-
               <span
                 ref={(el) => {
                   percentagesRef.current[index] = el;
                 }}
-                className="w-8 text-right text-[10px] font-medium text-white/45"
+                className="w-7 shrink-0 text-right text-[9px] font-medium text-white/45 sm:w-8 sm:text-[10px]"
               >
                 {rating.percentage}%
               </span>
@@ -327,33 +320,23 @@ export default function RatingCard() {
         </div>
 
         {/* Featured Testimonial */}
-
-        <div className="mt-5 mb-4 border-t border-white/[0.08] pt-4" ref={testimonialRef}>
-          <div className="flex gap-3">
-            {/* Quote mark */}
-
-            <div className="text-xl leading-none text-cyan-300/60">“</div>
+        <div className="mt-4 mb-3 border-t border-white/[0.08] pt-3 sm:mt-5 sm:mb-4 sm:pt-4" ref={testimonialRef}>
+          <div className="flex gap-2.5 sm:gap-3">
+            <div className="text-lg leading-none text-cyan-300/60 sm:text-xl">“</div>
 
             <div className="min-w-0">
-              <p className="text-[11px] leading-4 text-white/65">Super smooth booking experience. The professional arrived exactly on time.</p>
-
-              {/* <div className="mt-2 flex items-center gap-2">
-                <div className="h-1 w-1 rounded-full bg-cyan-400" />
-
-                <span className="text-[9px] font-medium uppercase tracking-[.12em] text-white/35">Verified customer</span>
-              </div> */}
+              <p className="text-[10px] leading-4 text-white/65 sm:text-[11px]">Super smooth booking experience. The professional arrived exactly on time.</p>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-
-        <div ref={footerRef} className="mt-auto flex items-center justify-between">
-          <p className="text-xs text-white/40">
+        <div ref={footerRef} className="mt-auto flex items-center justify-between gap-3">
+          <p className="text-[10px] text-white/40 sm:text-xs">
             Rated by <span className="font-semibold text-white">12,000+</span> homeowners
           </p>
 
-          <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,.7)]" />
+          <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,.7)]" />
         </div>
       </div>
     </CardShell>

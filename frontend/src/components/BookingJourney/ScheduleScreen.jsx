@@ -152,19 +152,18 @@ export default function ScheduleScreen({ active }) {
     <div className="flex h-full flex-col bg-[#0b0b0b]">
       {/* Header */}
 
-      <div ref={headerRef} className="flex items-center gap-4 px-6 pt-16">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+      <div ref={headerRef} className="flex items-center gap-3 px-4 pt-6 sm:gap-4 sm:px-6 sm:pt-10 lg:pt-16">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-2.5 sm:p-3">
           <LuArrowLeft className="text-white" />
         </div>
-
         <div>
-          <h2 className="text-2xl font-semibold text-white">Select Schedule</h2>
+          <h2 className="text-xl font-semibold text-white sm:text-2xl">Select Schedule</h2>
         </div>
       </div>
 
       {/* Calendar */}
 
-      <div ref={calendarRef} className="mt-6 px-6">
+      <div ref={calendarRef} className="mt-4 px-4 sm:mt-6 sm:px-6">
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4">
           <div className="flex items-center justify-between">
             <span className="text-white font-medium">June 2026</span>
@@ -172,12 +171,14 @@ export default function ScheduleScreen({ active }) {
             <LuCalendar className="text-cyan-300" />
           </div>
 
-          <div className="mt-4 grid grid-cols-5 gap-2">
+          <div className="mt-3 grid grid-cols-5 gap-1.5 sm:mt-4 sm:gap-2">
             {[23, 24, 25, 26, 27].map((day) => (
               <div
                 key={day}
                 data-day={day}
-                className={`flex h-10 items-center justify-center rounded-xl text-sm ${selectedDay === day ? "bg-cyan-400 text-black font-semibold" : "bg-white/5 text-white/50"}`}
+                className={`flex h-9 items-center justify-center rounded-xl text-xs sm:h-10 sm:text-sm ${
+                  selectedDay === day ? "bg-cyan-400 font-semibold text-black" : "bg-white/5 text-white/50"
+                }`}
               >
                 {day}
               </div>
@@ -188,19 +189,18 @@ export default function ScheduleScreen({ active }) {
 
       {/* Slots */}
 
-      <div ref={slotsRef} className="mt-6 px-6">
+      <div ref={slotsRef} className="mt-4 px-4 sm:mt-6 sm:px-6">
         <div className="flex items-center gap-3">
           <LuClock3 className="text-cyan-300" />
 
           <span className="text-white">Available Slots</span>
         </div>
-
-        <div ref={slotsGridRef} className="mt-4 grid grid-cols-2 gap-3">
+        <div ref={slotsGridRef} className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
           {slots.map((slot, index) => (
             <button
               key={slot}
               data-slot={index}
-              className={`rounded-2xl border p-3 text-sm transition ${selectedSlot === index ? "border-cyan-400 bg-cyan-400 text-black font-semibold" : "border-white/10 bg-white/5 text-white"}`}
+              className={`rounded-2xl border p-3 text-xs sm:text-sm transition ${selectedSlot === index ? "border-cyan-400 bg-cyan-400 text-black font-semibold" : "border-white/10 bg-white/5 text-white"}`}
             >
               <div className="flex items-center justify-center gap-2">
                 <span>{slot}</span>
@@ -214,10 +214,8 @@ export default function ScheduleScreen({ active }) {
 
       {/* Continue */}
 
-      <div ref={buttonRef} className="mt-8 px-6">
-        <button className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 py-3 font-semibold text-black shadow-[0_20px_50px_rgba(34,211,238,.4)]">
-          Continue Booking
-        </button>
+      <div ref={buttonRef} className="mt-5 mb-6 sm:mb-0 px-4 sm:mt-8 sm:px-6">
+        <button className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 py-3 font-semibold text-black ">Continue Booking</button>
       </div>
     </div>
   );

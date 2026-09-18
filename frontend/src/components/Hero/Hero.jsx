@@ -73,7 +73,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
   // ============================================================
 
   useEffect(() => {
-    if (window.innerWidth >= 768) return;
+    // if (window.innerWidth >= 768) return;
 
     const intro = mobileIntroRef.current;
     const introBrand = intro?.querySelector(".mobile-intro-brand");
@@ -250,7 +250,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
   // ============================================================
 
   return (
-    <section className="relative min-h-[auto] lg:min-h-[90vh] pb-6 md:pb-14 lg:pb-20 bg-[#090909] overflow-hidden">
+    <section className="relative min-h-[auto] lg:min-h-[90vh] pb-6 md:pb-10 bg-[#090909] overflow-hidden">
       {/* ====================================================== */}
       {/* NAVBAR SPACING                                         */}
       {/* ====================================================== */}
@@ -269,8 +269,8 @@ export default function Hero({ search, setSearch, onViewResults }) {
       {/* MOBILE INTRO                                           */}
       {/* ====================================================== */}
 
-      <div ref={mobileIntroRef} className="fixed inset-0 z-[9999] hidden items-center justify-center bg-[#090909] md:hidden">
-        <div className="mobile-intro-brand text-[11px] font-normal uppercase tracking-[0.2em] text-white">DWAARPER</div>
+      <div ref={mobileIntroRef} className="fixed inset-0 z-[9999] hidden items-center justify-center bg-[#090909]">
+        <div className="mobile-intro-brand text-[11px] font-normal uppercase tracking-[0.2em] text-white sm:text-xs sm:tracking-[0.25em]">DWAARPER</div>{" "}
       </div>
 
       {/* ====================================================== */}
@@ -307,7 +307,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
             {/* DESCRIPTION                                        */}
             {/* ================================================= */}
 
-            <p className="mt-6 md:mt-8 md:max-w-xl md:text-lg leading-8 text-white/55">
+            <p className="mt-6 md:mt-8 md:max-w-xl md:text-lg leading-7 text-white/55">
               Whether it's deep cleaning, appliance repair, plumbing or electrical work, find trusted professionals near you in minutes.
             </p>
 

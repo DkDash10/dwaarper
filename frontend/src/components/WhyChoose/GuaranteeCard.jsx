@@ -232,99 +232,87 @@ export default function GuaranteeCard() {
   const guarantees = ["Quality Guaranteed", "Verified Professionals", "Secure Payments", "Support When Needed"];
 
   return (
-    <CardShell ref={cardRef} className="relative h-[320px] overflow-hidden p-7">
+    <CardShell ref={cardRef} className="relative h-[320px] overflow-hidden p-5 sm:p-7">
       {/* Glow */}
-
       <div
         ref={glowRef}
-        className="pointer-events-none absolute left-1/2 top-1/3 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[80px]"
+        className="pointer-events-none absolute left-1/2 top-1/3 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[70px] sm:h-40 sm:w-40 sm:blur-[80px]"
       />
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div className="relative z-10 flex h-full min-w-0 flex-col">
         {/* Header */}
-
-        <p className="text-xs font-semibold uppercase tracking-[.25em] text-cyan-300">GUARANTEE</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[.25em] text-cyan-300 sm:text-xs">GUARANTEE</p>
 
         {/* Main Ring */}
-
-        <div className="mt-5 flex items-center justify-center">
-          <div className="relative h-[118px] w-[118px]">
+        <div className="mt-3 flex items-center justify-center sm:mt-5">
+          <div className="relative h-[92px] w-[92px] sm:h-[118px] sm:w-[118px]">
             <svg className="h-full w-full -rotate-90" viewBox="0 0 140 140" fill="none">
               {/* Background */}
-
               <circle cx="70" cy="70" r="62" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
 
               {/* Progress */}
-
               <circle ref={ringRef} cx="70" cy="70" r="62" stroke="#22d3ee" strokeWidth="8" strokeLinecap="round" />
             </svg>
 
             {/* Number */}
-
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span ref={numberRef} className="text-3xl font-bold text-white">
+              <span ref={numberRef} className="text-2xl font-bold text-white sm:text-3xl">
                 0%
               </span>
 
-              <span className="mt-1 text-[9px] uppercase tracking-[.12em] text-white/40">Satisfaction</span>
+              <span className="mt-0.5 text-[8px] uppercase tracking-[.12em] text-white/40 sm:mt-1 sm:text-[9px]">Satisfaction</span>
             </div>
           </div>
         </div>
 
         {/* Guarantee points */}
-
-        <div className="mt-5 grid grid-cols-2 gap-x-5 gap-y-2">
+        <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 sm:mt-5 sm:gap-x-5 sm:gap-y-2">
           {guarantees.map((item, index) => (
             <div
               key={item}
               ref={(el) => {
                 itemsRef.current[index] = el;
               }}
-              className="flex items-center gap-2"
+              className="flex min-w-0 items-center gap-1.5 sm:gap-2"
             >
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-400/10">
-                <LuCheck size={12} className="text-cyan-300" />
+              <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-400/10 sm:h-6 sm:w-6">
+                <LuCheck size={10} className="text-cyan-300 sm:h-3 sm:w-3" />
               </div>
 
-              <span className="text-[12px] text-white/50">{item}</span>
+              <span className="truncate text-[9px] text-white/50 sm:text-[12px]">{item}</span>
             </div>
           ))}
         </div>
 
-        <div ref={protectionRef} className="mt-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-400/10"
-              >
-                <LuShieldCheck size={20} className="text-cyan-300" />
+        {/* Protection */}
+        <div ref={protectionRef} className="mt-3 sm:mt-5">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-400/10 sm:h-10 sm:w-10">
+                <LuShieldCheck size={17} className="text-cyan-300 sm:h-5 sm:w-5" />
               </div>
 
-              <div>
-                <p className="text-[14px] font-semibold text-white">Every booking is protected</p>
+              <div className="min-w-0">
+                <p className="truncate text-[11px] font-semibold text-white sm:text-[14px]">Every booking is protected</p>
 
-                <p className="mt-0.5 text-[10px] text-white/35">From booking to service completion</p>
+                <p className="mt-0.5 truncate text-[8px] text-white/35 sm:text-[10px]">From booking to service completion</p>
               </div>
             </div>
 
-            <span className="text-[10px] font-semibold text-cyan-300">100%</span>
+            <span className="shrink-0 text-[9px] font-semibold text-cyan-300 sm:text-[10px]">100%</span>
           </div>
 
-          <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/[0.06]">
+          <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.06] sm:mt-3">
             <div className="h-full w-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
           </div>
         </div>
 
         {/* Footer */}
+        <div ref={footerRef} className="mt-4 sm:mt-auto flex items-center justify-between">
+          <span className="text-[8px] uppercase tracking-[.16em] text-white/30 sm:text-[9px] sm:tracking-[.18em]">DwaarPer Promise</span>
 
-        <div ref={footerRef} className="mt-auto flex items-center justify-between">
-          <span className="text-[9px] uppercase tracking-[.18em] text-white/30">DwaarPer Promise</span>
-
-          <div
-            ref={badgeRef}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-cyan-400/10"
-          >
-            <LuBadgeCheck size={17} className="text-cyan-300" />
+          <div ref={badgeRef} className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-400/10 sm:h-7 sm:w-7">
+            <LuBadgeCheck size={15} className="text-cyan-300 sm:h-[17px] sm:w-[17px]" />
           </div>
         </div>
       </div>

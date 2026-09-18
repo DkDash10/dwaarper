@@ -1,9 +1,11 @@
 import React from "react";
+
 import SearchScreen from "./SearchScreen";
 import ScheduleScreen from "./ScheduleScreen";
 import ProfessionalScreen from "./ProfessionalScreen";
 import SuccessScreen from "./SuccessScreen";
 import ScreenWrapper from "./ScreenWrapper";
+
 import { useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 
@@ -12,31 +14,39 @@ export default function BookingPhone({ step = 0 }) {
   const scheduleRef = useRef();
   const professionalRef = useRef();
   const successRef = useRef();
+
   const phoneRef = useRef();
   const glowRef = useRef();
 
   const refs = useMemo(() => [searchRef, scheduleRef, professionalRef, successRef], []);
 
+  /* ============================================================
+     DESKTOP SCREEN TRANSITION
+  ============================================================ */
+
   useLayoutEffect(() => {
     refs.forEach((ref, index) => {
+      if (!ref.current) return;
+
       gsap.to(ref.current, {
         opacity: index === step ? 1 : 0,
-
         scale: index === step ? 1 : 0.96,
-
         y: index === step ? 0 : 30,
-
         duration: 0.55,
-
         ease: "power3.out",
       });
     });
   }, [refs, step]);
 
+  /* ============================================================
+     DESKTOP PHONE
+  ============================================================ */
+
   useLayoutEffect(() => {
+    if (!phoneRef.current) return;
+
     gsap.fromTo(
       phoneRef.current,
-
       {
         scale: 0.985,
       },
@@ -48,15 +58,19 @@ export default function BookingPhone({ step = 0 }) {
     );
   }, [step]);
 
+  /* ============================================================
+     DESKTOP GLOW
+  ============================================================ */
+
   useLayoutEffect(() => {
+    if (!glowRef.current) return;
+
     gsap.fromTo(
       glowRef.current,
-
       {
         scale: 1,
         opacity: 0.18,
       },
-
       {
         scale: 1.08,
         opacity: 0.32,
@@ -70,82 +84,93 @@ export default function BookingPhone({ step = 0 }) {
 
   return (
     <>
-      <style>{`
+      {/* ============================================================
+          DESKTOP
+      ============================================================ */}
 
-      @keyframes phoneFloat{
+      <div className="hidden lg:block">
+        <style>{`
+          @keyframes phoneFloat {
+            0% {
+              transform: translateY(0px);
+            }
 
-        0%{
-            transform:translateY(0px);
-        }
+            50% {
+              transform: translateY(-8px);
+            }
 
-        50%{
-            transform:translateY(-8px);
-        }
+            100% {
+              transform: translateY(0px);
+            }
+          }
 
-        100%{
-            transform:translateY(0px);
-        }
+          @keyframes shine {
+            0% {
+              transform: translateX(-180px) rotate(18deg);
+            }
 
-      }
+            100% {
+              transform: translateX(420px) rotate(18deg);
+            }
+          }
+        `}</style>
 
-      @keyframes shine{
+        <div className="relative mx-auto h-[690px] w-[340px] animate-[phoneFloat_7s_ease-in-out_infinite]">
+          {/* Glow */}
 
-        0%{
-            transform:translateX(-180px) rotate(18deg);
-        }
+          <div ref={glowRef} className="absolute inset-0 scale-[1.03] rounded-[60px] bg-cyan-500/8 blur-[70px]" />
 
-        100%{
-            transform:translateX(420px) rotate(18deg);
-        }
+          {/* Phone */}
 
-      }
+          <div
+            ref={phoneRef}
+            className="relative h-[680px] w-[340px] overflow-hidden rounded-[58px] border border-white/15 bg-gradient-to-b from-[#181818] via-[#101010] to-[#070707] shadow-[0_60px_140px_rgba(0,0,0,.65)] transition-transform duration-300 will-change-transform hover:shadow-[0_70px_180px_rgba(34,211,238,.18)]"
+          >
+            {/* Screen */}
 
-      `}</style>
+            <div className="absolute inset-[8px] overflow-hidden rounded-[48px] bg-[#080808]">
+              <div className="pointer-events-none absolute -left-40 top-0 z-10 h-full w-24 rotate-[18deg] animate-[shine_6s_linear_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-2xl" />
 
-      <div className="relative mx-auto w-[340px] h-[690px] animate-[phoneFloat_7s_ease-in-out_infinite]">
-        {/* Glow */}
+              <div className="absolute inset-0 overflow-hidden rounded-[42px]">
+                <ScreenWrapper active={step === 0} screenRef={searchRef}>
+                  <SearchScreen active={step === 0} />
+                </ScreenWrapper>
 
-        <div ref={glowRef} className="absolute inset-0 rounded-[60px] bg-cyan-500/8 blur-[70px] scale-[1.03]" />
+                <ScreenWrapper active={step === 1} screenRef={scheduleRef}>
+                  <ScheduleScreen active={step === 1} />
+                </ScreenWrapper>
 
-        {/* Phone */}
+                <ScreenWrapper active={step === 2} screenRef={professionalRef}>
+                  <ProfessionalScreen active={step === 2} />
+                </ScreenWrapper>
 
-        <div
-          className="phoneFloat relative w-[340px] h-[680px] rounded-[58px] border border-white/15 bg-gradient-to-b from-[#181818] via-[#101010] to-[#070707] shadow-[0_60px_140px_rgba(0,0,0,.65)] overflow-hidden transition-transform duration-300 will-change-transform hover:shadow-[0_70px_180px_rgba(34,211,238,.18)]"
-          ref={phoneRef}
-        >
-          {/* Metal */}
-
-          <div className="absolute inset-[3px] rounded-[55px]" />
-
-          {/* Screen */}
-
-          <div className="absolute inset-[8px] rounded-[48px] overflow-hidden bg-[#080808]">
-            {/* Reflection */}
-
-            <div className="absolute -left-40 top-0 h-full w-24 rotate-[18deg] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-2xl animate-[shine_6s_linear_infinite] pointer-events-none z-10" />
-
-            <div className="absolute inset-0 rounded-[42px] overflow-hidden">
-              <ScreenWrapper active={step === 0} screenRef={searchRef}>
-                <SearchScreen active={step === 0} />
-              </ScreenWrapper>
-
-              <ScreenWrapper active={step === 1} screenRef={scheduleRef}>
-                <ScheduleScreen active={step === 1} />
-              </ScreenWrapper>
-
-              <ScreenWrapper active={step === 2} screenRef={professionalRef}>
-                <ProfessionalScreen active={step === 2} />
-              </ScreenWrapper>
-
-              <ScreenWrapper active={step === 3} screenRef={successRef}>
-                <SuccessScreen active={step === 3} />
-              </ScreenWrapper>
+                <ScreenWrapper active={step === 3} screenRef={successRef}>
+                  <SuccessScreen active={step === 3} />
+                </ScreenWrapper>
+              </div>
             </div>
+
+            {/* Dynamic Island */}
+
+            <div className="absolute left-1/2 top-4 z-[100] h-9 w-32 -translate-x-1/2 rounded-full border border-white/10 bg-[#050505] shadow-[0_6px_18px_rgba(0,0,0,.7)] backdrop-blur-xl" />
           </div>
+        </div>
+      </div>
 
-          {/* Dynamic Island */}
+      {/* ============================================================
+          MOBILE
+          SAME SCREENS — NO DUPLICATION
+      ============================================================ */}
 
-          <div className="absolute z-[100] left-1/2 top-4 -translate-x-1/2 h-9 w-32 rounded-full bg-[#050505] border border-white/10 shadow-[0_6px_18px_rgba(0,0,0,.7)] backdrop-blur-xl" />
+      <div className="w-full lg:hidden">
+        <div className="w-full overflow-hidden rounded-[22px] border border-white/10 bg-[#0b0b0b]">
+          {step === 0 && <SearchScreen active />}
+
+          {step === 1 && <ScheduleScreen active />}
+
+          {step === 2 && <ProfessionalScreen active />}
+
+          {step === 3 && <SuccessScreen active />}
         </div>
       </div>
     </>

@@ -183,7 +183,6 @@ export default function BookingCard() {
         const y = event.clientY - rect.top;
 
         const rotateY = (x / rect.width - 0.5) * 4;
-
         const rotateX = -(y / rect.height - 0.5) * 4;
 
         gsap.to(card, {
@@ -221,7 +220,6 @@ export default function BookingCard() {
       };
 
       card.addEventListener("mousemove", handleMouseMove);
-
       card.addEventListener("mouseleave", handleMouseLeave);
 
       /*
@@ -234,7 +232,6 @@ export default function BookingCard() {
         observer.disconnect();
 
         card.removeEventListener("mousemove", handleMouseMove);
-
         card.removeEventListener("mouseleave", handleMouseLeave);
 
         timeline.kill();
@@ -245,91 +242,97 @@ export default function BookingCard() {
   }, []);
 
   return (
-    <CardShell ref={cardRef} className="relative h-[320px] overflow-hidden p-7">
+    <CardShell ref={cardRef} className="relative h-[320px] overflow-hidden p-5 sm:p-7">
       {/* Cursor glow */}
-
       <div
         ref={glowRef}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[90px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[70px] sm:h-48 sm:w-48 sm:blur-[90px]"
       />
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div className="relative z-10 flex h-full min-w-0 flex-col">
         {/* Header */}
-
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[.25em] text-cyan-300">BOOKING</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[.25em] text-cyan-300 sm:text-xs">BOOKING</p>
 
-          <h3 className="mt-3 text-2xl font-semibold text-white">Book in under a minute.</h3>
+          <h3 className="mt-2 text-xl font-semibold leading-tight text-white sm:mt-3 sm:text-2xl">Book in under a minute.</h3>
         </div>
 
-        {/* Booking content */}
+        {/* 
+          Booking container + Success container
+          share EXACTLY the same dimensions.
+        */}
+        <div className="relative mt-4 min-h-0 flex-1 sm:mt-6">
+          {/* Booking content */}
+          <div ref={bookingContentRef} className="flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5">
+            {/* Service */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[9px] uppercase tracking-[.18em] text-white/40 sm:text-[10px]">Selected Service</p>
 
-        <div ref={bookingContentRef} className="mt-6 flex-1 rounded-2xl border border-white/10 bg-[#151515] p-5">
-          {/* Service */}
+                <p className="mt-1 truncate text-xs font-medium text-white sm:text-sm">Home Cleaning</p>
+              </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[10px] uppercase tracking-[.18em] text-white/40">Selected Service</p>
-
-              <p className="mt-1 text-sm font-medium text-white">Home Cleaning</p>
+              <span className="shrink-0 text-sm font-semibold text-cyan-300">₹799</span>
             </div>
 
-            <span className="text-sm font-semibold text-cyan-300">₹799</span>
-          </div>
+            {/* Slots */}
+            <div className="mt-4 sm:mt-5">
+              <p className="text-[9px] uppercase tracking-[.18em] text-white/40 sm:text-[10px]">Today</p>
 
-          {/* Slots */}
+              <div className="mt-2 grid grid-cols-4 gap-1.5 sm:mt-3 sm:gap-2">
+                {["10:30", "11:00", "11:30", "12:00"].map((time, index) => (
+                  <div
+                    key={time}
+                    ref={(el) => {
+                      slotsRef.current[index] = el;
+                    }}
+                    className={`flex h-7 items-center justify-center rounded-lg border text-[9px] sm:h-8 sm:text-[10px] ${
+                      index === 1 ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-300" : "border-white/10 bg-white/[0.02] text-white/50"
+                    }`}
+                  >
+                    {time}
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          <div className="mt-5">
-            <p className="text-[10px] uppercase tracking-[.18em] text-white/40">Today</p>
-
-            <div className="mt-3 grid grid-cols-4 gap-2">
-              {["10:30", "11:00", "11:30", "12:00"].map((time, index) => (
-                <div
-                  key={time}
-                  ref={(el) => {
-                    slotsRef.current[index] = el;
-                  }}
-                  className={`flex h-8 items-center justify-center rounded-lg border text-[10px] ${index === 1 ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-300" : "border-white/10 bg-white/[0.02] text-white/50"}`}
-                >
-                  {time}
-                </div>
-              ))}
+            {/* Confirm button */}
+            <div ref={buttonRef} className="mt-4 flex h-8 items-center justify-center rounded-full bg-white px-4 text-[9px] font-semibold text-black sm:mt-5 sm:h-9 sm:text-[10px]">
+              Confirm Booking
             </div>
           </div>
 
-          {/* Confirm button */}
+          {/* 
+            SUCCESS STATE
 
+            This is now inset-0 inside the SAME wrapper
+            as the booking content.
+
+            Therefore:
+            width = booking content width
+            height = booking content height
+          */}
           <div
-            ref={buttonRef}
-            className="mt-5 flex h-9 items-center justify-center rounded-full bg-white px-4 text-[10px] font-semibold text-black"
+            ref={successRef}
+            className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-cyan-400/20 bg-[#151515]/95 p-4 backdrop-blur-md sm:p-5"
           >
-            Confirm Booking
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-400/10 sm:h-14 sm:w-14">
+              <LuCheck size={24} className="text-cyan-300 sm:h-7 sm:w-7" />
+            </div>
+
+            <p className="mt-3 text-base font-semibold text-white sm:mt-4 sm:text-lg">Booking Confirmed</p>
+
+            <p className="mt-1 text-center text-[10px] text-white/45 sm:text-xs">Home Cleaning · 11:00 AM</p>
           </div>
         </div>
 
         {/* Confirmation */}
-
-        <div ref={confirmationRef} className="mt-4 flex items-center justify-center gap-2 text-xs text-white/40">
-          <div className="flex h-4 w-4 items-center justify-center rounded-full bg-cyan-400/10">
+        <div ref={confirmationRef} className="mt-3 flex items-center justify-center gap-2 text-[10px] text-white/40 sm:mt-4 sm:text-xs">
+          <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-400/10">
             <LuCheck size={10} className="text-cyan-300" />
           </div>
 
           <span>Instant confirmation</span>
-        </div>
-
-        {/* Success */}
-
-        <div
-          ref={successRef}
-          className="pointer-events-none absolute inset-x-7 bottom-7 top-[100px] flex flex-col items-center justify-center rounded-2xl border border-cyan-400/20 bg-[#151515]/95 backdrop-blur-md"
-        >
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-cyan-400/10">
-            <LuCheck size={28} className="text-cyan-300" />
-          </div>
-
-          <p className="mt-4 text-lg font-semibold text-white">Booking Confirmed</p>
-
-          <p className="mt-1 text-xs text-white/45">Home Cleaning · 11:00 AM</p>
         </div>
       </div>
     </CardShell>

@@ -245,12 +245,9 @@ export default function Cart() {
       <Navigationbar />
 
       <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-black  text-white">
-        {" "}
         <div className="mx-auto w-full min-w-0 max-w-7xl px-4 sm:px-6 pb-20 pt-24 sm:pt-32">
-          {" "}
           {/* Header */}
           <div className="mb-8 sm:mb-10">
-            {" "}
             <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/30">Booking</p>
             <div className="mt-2 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <div>
@@ -277,7 +274,6 @@ export default function Cart() {
                   >
                     {/* Service header */}
                     <div className="flex min-w-0 gap-3 p-4 sm:gap-4 sm:p-6">
-                      {" "}
                       <img src={item.img} alt={item.name} className="h-20 w-20 shrink-0 rounded-2xl object-cover sm:h-28 sm:w-28" />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-3">
@@ -310,10 +306,8 @@ export default function Cart() {
                       </div>
 
                       <div className="grid w-full min-w-0 gap-6 sm:grid-cols-2 sm:gap-4">
-                        {" "}
                         {/* Date */}
                         <div className="min-w-0">
-                          {" "}
                           <div className="relative">
                             <div>
                               <label className="mb-3 block text-[11px] font-medium uppercase tracking-wider text-white/30">Choose date</label>
@@ -346,10 +340,8 @@ export default function Cart() {
                         </div>
                         {/* Time */}
                         <div className="min-w-0">
-                          {" "}
                           <label className="mb-3 block text-[11px] font-medium uppercase tracking-wider text-white/30">Choose time</label>
                           <div className="booking-scrollbar grid w-full min-w-0 max-h-[80px] grid-cols-2 gap-2 overflow-y-auto pr-2 sm:grid-cols-4">
-                            {" "}
                             {!bookingDetails[index]?.date ? (
                               <p className="col-span-full py-4 text-center text-xs text-white/25">Select a date first</p>
                             ) : (
@@ -472,7 +464,6 @@ export default function Cart() {
             {/* Summary */}
             <aside className="lg:sticky lg:top-28 lg:h-fit">
               <div className="rounded-3xl border border-white/[0.07] bg-white/[0.025] p-5 sm:p-6">
-                {" "}
                 <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/30">Summary</p>
                 <h2 className="mt-2 text-xl font-semibold">Your booking</h2>
                 <div className="my-6 space-y-4">
