@@ -73,8 +73,6 @@ export default function Hero({ search, setSearch, onViewResults }) {
   // ============================================================
 
   useEffect(() => {
-    // if (window.innerWidth >= 768) return;
-
     const intro = mobileIntroRef.current;
     const introBrand = intro?.querySelector(".mobile-intro-brand");
     const target = document.querySelector(".nav-brand-target");
@@ -82,88 +80,117 @@ export default function Hero({ search, setSearch, onViewResults }) {
     if (!intro || !introBrand || !target) return;
 
     const ctx = gsap.context(() => {
-      // Give the navbar one paint cycle to settle.
+      /*
+       * Make the intro visible FIRST so that
+       * getBoundingClientRect() returns its real dimensions.
+       */
+      gsap.set(intro, {
+        display: "flex",
+        opacity: 1,
+      });
+
+      gsap.set(introBrand, {
+        x: 0,
+        y: 0,
+        opacity: 0,
+      });
+
+      /*
+       * Hide the real navbar logo while the intro travels.
+       */
+      gsap.set(target, {
+        opacity: 0,
+      });
+
+      /*
+       * Wait until the browser has actually painted
+       * the intro and navbar.
+       */
       requestAnimationFrame(() => {
-        const introRect = introBrand.getBoundingClientRect();
-        const targetRect = target.getBoundingClientRect();
+        requestAnimationFrame(() => {
+          const introRect = introBrand.getBoundingClientRect();
+          const targetRect = target.getBoundingClientRect();
 
-        const introCenterX = introRect.left + introRect.width / 2;
+          /*
+           * Actual center of intro DWAARPER.
+           */
+          const introCenterX = introRect.left + introRect.width / 2;
 
-        const introCenterY = introRect.top + introRect.height / 2;
+          const introCenterY = introRect.top + introRect.height / 2;
 
-        const targetCenterX = targetRect.left + targetRect.width / 2;
+          /*
+           * Actual center of navbar DWAARPER.
+           */
+          const targetCenterX = targetRect.left + targetRect.width / 2;
 
-        const targetCenterY = targetRect.top + targetRect.height / 2;
+          const targetCenterY = targetRect.top + targetRect.height / 2;
 
-        const moveX = targetCenterX - introCenterX;
-        const moveY = targetCenterY - introCenterY;
+          /*
+           * Distance from intro center → navbar center.
+           */
+          const moveX = targetCenterX - introCenterX;
+          const moveY = targetCenterY - introCenterY;
 
-        // Hide the real navbar logo while the intro logo travels.
-        gsap.set(target, {
-          opacity: 0,
-        });
+          const tl = gsap.timeline();
 
-        // Show intro.
-        gsap.set(intro, {
-          display: "flex",
-          opacity: 1,
-        });
-
-        gsap.set(introBrand, {
-          x: 0,
-          y: 0,
-          opacity: 0,
-        });
-
-        const tl = gsap.timeline();
-
-        // DWAARPER appears.
-        tl.to(introBrand, {
-          opacity: 1,
-          duration: 0.55,
-          ease: "power2.out",
-        })
-
-          // Small pause.
-          .to(
-            {},
-            {
-              duration: 0.35,
-            },
-          )
-
-          // Move to the exact navbar position.
-          .to(introBrand, {
-            x: moveX,
-            y: moveY,
-            duration: 1.15,
-            ease: "power3.inOut",
+          /*
+           * DWAARPER appears in the exact center.
+           */
+          tl.to(introBrand, {
+            opacity: 1,
+            duration: 0.55,
+            ease: "power2.out",
           })
 
-          // Reveal the real navbar logo.
-          .to(
-            target,
-            {
-              opacity: 1,
-              duration: 0.18,
-              ease: "power2.out",
-            },
-            "-=0.15",
-          )
-
-          // Remove intro overlay.
-          .to(
-            intro,
-            {
-              opacity: 0,
-              duration: 0.25,
-              ease: "power2.out",
-              onComplete: () => {
-                intro.style.display = "none";
+            /*
+             * Small pause.
+             */
+            .to(
+              {},
+              {
+                duration: 0.35,
               },
-            },
-            "-=0.05",
-          );
+            )
+
+            /*
+             * Move from center → navbar logo.
+             */
+            .to(introBrand, {
+              x: moveX,
+              y: moveY,
+              duration: 1.15,
+              ease: "power3.inOut",
+            })
+
+            /*
+             * Reveal actual navbar logo.
+             */
+            .to(
+              target,
+              {
+                opacity: 1,
+                duration: 0.18,
+                ease: "power2.out",
+              },
+              "-=0.15",
+            )
+
+            /*
+             * Remove intro.
+             */
+            .to(
+              intro,
+              {
+                opacity: 0,
+                duration: 0.25,
+                ease: "power2.out",
+                onComplete: () => {
+                  intro.style.display = "none";
+                },
+              },
+              "-=0.05",
+            );
+        });
       });
     });
 
