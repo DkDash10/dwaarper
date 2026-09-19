@@ -117,14 +117,11 @@ export default function BookingPhone({ step = 0 }) {
 
         <div className="relative mx-auto h-[690px] w-[340px] animate-[phoneFloat_7s_ease-in-out_infinite]">
           {/* Glow */}
-
           <div ref={glowRef} className="absolute inset-0 scale-[1.03] rounded-[60px] bg-cyan-500/8 blur-[70px]" />
-
           {/* Phone */}
-
           <div
             ref={phoneRef}
-            className="relative h-[680px] w-[340px] overflow-hidden rounded-[58px] border border-white/15 bg-gradient-to-b from-[#181818] via-[#101010] to-[#070707] shadow-[0_60px_140px_rgba(0,0,0,.65)] transition-transform duration-300 will-change-transform hover:shadow-[0_70px_180px_rgba(34,211,238,.18)]"
+            className="relative h-[680px] w-[340px] -translate-y-6 overflow-hidden rounded-[58px] border border-white/15 bg-gradient-to-b from-[#181818] via-[#101010] to-[#070707] shadow-[0_60px_140px_rgba(0,0,0,.65)] transition-transform duration-300 will-change-transform hover:shadow-[0_70px_180px_rgba(34,211,238,.18)]"
           >
             {/* Screen */}
 

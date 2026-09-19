@@ -9,7 +9,7 @@ const API_BASE_URL =
 
 const MyBookings = () => {
   const [orders, setOrders] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("upcoming");
+  const [activeFilter, setActiveFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -344,10 +344,10 @@ const MyBookings = () => {
           {/* Filter tabs */}
           <div className="mb-7 flex w-fit items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.025] p-1">
             {[
+              ["all", "All"],
               ["upcoming", "Upcoming"],
               ["completed", "Completed"],
-              ["cancelled", "Cancelled"],
-              ["all", "All bookings"],
+              ["cancelled", "Cancelled"],      
             ].map(([value, label]) => (
               <button
                 key={value}
