@@ -36,7 +36,7 @@ export const features = [
   {
     id: 6,
     title: "Rated 4.9/5",
-    description: "Thousands of happy homeowners trust DwaarPer every day.",
+    description: "Thousands of happy homeowners trust Dwaarper every day.",
     icon: LuStar,
   },
 ];

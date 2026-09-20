@@ -14,9 +14,7 @@ export default function ProfileHeader({ user, onEdit }) {
         {/* Avatar */}
 
         <div className="relative">
-          <div
-            className="flex h-20 w-20 items-center justify-center rounded-full border border-cyan-400/20 bg-cyan-400/10 text-xl font-semibold text-cyan-300"
-          >
+          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-cyan-400/20 bg-cyan-400/10 text-xl font-semibold text-cyan-300">
             {initials || "U"}
           </div>
         </div>
@@ -28,7 +26,7 @@ export default function ProfileHeader({ user, onEdit }) {
 
           <p className="mt-1 text-sm text-white/45">{user?.email || "your@email.com"}</p>
 
-          <p className="mt-2 text-xs uppercase tracking-[0.15em] text-cyan-300/70">DwaarPer Member</p>
+          <p className="mt-2 text-xs uppercase tracking-[0.15em] text-cyan-300/70">Dwaarper Member</p>
         </div>
       </div>
 

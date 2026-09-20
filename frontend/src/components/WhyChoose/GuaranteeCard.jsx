@@ -309,7 +309,7 @@ export default function GuaranteeCard() {
 
         {/* Footer */}
         <div ref={footerRef} className="mt-4 sm:mt-auto flex items-center justify-between">
-          <span className="text-[8px] uppercase tracking-[.16em] text-white/30 sm:text-[9px] sm:tracking-[.18em]">DwaarPer Promise</span>
+          <span className="text-[8px] uppercase tracking-[.16em] text-white/30 sm:text-[9px] sm:tracking-[.18em]">Dwaarper Promise</span>
 
           <div ref={badgeRef} className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-400/10 sm:h-7 sm:w-7">
             <LuBadgeCheck size={15} className="text-cyan-300 sm:h-[17px] sm:w-[17px]" />

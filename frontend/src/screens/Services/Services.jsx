@@ -330,7 +330,7 @@ export default function Services() {
         {/* Hero */}
         <section className="relative mx-auto max-w-7xl px-4 pb-8 pt-24 sm:px-6 sm:pt-32 lg:px-8">
           <div className="max-w-3xl">
-            <p className="services-eyebrow text-[10px] font-medium uppercase tracking-[0.24em] text-cyan-300/70">DwaarPer Services</p>
+            <p className="services-eyebrow text-[10px] font-medium uppercase tracking-[0.24em] text-cyan-300/70">Dwaarper Services</p>
 
             <h1 className="services-title mt-4 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
               Get things done.

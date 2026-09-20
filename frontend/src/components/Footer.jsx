@@ -11,14 +11,12 @@ const serviceLinks = [
 
 const companyLinks = [
   { label: "About Us", to: "/who-are-we" },
-  { label: "Why Choose Us", to: "/why-choose-us" },
   { label: "Contact", to: "/connect-with-us" },
 ];
 
 const legalLinks = [
   { label: "Privacy Policy", to: "/privacy-policy" },
   { label: "Terms & Conditions", to: "/terms-and-conditions" },
-  { label: "Help Center", to: "/help-center" },
 ];
 
 const linkClass = "group inline-flex items-center gap-1.5 text-sm text-white/40 transition-all duration-300 hover:translate-x-1 hover:text-white";
@@ -148,7 +146,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="flex gap-4 pt-6 text-[11px] text-white/20 items-center justify-between">
-          <p>© 2026 DwaarPer. All rights reserved.</p>
+          <p>© 2026 Dwaarper. All rights reserved.</p>
 
           <Link to="/services" className="group inline-flex w-fit items-center gap-1.5 transition-colors duration-300 hover:text-white/55" onClick={handleFooterNavigation}>
             Explore services

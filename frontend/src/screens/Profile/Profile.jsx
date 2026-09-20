@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LuMapPin, LuPhone, LuMail, LuLock, LuLogOut, LuTrash2 } from "react-icons/lu";
+import { LuMapPin, LuPhone, LuMail, LuLogOut, LuTrash2 } from "react-icons/lu";
 import Navigationbar from "../../components/Navigationbar";
 import Footer from "../../components/Footer";
 
@@ -245,7 +245,7 @@ export default function Profile() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-md">
           <div className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-7 shadow-2xl">
             <div>
-              <h3 className="text-xl font-semibold text-white">Sign out of DwaarPer?</h3>
+              <h3 className="text-xl font-semibold text-white">Sign out of Dwaarper?</h3>
 
               <p className="mt-2 text-sm leading-relaxed text-white/45">You'll need to sign in again to access your account.</p>
             </div>
@@ -279,7 +279,7 @@ export default function Profile() {
             <div className="mt-6">
               <h3 className="text-xl font-semibold text-white">Delete your account?</h3>
 
-              <p className="mt-2 text-sm leading-relaxed text-white/45">This will permanently delete your DwaarPer account. This action cannot be undone.</p>
+              <p className="mt-2 text-sm leading-relaxed text-white/45">This will permanently delete your Dwaarper account. This action cannot be undone.</p>
             </div>
 
             {/* Confirmation */}
@@ -429,7 +429,7 @@ export default function Profile() {
 
             {/* Account */}
 
-            <ProfileSection title="Account" description="Manage your DwaarPer account.">
+            <ProfileSection title="Account" description="Manage your Dwaarper account.">
               <div className="space-y-3">
                 {/* Logout */}
 
@@ -446,7 +446,7 @@ export default function Profile() {
                     <div>
                       <p className="text-sm font-medium text-white">Logout</p>
 
-                      <p className="mt-1 text-xs text-white/35">Sign out of your DwaarPer account.</p>
+                      <p className="mt-1 text-xs text-white/35">Sign out of your Dwaarper account.</p>
                     </div>
                   </div>
 
@@ -468,7 +468,7 @@ export default function Profile() {
                     <div>
                       <p className="text-sm font-medium text-red-300">Delete Account</p>
 
-                      <p className="mt-1 text-xs text-red-300/40">Permanently delete your DwaarPer account.</p>
+                      <p className="mt-1 text-xs text-red-300/40">Permanently delete your Dwaarper account.</p>
                     </div>
                   </div>
 

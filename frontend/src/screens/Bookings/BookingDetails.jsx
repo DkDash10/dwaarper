@@ -650,7 +650,7 @@ const BookingDetails = () => {
 
                   <h2 className="mt-2 text-xl font-semibold">How was your service?</h2>
 
-                  <p className="mt-2 text-xs leading-5 text-white/35">Rate your professional and share your experience with other DwaarPer customers.</p>
+                  <p className="mt-2 text-xs leading-5 text-white/35">Rate your professional and share your experience with other Dwaarper customers.</p>
 
                   <button
                     type="button"

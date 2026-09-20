@@ -116,7 +116,7 @@ export default function Signup() {
     <div className="min-h-screen flex bg-gradient-to-b from-black via-zinc-950 to-black text-white ">
       {/* LEFT SIDE */}
       <div className="hidden md:flex w-1/2 flex-col justify-center px-16">
-        <h1 className="text-4xl font-semibold">DwaarPer</h1>
+        <h1 className="text-4xl font-semibold">Dwaarper</h1>
 
         <p className="text-zinc-400 mb-8">Home services, delivered by verified professionals at your doorstep.</p>
 

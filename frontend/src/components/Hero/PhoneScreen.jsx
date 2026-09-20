@@ -25,7 +25,7 @@ export default function PhoneScreen({ activeService }) {
           </p>
 
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-white">
-            DwaarPer
+            Dwaarper
           </h1>
 
           {/* Search */}

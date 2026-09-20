@@ -272,7 +272,7 @@ export default function Navigationbar() {
           <div className="w-full max-w-md rounded-3xl border border-white/[0.08] bg-[#111] p-6 sm:p-7 shadow-2xl">
             <div>
               <h3 id="logout-title" className="text-xl font-semibold text-white">
-                Sign out of DwaarPer?
+                Sign out of Dwaarper?
               </h3>
 
               <p className="mt-2 text-sm leading-relaxed text-white/45">You'll need to sign in again to access your account.</p>

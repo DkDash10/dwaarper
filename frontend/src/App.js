@@ -12,13 +12,14 @@ import { CartProvider } from "./components/ContextReducer";
 import Cancel from "./screens/Cancel";
 import Success from "./screens/Success";
 import NotFound from "./screens/NotFound";
-import WhyChooseUs from "./screens/WhyChooseUs";
 import WhoAreWe from "./screens/WhoAreWe";
 import ConnectWithUs from "./screens/ConnectWithUs";
 import BackToTopButton from "./components/BackToTop";
 import Profile from "./screens/Profile/Profile";
 import Services from "./screens/Services/Services";
 import BookingDetails from "./screens/Bookings/BookingDetails";
+import PrivacyPolicy from "./screens/PrivacyPolicy";
+import TermsAndConditions from "./screens/TermsAndConditions";
 
 function App() {
   return (
@@ -45,9 +46,10 @@ function App() {
             {/* Other public pages */}
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />
-            <Route path="/why-choose-us" element={<WhyChooseUs />} />
             <Route path="/who-are-we" element={<WhoAreWe />} />
             <Route path="/connect-with-us" element={<ConnectWithUs />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />    
 
             <Route path="*" element={<NotFound />} />
           </Routes>

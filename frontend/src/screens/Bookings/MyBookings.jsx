@@ -329,7 +329,7 @@ const MyBookings = () => {
               <div>
                 <h1 className="text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">My Bookings</h1>
 
-                <p className="mt-3 max-w-xl text-sm leading-6 text-white/40">Everything you've booked with DwaarPer, all in one place.</p>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-white/40">Everything you've booked with Dwaarper, all in one place.</p>
               </div>
 
               <Link
@@ -347,7 +347,7 @@ const MyBookings = () => {
               ["all", "All"],
               ["upcoming", "Upcoming"],
               ["completed", "Completed"],
-              ["cancelled", "Cancelled"],      
+              ["cancelled", "Cancelled"],
             ].map(([value, label]) => (
               <button
                 key={value}
@@ -384,7 +384,7 @@ const MyBookings = () => {
                     ? "Completed services will appear here after your professional finishes the job."
                     : activeFilter === "cancelled"
                       ? "Cancelled bookings will appear here."
-                      : "Book your first home service with DwaarPer."}
+                      : "Book your first home service with Dwaarper."}
               </p>
 
               <Link to="/services" className="mt-7 inline-flex rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-white/90">
