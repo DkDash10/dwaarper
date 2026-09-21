@@ -9,19 +9,14 @@ const fetchUser = require("../middleware/fetchUser");
 
 require("dotenv").config();
 
-const isGoogleConfigured = Boolean(
-  process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET,
-);
+const isGoogleConfigured = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
 
-const getFrontendBaseUrl = (req) => {
-  const origin =
-    req.headers.origin ||
-    (req.headers.referer ? new URL(req.headers.referer).origin : null);
-
-  if (origin) return origin.replace(/\/$/, "");
-
+const getFrontendBaseUrl = () => {
   const configuredUrl = process.env.FRONTEND_URL;
-  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
+
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/$/, "");
+  }
 
   return "http://localhost:3000";
 };
@@ -49,15 +44,11 @@ const getGoogleCallbackUrl = (req) => {
 router.post(
   "/signup",
   [
-    body("name")
-      .isLength({ min: 2 })
-      .withMessage("Name must be at least 2 characters long"),
+    body("name").isLength({ min: 2 }).withMessage("Name must be at least 2 characters long"),
 
     body("email").isEmail().withMessage("Enter a valid email"),
 
-    body("password")
-      .isLength({ min: 5 })
-      .withMessage("Password must be at least 5 characters long"),
+    body("password").isLength({ min: 5 }).withMessage("Password must be at least 5 characters long"),
   ],
   async (req, res) => {
     const { name, email, password } = req.body;
@@ -71,9 +62,7 @@ router.post(
       let user = await User.findOne({ email });
 
       if (user) {
-        return res
-          .status(400)
-          .json({ success: false, message: "User already exists" });
+        return res.status(400).json({ success: false, message: "User already exists" });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -108,58 +97,51 @@ router.post(
 // =======================
 // LOGIN
 // =======================
-router.post(
-  "/login",
-  [
-    body("email").isEmail().withMessage("Enter a valid email"),
-    body("password").exists(),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+router.post("/login", [body("email").isEmail().withMessage("Enter a valid email"), body("password").exists()], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { email, password } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const { email, password } = req.body;
+    const passwordCompare = await bcrypt.compare(password, user.password);
 
-    try {
-      let user = await User.findOne({ email });
-
-      if (!user) {
-        return res.status(400).json({ message: "Invalid credentials" });
-      }
-
-      const passwordCompare = await bcrypt.compare(password, user.password);
-
-      if (user.authProvider === "google") {
-        return res.status(400).json({
-          message: "Please login using Google",
-        });
-      }
-
-      if (!passwordCompare) {
-        return res.status(400).json({ message: "Invalid credentials" });
-      }
-
-      const data = {
-        user: {
-          id: user.id,
-        },
-      };
-
-      const authToken = jwt.sign(data, process.env.JWT_SECRET);
-
-      res.json({
-        success: true,
-        authToken,
-        isProfileComplete: user.isProfileComplete,
+    if (user.authProvider === "google") {
+      return res.status(400).json({
+        message: "Please login using Google",
       });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false });
     }
-  },
-);
+
+    if (!passwordCompare) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const data = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    const authToken = jwt.sign(data, process.env.JWT_SECRET);
+
+    res.json({
+      success: true,
+      authToken,
+      isProfileComplete: user.isProfileComplete,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false });
+  }
+});
 
 // =======================
 // COMPLETE PROFILE
@@ -215,12 +197,7 @@ router.put("/profile", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const {
-      name,
-      phone,
-      address,
-      location,
-    } = req.body;
+    const { name, phone, address, location } = req.body;
 
     // Basic validation
     if (!name || name.trim().length < 2) {
@@ -263,10 +240,8 @@ router.put("/profile", fetchUser, async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
-    ).select(
-      "name email location phone address isProfileComplete authProvider"
-    );
+      },
+    ).select("name email location phone address isProfileComplete authProvider");
 
     if (!updatedUser) {
       return res.status(404).json({
@@ -280,7 +255,6 @@ router.put("/profile", fetchUser, async (req, res) => {
       message: "Profile updated successfully",
       user: updatedUser,
     });
-
   } catch (error) {
     console.error("Profile update error:", error);
 
@@ -309,37 +283,37 @@ router.get("/google", (req, res, next) => {
 });
 
 // CALLBACK
-router.get("/google/callback", (req, res, next) => {
-  if (!isGoogleConfigured) {
-    return res.status(503).json({
-      success: false,
-      message: "Google login is not configured on this server.",
-    });
-  }
+router.get(
+  "/google/callback",
+  (req, res, next) => {
+    if (!isGoogleConfigured) {
+      return res.status(503).json({
+        success: false,
+        message: "Google login is not configured on this server.",
+      });
+    }
 
-  const callbackURL = getGoogleCallbackUrl(req);
+    const callbackURL = getGoogleCallbackUrl(req);
 
-  return passport.authenticate("google", { session: false, callbackURL })(req, res, next);
-}, (req, res) => {
-  const data = {
-    user: {
-      id: req.user.id,
-    },
-  };
+    return passport.authenticate("google", { session: false, callbackURL })(req, res, next);
+  },
+  (req, res) => {
+    const data = {
+      user: {
+        id: req.user.id,
+      },
+    };
 
-  const token = jwt.sign(data, process.env.JWT_SECRET);
-  const frontendBaseUrl = getFrontendBaseUrl(req);
+    const token = jwt.sign(data, process.env.JWT_SECRET);
+    const frontendBaseUrl = getFrontendBaseUrl(req);
 
-  res.redirect(
-    `${frontendBaseUrl}/google-success?token=${token}&profileComplete=${req.user.isProfileComplete}`,
-  );
-});
+    res.redirect(`${frontendBaseUrl}/google-success?token=${token}&profileComplete=${req.user.isProfileComplete}`);
+  },
+);
 
 router.get("/me", fetchUser, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select(
-      "name email location phone address isProfileComplete"
-    );
+    const user = await User.findById(req.user.id).select("name email location phone address isProfileComplete");
 
     if (!user) {
       return res.status(404).json({
