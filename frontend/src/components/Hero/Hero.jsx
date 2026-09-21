@@ -297,7 +297,7 @@ export default function Hero({ search, setSearch, onViewResults }) {
       {/* ====================================================== */}
 
       <div ref={mobileIntroRef} className="fixed inset-0 z-[9999] hidden items-center justify-center bg-[#090909]">
-        <div className="mobile-intro-brand text-[11px] font-normal uppercase tracking-[0.2em] text-white sm:text-xs sm:tracking-[0.25em]">Dwaarper</div>{" "}
+        <div className="mobile-intro-brand text-[11px] font-normal uppercase tracking-[0.2em] text-white sm:text-xs sm:tracking-[0.25em]">Dwaarper</div>
       </div>
 
       {/* ====================================================== */}

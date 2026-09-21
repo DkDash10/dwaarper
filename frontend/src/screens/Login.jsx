@@ -122,7 +122,7 @@ export default function Login() {
             <h2 className="text-2xl font-semibold">Sign in</h2>
 
             <p className="text-zinc-500 text-sm">
-              New here?
+              New here? &nbsp;
               <Link to="/signup" className="text-cyan-300 hover:text-cyan-200">
                 Create account
               </Link>

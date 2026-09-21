@@ -138,7 +138,7 @@ export default function Signup() {
         <div className="w-full max-w-md bg-[#111] p-8 rounded-lg">
           <h2 className="text-2xl font-semibold">Create Account</h2>
           <p className="text-sm text-zinc-400 mb-6">
-            Already have an account?
+            Already have an account? &nbsp;
             <span onClick={() => navigate("/login")} className="text-cyan-300 hover:text-cyan-200 cursor-pointer">
               Login
             </span>

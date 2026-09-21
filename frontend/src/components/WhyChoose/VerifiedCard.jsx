@@ -119,14 +119,15 @@ export default function VerifiedCard() {
 
   return (
     <CardShell ref={cardRef} className="h-auto bg-[#141414] lg:h-full">
-      {" "}
       <div className="flex h-full justify-between flex-col p-6 sm:p-8">
         {/* NAME / PROFESSIONAL — FULL WIDTH */}
         <div className="w-full">
           <span className="text-[10px] font-semibold uppercase tracking-[.25em] text-cyan-300 sm:text-xs">VERIFIED PROFESSIONAL</span>
 
           <div className="mt-8 flex items-center gap-5">
-            <div className="flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-2xl sm:3xl font-bold text-black">R</div>
+            <div className="flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-2xl sm:3xl font-bold text-black">
+              R
+            </div>
 
             <div className="min-w-0">
               <h3 className="text-xl font-bold text-white sm:text-3xl">Rahul Sharma</h3>
@@ -148,7 +149,6 @@ export default function VerifiedCard() {
 
         {/* VERIFIED + SHIELD — FLEX BETWEEN */}
         <div className="mt-10 flex items-center justify-between gap-8 lg:flex-1">
-          {" "}
           {/* VERIFIED LIST */}
           <div className="space-y-4">
             {["Police Verified", "Identity Verified", "Skill Certified", "Background Checked"].map((item) => (
@@ -176,7 +176,6 @@ export default function VerifiedCard() {
 
         {/* BOTTOM — SATISFACTION + AVAILABLE TODAY */}
         <div className="mt-8 flex items-end justify-between gap-6 sm:gap-12 lg:mt-auto">
-          {" "}
           {/* SATISFACTION */}
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-4">
