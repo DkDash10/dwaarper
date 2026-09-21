@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import Navigationbar from "../components/Navigationbar";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
-import { LuArrowUpRight, LuCheck, LuCircleCheck, LuClock3, LuMail, LuMessageCircle, LuSend, LuShieldCheck, LuSparkles } from "react-icons/lu";
+import { LuArrowUpRight, LuCheck, LuCircleCheck, LuMail, LuSend, LuSparkles } from "react-icons/lu";
 import gsap from "gsap";
 
 export default function ConnectWithUs() {
@@ -325,49 +325,6 @@ export default function ConnectWithUs() {
             </p>
           </div>
 
-          {/* Quick information */}
-
-          <div className="mt-8 max-w-4xl gap-12 flex">
-            {[
-              {
-                icon: LuMessageCircle,
-                title: "Quick response",
-                text: "We'll get back to you",
-              },
-              {
-                icon: LuShieldCheck,
-                title: "Secure submission",
-                text: "Your details stay private",
-              },
-              {
-                icon: LuClock3,
-                title: "Support",
-                text: "We'll review your message",
-              },
-            ].map((item, index) => {
-              const Icon = item.icon;
-
-              return (
-                <div
-                  key={item.title}
-                  ref={(el) => {
-                    quickItemsRef.current[index] = el;
-                  }}
-                  className="flex items-center gap-3 py-4"
-                >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cyan-400/10">
-                    <Icon size={17} className="text-cyan-300" />
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-medium text-white">{item.title}</p>
-
-                    <p className="mt-0.5 text-[10px] text-white/35">{item.text}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
       </section>
 

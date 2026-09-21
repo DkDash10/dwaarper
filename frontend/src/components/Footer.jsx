@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import { LuArrowUpRight, LuMail, LuMapPin, LuPhone } from "react-icons/lu";
 
 const serviceLinks = [
   { label: "Decor", to: "/services#category-decor" },
@@ -84,7 +84,7 @@ export default function Footer() {
                   >
                     <span>{item.label}</span>
 
-                    <ArrowUpRight className="h-3 w-3 translate-y-0.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0 group-hover:opacity-60" />
+                    <LuArrowUpRight className="h-3 w-3 translate-y-0.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0 group-hover:opacity-60" />
                   </Link>
                 </li>
               ))}
@@ -101,7 +101,7 @@ export default function Footer() {
                   <Link to={item.to} className={linkClass} onClick={handleFooterNavigation}>
                     <span>{item.label}</span>
 
-                    <ArrowUpRight className="h-3 w-3 translate-y-0.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0 group-hover:opacity-60" />
+                    <LuArrowUpRight className="h-3 w-3 translate-y-0.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0 group-hover:opacity-60" />
                   </Link>
                 </li>
               ))}
@@ -118,7 +118,7 @@ export default function Footer() {
                   <Link to={item.to} className={linkClass} onClick={handleFooterNavigation}>
                     <span>{item.label}</span>
 
-                    <ArrowUpRight className="h-3 w-3 translate-y-0.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0 group-hover:opacity-60" />
+                    <LuArrowUpRight className="h-3 w-3 translate-y-0.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0 group-hover:opacity-60" />
                   </Link>
                 </li>
               ))}
@@ -129,17 +129,17 @@ export default function Footer() {
         {/* Contact strip */}
         <div className="mt-14 grid gap-4 border-y border-white/[0.06] py-6 text-xs text-white/30 sm:grid-cols-3 sm:gap-3">
           <div className="flex items-center justify-center sm:justify-start gap-2">
-            <MapPin className="h-3.5 w-3.5 shrink-0 text-cyan-300/60" />
+            <LuMapPin className="h-3.5 w-3.5 shrink-0 text-cyan-300/60" />
             <span>Serving homes with care</span>
           </div>
 
           <div className="flex items-center gap-2 justify-center">
-            <Mail className="h-3.5 w-3.5 shrink-0 text-cyan-300/60" />
+            <LuMail className="h-3.5 w-3.5 shrink-0 text-cyan-300/60" />
             <span>Support available when you need</span>
           </div>
 
           <div className="flex items-center gap-2 justify-center sm:justify-end">
-            <Phone className="h-3.5 w-3.5 shrink-0 text-cyan-300/60" />
+            <LuPhone className="h-3.5 w-3.5 shrink-0 text-cyan-300/60" />
             <span>Professional service, every time</span>
           </div>
         </div>
@@ -150,7 +150,7 @@ export default function Footer() {
 
           <Link to="/services" className="group inline-flex w-fit items-center gap-1.5 transition-colors duration-300 hover:text-white/55" onClick={handleFooterNavigation}>
             Explore services
-            <ArrowUpRight className="h-3 w-3 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <LuArrowUpRight className="h-3 w-3 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
         </div>
       </div>

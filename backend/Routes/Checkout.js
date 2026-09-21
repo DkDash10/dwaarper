@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Order = require("../models/Orders");
+const { runBookingLifecycle } = require("../services/BookingLifecycle");
 const mongoose = require("mongoose");
 
 // =========================================================
@@ -76,12 +77,16 @@ router.post("/create-checkout-session", async (req, res) => {
           ...(product.booking || {}),
 
           date: product.booking?.date || order_date,
+
           time: product.booking?.time || null,
 
-          professionalId: professional?.id || null,
-          professionalName: professional?.name || null,
+          // Professional is ALWAYS assigned by the backend lifecycle.
+          professionalId: null,
 
-          // Keep duration available for future scheduling.
+          professionalName: null,
+
+          professional: null,
+
           duration: Number(product.booking?.duration) || 60,
         },
       };
@@ -289,86 +294,13 @@ router.post("/verify-payment", async (req, res) => {
       });
     }
 
-    // -----------------------------------------------------
-    // CHECK PROFESSIONAL SELECTION
-    // -----------------------------------------------------
-
-    const serviceItems = bookingArray.slice(1);
-
-    if (!serviceItems.length) {
-      return res.status(400).json({
-        success: false,
-        error: "No services found in booking",
-      });
-    }
-
-    const allServicesAssigned = serviceItems.every((item) => item?.booking?.professionalId);
-
-    const newStatus = allServicesAssigned ? "assigned" : "assigning";
-
     const now = new Date();
 
     // -----------------------------------------------------
-    // CREATE UPDATED BOOKING ARRAY
+    // UPDATE PAYMENT HEADER ONLY
     //
-    // Each service gets its own status.
-    // -----------------------------------------------------
-
-    const updatedBookingArray = bookingArray.map((item, index) => {
-      // ---------------------------------------------
-      // BOOKING HEADER
-      // ---------------------------------------------
-
-      if (index === 0) {
-        return {
-          ...item,
-
-          status: newStatus,
-
-          paymentStatus: "paid",
-
-          stripeSessionId: sessionId,
-
-          confirmedAt: now,
-
-          ...(allServicesAssigned
-            ? {
-                professionalAssignedAt: now,
-              }
-            : {
-                assigningAt: now,
-              }),
-        };
-      }
-
-      // ---------------------------------------------
-      // SERVICE
-      // ---------------------------------------------
-
-      if (!item || !item.booking) {
-        return item;
-      }
-
-      const professionalId = item.booking?.professionalId;
-
-      return {
-        ...item,
-
-        booking: {
-          ...item.booking,
-
-          status: professionalId ? "assigned" : "assigning",
-        },
-      };
-    });
-
-    // -----------------------------------------------------
-    // IMPORTANT:
-    //
-    // Use atomic findOneAndUpdate instead of .save().
-    //
-    // This avoids Mongoose VersionError when the lifecycle
-    // worker modifies the same order at the same time.
+    // Professional assignment belongs exclusively to the lifecycle worker.
+    // Never rewrite the service items from this stale request snapshot.
     // -----------------------------------------------------
 
     const updateResult = await Order.findOneAndUpdate(
@@ -385,17 +317,17 @@ router.post("/verify-payment", async (req, res) => {
       },
       {
         $set: {
-          "order_data.$[booking]": updatedBookingArray,
+          "order_data.$[booking].0.status": "assigning",
+          "order_data.$[booking].0.paymentStatus": "paid",
+          "order_data.$[booking].0.stripeSessionId": sessionId,
+          "order_data.$[booking].0.confirmedAt": now,
+          "order_data.$[booking].0.assigningAt": now,
         },
       },
       {
         arrayFilters: [
           {
-            booking: {
-              $elemMatch: {
-                id: orderId,
-              },
-            },
+            "booking.0.id": orderId,
           },
         ],
 
@@ -412,16 +344,23 @@ router.post("/verify-payment", async (req, res) => {
 
     console.log(`Payment verified successfully for booking ${orderId}`);
 
+    // Start assignment immediately instead of waiting for the next worker tick.
+    setImmediate(() => {
+      runBookingLifecycle().catch((error) => {
+        console.error("Immediate booking assignment failed:", error);
+      });
+    });
+
     // -----------------------------------------------------
     // RESPONSE
     // -----------------------------------------------------
 
     return res.json({
       success: true,
-      status: newStatus,
+      status: "assigning",
       bookingId: orderId,
 
-      message: allServicesAssigned ? "Payment verified and professionals assigned." : "Payment verified. Finding professionals.",
+      message: "Payment verified. Finding professionals.",
     });
   } catch (error) {
     console.error("Error verifying payment:", error);

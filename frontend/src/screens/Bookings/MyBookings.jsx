@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarDays, Clock3, ChevronLeft, ChevronRight, PackageCheck, CircleAlert, Loader2, MapPin } from "lucide-react";
+import { LuCalendarDays, LuClock3, LuChevronLeft, LuChevronRight, LuPackageCheck, LuCircleAlert, LuLoaderCircle, LuMapPin } from "react-icons/lu";
 import Navigationbar from "../../components/Navigationbar";
 import Footer from "../../components/Footer";
 
@@ -88,7 +88,7 @@ const MyBookings = () => {
     // Refresh booking status every 30 seconds
     const interval = setInterval(() => {
       fetchOrders(false);
-    }, 30 * 1000);
+    }, 5 * 1000);
 
     return () => {
       isMounted = false;
@@ -282,7 +282,7 @@ const MyBookings = () => {
 
         <main className="min-h-screen bg-[#080808] px-5 py-24 text-white">
           <div className="mx-auto flex max-w-6xl flex-col items-center justify-center py-28 text-center">
-            <Loader2 className="h-7 w-7 animate-spin text-white/50" />
+            <LuLoaderCircle className="h-7 w-7 animate-spin text-white/50" />
 
             <p className="mt-5 text-sm text-white/40">Loading your bookings...</p>
           </div>
@@ -299,7 +299,7 @@ const MyBookings = () => {
         <main className="min-h-screen bg-[#080808] px-5 py-24 text-white">
           <div className="mx-auto flex max-w-xl flex-col items-center justify-center py-28 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
-              <CircleAlert className="h-7 w-7 text-white/45" />
+              <LuCircleAlert className="h-7 w-7 text-white/45" />
             </div>
 
             <h1 className="mt-6 text-2xl font-semibold tracking-tight">We couldn't load your bookings</h1>
@@ -364,7 +364,7 @@ const MyBookings = () => {
           {filteredOrders.length === 0 ? (
             <div className="rounded-[28px] border border-white/[0.08] bg-white/[0.025] px-6 py-20 text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
-                <PackageCheck className="h-7 w-7 text-white/35" />
+                <LuPackageCheck className="h-7 w-7 text-white/35" />
               </div>
 
               <h2 className="mt-6 text-xl font-semibold tracking-tight">
@@ -409,7 +409,7 @@ const MyBookings = () => {
                           <img src={order.img} alt={order.name || "Service"} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
-                            <PackageCheck className="h-6 w-6 text-white/20" />
+                            <LuPackageCheck className="h-6 w-6 text-white/20" />
                           </div>
                         )}
                       </div>
@@ -427,12 +427,12 @@ const MyBookings = () => {
                         {/* Booking details */}
                         <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
                           <div className="flex items-center gap-2 text-xs text-white/45">
-                            <CalendarDays className="h-3.5 w-3.5 text-cyan-300/70" />
+                            <LuCalendarDays className="h-3.5 w-3.5 text-cyan-300/70" />
                             {formatDate(getBookingDate(order))}
                           </div>
 
                           <div className="flex items-center gap-2 text-xs text-white/45">
-                            <Clock3 className="h-3.5 w-3.5 text-cyan-300/70" />
+                            <LuClock3 className="h-3.5 w-3.5 text-cyan-300/70" />
                             {formatTime(getBookingTime(order))}
                           </div>
 
@@ -470,7 +470,7 @@ const MyBookings = () => {
                           className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-xs font-medium text-white/65 transition hover:bg-white hover:text-black"
                         >
                           View booking
-                          <ChevronRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                          <LuChevronRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
                         </Link>
                       </div>
                     </div>
@@ -496,7 +496,7 @@ const MyBookings = () => {
                   disabled={currentPage === 1}
                   className="inline-flex h-9 items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.025] px-3 text-xs font-medium text-white/55 transition hover:bg-white/[0.07] hover:text-white disabled:cursor-not-allowed disabled:opacity-25"
                 >
-                  <ChevronLeft className="h-3.5 w-3.5" />
+                  <LuChevronLeft className="h-3.5 w-3.5" />
                   Previous
                 </button>
 
@@ -526,7 +526,7 @@ const MyBookings = () => {
                   className="inline-flex h-9 items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.025] px-3 text-xs font-medium text-white/55 transition hover:bg-white/[0.07] hover:text-white disabled:cursor-not-allowed disabled:opacity-25"
                 >
                   Next
-                  <ChevronRight className="h-3.5 w-3.5" />
+                  <LuChevronRight className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
@@ -535,7 +535,7 @@ const MyBookings = () => {
           {/* Bottom note */}
           {filteredOrders.length > 0 && (
             <div className="mt-8 flex items-center justify-center gap-2 text-center text-[11px] text-white/20">
-              <MapPin className="h-3.5 w-3.5" />
+              <LuMapPin className="h-3.5 w-3.5" />
               Your booking details will appear here as your service progresses.
             </div>
           )}

@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LuCalendarDays, LuTrash2, LuChevronDown } from "react-icons/lu";
+import { LuCalendarDays, LuTrash2 } from "react-icons/lu";
 import { useCart, useDispatchCart } from "../components/ContextReducer";
 import Navigationbar from "../components/Navigationbar";
 import Footer from "../components/Footer";
@@ -68,37 +68,28 @@ const getAvailableTimeSlots = (dateValue) => {
   });
 };
 
-const RECOMMENDED_PROFESSIONALS = [
-  {
-    id: "rahul-sharma",
-    name: "Rahul Sharma",
-    rating: 4.9,
-    jobs: "520+",
-    verified: true,
-  },
-  {
-    id: "amit-kumar",
-    name: "Amit Kumar",
-    rating: 4.8,
-    jobs: "410+",
-    verified: true,
-  },
-  {
-    id: "sameer-patil",
-    name: "Sameer Patil",
-    rating: 4.7,
-    jobs: "380+",
-    verified: true,
-  },
-];
-
 export default function Cart() {
   const data = useCart();
   const dispatch = useDispatchCart();
   const navigate = useNavigate();
 
   const [bookingDetails, setBookingDetails] = useState({});
-  const [openProfessional, setOpenProfessional] = useState(null);
+  const [openProfessional] = useState(null);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [availability, setAvailability] = useState({});
+  const [checkingAvailability, setCheckingAvailability] = useState({});
+
+  useEffect(() => {
+    const resetCheckoutState = () => {
+      setIsCheckingOut(false);
+    };
+
+    window.addEventListener("pageshow", resetCheckoutState);
+
+    return () => {
+      window.removeEventListener("pageshow", resetCheckoutState);
+    };
+  }, []);
 
   const totalPrice = useMemo(() => {
     return data.reduce((total, item) => {
@@ -135,12 +126,108 @@ export default function Cart() {
 
   const isBookingComplete = data.every((_, index) => {
     const booking = bookingDetails[index];
+    const availabilityData = availability[index];
 
-    return booking?.date && booking?.time;
+    return booking?.date && booking?.time && availabilityData?.date === booking.date && availabilityData?.time === booking.time && availabilityData?.available === true;
   });
 
+  const hasUnavailableSlot = data.some((_, index) => {
+    const booking = bookingDetails[index];
+    const availabilityData = availability[index];
+
+    return booking?.date && booking?.time && availabilityData?.date === booking.date && availabilityData?.time === booking.time && availabilityData?.available === false;
+  });
+
+  const checkAvailability = async (index, date, time) => {
+    const item = data[index];
+
+    if (!item?.serviceId || !date || !time) {
+      return false;
+    }
+
+    const key = `${index}-${date}-${time}`;
+
+    setCheckingAvailability((prev) => ({
+      ...prev,
+      [key]: true,
+    }));
+
+    try {
+      const API_BASE_URL =
+        window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/professionals/available?serviceId=${encodeURIComponent(item.serviceId)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`,
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result?.error || "Unable to check availability.");
+      }
+
+      const professionals = result.professionals || [];
+
+      setAvailability((prev) => ({
+        ...prev,
+        [index]: {
+          date,
+          time,
+          available: professionals.length > 0,
+          count: professionals.length,
+          professionals,
+        },
+      }));
+
+      return professionals.length > 0;
+    } catch (error) {
+      console.error("Availability check error:", error);
+
+      setAvailability((prev) => ({
+        ...prev,
+        [index]: {
+          date,
+          time,
+          available: false,
+          count: 0,
+          professionals: [],
+          error: true,
+        },
+      }));
+
+      return false;
+    } finally {
+      setCheckingAvailability((prev) => ({
+        ...prev,
+        [key]: false,
+      }));
+    }
+  };
+
   const handleProceed = async () => {
-    if (!isBookingComplete) return;
+    if (!isBookingComplete || isCheckingOut) return;
+
+    setIsCheckingOut(true);
+
+    try {
+      const availabilityChecks = await Promise.all(
+        data.map((item, index) => {
+          const booking = bookingDetails[index];
+
+          return checkAvailability(index, booking.date, booking.time);
+        }),
+      );
+
+      if (availabilityChecks.some((available) => !available)) {
+        alert("One or more selected slots are no longer available. Please choose another time.");
+
+        setIsCheckingOut(false);
+        return;
+      }
+    } catch (error) {
+      setIsCheckingOut(false);
+      return;
+    }
 
     try {
       const token = localStorage.getItem("token");
@@ -153,6 +240,7 @@ export default function Cart() {
 
       const API_BASE_URL =
         window.location.hostname === "localhost" || window.location.hostname === "192.168.0.107" ? `http://${window.location.hostname}:5000` : "https://dwaarper.onrender.com";
+
       // Get the currently logged-in user's details
       const userResponse = await fetch(`${API_BASE_URL}/api/auth/me`, {
         method: "GET",
@@ -211,6 +299,7 @@ export default function Cart() {
     } catch (error) {
       console.error("Checkout Error:", error);
       alert(error.message || "Something went wrong during checkout.");
+      setIsCheckingOut(false);
     }
   };
 
@@ -323,7 +412,15 @@ export default function Cart() {
                                       <button
                                         key={date.value}
                                         type="button"
-                                        onClick={() => updateBooking(index, "date", date.value)}
+                                        onClick={() => {
+                                          updateBooking(index, "date", date.value);
+                                          updateBooking(index, "time", null);
+
+                                          setAvailability((prev) => ({
+                                            ...prev,
+                                            [index]: null,
+                                          }));
+                                        }}
                                         className={`min-w-[62px] shrink-0 rounded-2xl border px-2 py-2 text-center transition ${selected ? "border-white/20 bg-white text-black" : "border-white/[0.07] bg-white/[0.035] text-white/60 hover:border-white/15 hover:bg-white/[0.06]"}`}
                                       >
                                         <span className="block text-[10px] font-medium uppercase">{date.isToday ? "Today" : date.day}</span>
@@ -348,13 +445,22 @@ export default function Cart() {
                               getAvailableTimeSlots(bookingDetails[index].date).map((slot) => {
                                 const booking = bookingDetails[index] || {};
                                 const selected = booking.time === slot.value;
+                                const slotUnavailable =
+                                  selected && availability[index]?.date === booking.date && availability[index]?.time === slot.value && availability[index]?.available === false;
 
                                 return (
                                   <button
                                     key={slot.value}
                                     type="button"
-                                    onClick={() => updateBooking(index, "time", slot.value)}
-                                    className={`rounded-xl border px-2 py-3 text-xs font-medium transition ${selected ? "border-white/20 bg-white text-black" : "border-white/[0.07] bg-white/[0.035] text-white/55 hover:border-white/15 hover:bg-white/[0.06] hover:text-white"}`}
+                                    disabled={slotUnavailable}
+                                    onClick={async () => {
+                                      const selectedDate = booking.date;
+
+                                      updateBooking(index, "time", slot.value);
+
+                                      await checkAvailability(index, selectedDate, slot.value);
+                                    }}
+                                    className={`rounded-xl border px-2 py-3 text-xs font-medium transition disabled:cursor-not-allowed disabled:border-red-400/20 disabled:bg-red-400/[0.08] disabled:text-red-300/60 ${selected ? "border-white/20 bg-white text-black" : "border-white/[0.07] bg-white/[0.035] text-white/55 hover:border-white/15 hover:bg-white/[0.06] hover:text-white"}`}
                                   >
                                     {slot.label}
                                   </button>
@@ -364,96 +470,43 @@ export default function Cart() {
                           </div>
                         </div>
                       </div>
-
-                      {/* Professional */}
+                      {/* Professional availability */}
                       <div className="mt-6">
-                        <label className="mb-3 block text-[11px] font-medium uppercase tracking-wider text-white/30">Professional</label>
+                        <label className="mb-3 block text-[11px] font-medium uppercase tracking-wider text-white/30">Professional availability</label>
 
-                        <div className="relative">
-                          {/* Selected professional */}
-                          <button
-                            type="button"
-                            onClick={() => setOpenProfessional(openProfessional === index ? null : index)}
-                            className="flex w-full items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.035] px-4 py-4 text-left transition hover:border-white/15"
-                          >
-                            <div className="min-w-0">
-                              {booking?.professional ? (
-                                <>
-                                  <div className="flex items-center gap-2">
-                                    <p className="text-sm font-medium text-white/85">{booking.professional.name}</p>
+                        {!booking.date || !booking.time ? (
+                          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.035] px-4 py-4">
+                            <p className="text-sm font-medium text-white/70">Select a date and time</p>
 
-                                    <span className="rounded-full bg-white/[0.07] px-2 py-0.5 text-[9px] uppercase tracking-wider text-white/45">Selected</span>
-                                  </div>
+                            <p className="mt-1 text-xs text-white/30">We'll find an available professional for your selected slot.</p>
+                          </div>
+                        ) : checkingAvailability[`${index}-${booking.date}-${booking.time}`] ? (
+                          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.035] px-4 py-4">
+                            <p className="text-sm font-medium text-white/70">Checking availability...</p>
 
-                                  <p className="mt-1 text-xs text-white/35">
-                                    ★ {booking.professional.rating} · {booking.professional.jobs} jobs completed
-                                  </p>
-                                </>
-                              ) : (
-                                <>
-                                  <p className="text-sm font-medium text-white/80">Our Recommended</p>
+                            <p className="mt-1 text-xs text-white/30">Finding professionals available for this slot.</p>
+                          </div>
+                        ) : availability[index]?.available ? (
+                          <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/[0.03] px-4 py-4">
+                            <div className="flex items-center justify-between gap-4">
+                              <div>
+                                <p className="text-sm font-medium text-white/80">Professional available</p>
 
-                                  <p className="mt-1 text-xs text-white/30">Choose a professional for your selected slot.</p>
-                                </>
-                              )}
-                            </div>
-
-                            <LuChevronDown size={16} className={`shrink-0 text-white/35 transition-transform duration-200 ${openProfessional === index ? "rotate-180" : ""}`} />
-                          </button>
-
-                          {/* Dropdown */}
-                          {openProfessional === index && (
-                            <div className="absolute left-0 right-0 bottom-[calc(100%+8px)] z-30 w-full max-w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111111] p-1.5 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
-                              <div className="px-3 pb-2 pt-2">
-                                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/30">Recommended professionals</p>
+                                <p className="mt-1 text-xs text-white/35">Availability confirmed for this slot.</p>
                               </div>
 
-                              <div className="max-h-[220px] overflow-y-auto booking-scrollbar">
-                                {RECOMMENDED_PROFESSIONALS.map((professional) => {
-                                  const selected = booking?.professional?.id === professional.id;
-
-                                  return (
-                                    <button
-                                      key={professional.id}
-                                      type="button"
-                                      onClick={() => {
-                                        updateBooking(index, "professional", professional);
-
-                                        setOpenProfessional(null);
-                                      }}
-                                      className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition ${selected ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}`}
-                                    >
-                                      {/* Avatar */}
-                                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-sm font-semibold text-white/70">
-                                        {professional.name.charAt(0)}
-                                      </div>
-
-                                      {/* Details */}
-                                      <div className="min-w-0 flex-1">
-                                        <div className="flex items-center gap-2">
-                                          <p className="min-w-0 truncate text-sm font-medium text-white/80">{professional.name}</p>
-
-                                          {professional.verified && <span className="text-[9px] text-cyan-300/70">Verified</span>}
-                                        </div>
-
-                                        <p className="mt-1 text-xs text-white/35">
-                                          ★ {professional.rating} · {professional.jobs} jobs completed
-                                        </p>
-                                      </div>
-
-                                      {/* Selection indicator */}
-                                      <div
-                                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${selected ? "border-white bg-white" : "border-white/15"}`}
-                                      >
-                                        {selected && <span className="h-2 w-2 rounded-full bg-black" />}
-                                      </div>
-                                    </button>
-                                  );
-                                })}
-                              </div>
+                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-300 text-black">✓</div>
                             </div>
-                          )}
-                        </div>
+
+                            <p className="mt-3 text-[11px] text-cyan-300/60">A professional will be assigned automatically after payment.</p>
+                          </div>
+                        ) : (
+                          <div className="rounded-2xl border border-red-400/15 bg-red-400/[0.04] px-4 py-4">
+                            <p className="text-sm font-medium text-red-300/80">No professional available</p>
+
+                            <p className="mt-1 text-xs text-red-300/40">All professionals for this service are unavailable at this date and time. Please choose another slot.</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </article>
@@ -507,10 +560,21 @@ export default function Cart() {
                 <button
                   type="button"
                   onClick={handleProceed}
-                  disabled={!isBookingComplete}
-                  className="mt-6 w-full rounded-full bg-white px-5 py-3.5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/30"
+                  disabled={!isBookingComplete || isCheckingOut}
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3.5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/30"
                 >
-                  {isBookingComplete ? "Proceed to Checkout" : "Select all slots"}
+                  {isCheckingOut ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black" />
+                      <span>Processing...</span>
+                    </>
+                  ) : isBookingComplete ? (
+                    "Proceed to Checkout"
+                  ) : hasUnavailableSlot ? (
+                    "Choose an available slot"
+                  ) : (
+                    "Select all slots"
+                  )}
                 </button>
                 <p className="mt-4 text-center text-[11px] leading-5 text-white/25">Each service requires its own date and time slot.</p>
               </div>

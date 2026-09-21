@@ -47,6 +47,48 @@ const professionals = [
     location: "Mumbai",
     active: true,
   },
+
+  {
+    name: "Vikram Singh",
+    profileImage: "https://randomuser.me/api/portraits/men/75.jpg",
+    phone: "9876543213",
+    email: "vikram.singh@dwaarper.com",
+    rating: 4.6,
+    totalReviews: 295,
+    completedJobs: 295,
+    experience: 5,
+    verified: true,
+    location: "Mumbai",
+    active: true,
+  },
+
+  {
+    name: "Arjun Mehta",
+    profileImage: "https://randomuser.me/api/portraits/men/91.jpg",
+    phone: "9876543214",
+    email: "arjun.mehta@dwaarper.com",
+    rating: 4.6,
+    totalReviews: 260,
+    completedJobs: 260,
+    experience: 4,
+    verified: true,
+    location: "Mumbai",
+    active: true,
+  },
+
+  {
+    name: "Neeraj Verma",
+    profileImage: "https://randomuser.me/api/portraits/men/52.jpg",
+    phone: "9876543215",
+    email: "neeraj.verma@dwaarper.com",
+    rating: 4.5,
+    totalReviews: 225,
+    completedJobs: 225,
+    experience: 4,
+    verified: true,
+    location: "Mumbai",
+    active: true,
+  },
 ];
 
 const defaultSchedule = {
@@ -89,7 +131,7 @@ const defaultSchedule = {
   sunday: {
     start: "09:00",
     end: "20:00",
-    available: false,
+    available: true,
   },
 };
 
@@ -116,8 +158,8 @@ const seedProfessionals = async () => {
       },
     });
 
-    // Give all 3 professionals every existing service
-    // This guarantees at least 3 professionals per service.
+    // Give every seeded professional every existing service.
+    // This guarantees six professionals per service before booking conflicts.
     const serviceIds = services.map((service) => service._id);
 
     const documents = professionals.map((professional) => ({

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { ArrowLeft, CalendarDays, Check, Clock3, MapPin, ShieldCheck, UserRound, ChevronRight, Loader2, CircleAlert } from "lucide-react";
+import { LuArrowLeft, LuCalendarDays, LuCheck, LuClock3, LuMapPin, LuShieldCheck, LuUserRound, LuChevronRight, LuLoaderCircle, LuCircleAlert } from "react-icons/lu";
 import Navigationbar from "../../components/Navigationbar";
 import Footer from "../../components/Footer";
 
@@ -13,6 +13,7 @@ const BookingDetails = () => {
   const hasInitialBooking = Boolean(location.state?.booking);
 
   const [booking, setBooking] = useState(location.state?.booking || null);
+  const [professionalData, setProfessionalData] = useState(null);
 
   const [loading, setLoading] = useState(!hasInitialBooking);
 
@@ -20,6 +21,15 @@ const BookingDetails = () => {
   const [cancelling, setCancelling] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelError, setCancelError] = useState(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewHover, setReviewHover] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewError, setReviewError] = useState(null);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [existingReview, setExistingReview] = useState(null);
+  const [loadingReview, setLoadingReview] = useState(false);
 
   // =========================================================
   // FETCH BOOKING
@@ -113,13 +123,61 @@ const BookingDetails = () => {
     // Refresh status every 30 seconds
     const interval = setInterval(() => {
       fetchBooking(false);
-    }, 30 * 1000);
+    }, 5 * 1000);
 
     return () => {
       isMounted = false;
       clearInterval(interval);
     };
   }, [hasInitialBooking, orderId, serviceIndex]);
+
+  // =========================================================
+  // FETCH ASSIGNED PROFESSIONAL
+  // =========================================================
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProfessional = async () => {
+      const currentBooking = Array.isArray(booking) ? booking[0] : booking;
+
+      const professionalId = currentBooking?.booking?.professionalId;
+
+      if (!professionalId) {
+        if (isMounted) {
+          setProfessionalData(null);
+        }
+
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/professionals/${professionalId}`);
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result?.error || "Unable to load professional.");
+        }
+
+        if (isMounted) {
+          setProfessionalData(result.professional);
+        }
+      } catch (error) {
+        console.error("Error fetching assigned professional:", error);
+
+        if (isMounted) {
+          setProfessionalData(null);
+        }
+      }
+    };
+
+    fetchProfessional();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [booking]);
 
   const bookings = useMemo(() => {
     if (!booking) return [];
@@ -129,13 +187,23 @@ const BookingDetails = () => {
 
   const primaryBooking = bookings[0];
 
-  const professional = primaryBooking?.booking?.professional;
+  const storedProfessional = primaryBooking?.booking?.professional;
 
-  const professionalName = typeof professional === "string" ? professional : professional?.name || null;
+  const professional = professionalData || (storedProfessional && typeof storedProfessional === "object" ? storedProfessional : null);
 
-  const professionalRating = typeof professional === "object" ? professional?.rating : null;
+  const professionalName = professional?.name || (typeof storedProfessional === "string" ? storedProfessional : primaryBooking?.booking?.professionalName) || null;
 
-  const professionalJobs = typeof professional === "object" ? professional?.jobs : null;
+  const professionalRating = professional?.rating ?? null;
+
+  const professionalJobs = professional?.completedJobs ?? null;
+
+  const professionalReviews = professional?.totalReviews ?? null;
+
+  const professionalImage = professional?.profileImage || null;
+
+  const professionalExperience = professional?.experience ?? null;
+
+  const professionalVerified = professional?.verified ?? false;
 
   const bookingDate = primaryBooking?.booking?.date || primaryBooking?.date || null;
 
@@ -329,6 +397,112 @@ const BookingDetails = () => {
     }
   };
 
+  const handleSubmitReview = async () => {
+    try {
+      setReviewError(null);
+
+      if (!reviewRating) {
+        setReviewError("Please select a rating.");
+        return;
+      }
+
+      setSubmittingReview(true);
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("Please login to submit your review.");
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/submit-review`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+        body: JSON.stringify({
+          bookingId: primaryBooking.orderId,
+          serviceIndex: Number(serviceIndex),
+          rating: reviewRating,
+          comment: reviewComment.trim(),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result?.error || "Unable to submit your review.");
+      }
+
+      setExistingReview(result.review);
+      setReviewSubmitted(true);
+
+      setTimeout(() => {
+        setShowReviewModal(false);
+        setReviewSubmitted(false);
+        setReviewRating(0);
+        setReviewHover(0);
+        setReviewComment("");
+      }, 1200);
+    } catch (error) {
+      console.error("Review submission error:", error);
+      setReviewError(error.message || "Unable to submit your review.");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchExistingReview = async () => {
+      if (!primaryBooking?.orderId || status !== "completed") {
+        return;
+      }
+
+      try {
+        setLoadingReview(true);
+
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        const response = await fetch(`${API_BASE_URL}/api/my-review?bookingId=${encodeURIComponent(primaryBooking.orderId)}&serviceIndex=${Number(serviceIndex)}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result?.error || "Unable to load review.");
+        }
+
+        if (isMounted) {
+          setExistingReview(result.review);
+        }
+      } catch (error) {
+        console.error("Error fetching existing review:", error);
+
+        if (isMounted) {
+          setExistingReview(null);
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingReview(false);
+        }
+      }
+    };
+
+    fetchExistingReview();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [booking, status, serviceIndex, primaryBooking?.orderId]);
+
   if (loading) {
     return (
       <>
@@ -336,7 +510,7 @@ const BookingDetails = () => {
 
         <main className="min-h-screen bg-[#080808] px-5 py-28 text-white">
           <div className="mx-auto flex max-w-5xl flex-col items-center justify-center py-32 text-center">
-            <Loader2 className="h-7 w-7 animate-spin text-white/50" />
+            <LuLoaderCircle className="h-7 w-7 animate-spin text-white/50" />
 
             <p className="mt-5 text-sm text-white/40">Loading your booking...</p>
           </div>
@@ -353,7 +527,7 @@ const BookingDetails = () => {
         <main className="min-h-screen bg-[#080808] px-5 py-28 text-white">
           <div className="mx-auto flex max-w-xl flex-col items-center py-28 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
-              <CircleAlert className="h-7 w-7 text-white/40" />
+              <LuCircleAlert className="h-7 w-7 text-white/40" />
             </div>
 
             <h1 className="mt-6 text-2xl font-semibold tracking-tight">Booking not found</h1>
@@ -380,7 +554,7 @@ const BookingDetails = () => {
         <div className="relative mx-auto max-w-7xl">
           {/* Back */}
           <Link to="/mybookings" className="group inline-flex items-center gap-2 text-xs text-white/35 transition hover:text-white/70">
-            <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
+            <LuArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
             Back to My Bookings
           </Link>
 
@@ -428,7 +602,7 @@ const BookingDetails = () => {
                 <div className="mt-7 grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
                     <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-white/25">
-                      <CalendarDays className="h-3.5 w-3.5 text-cyan-300/70" />
+                      <LuCalendarDays className="h-3.5 w-3.5 text-cyan-300/70" />
                       Date
                     </div>
 
@@ -437,7 +611,7 @@ const BookingDetails = () => {
 
                   <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
                     <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-white/25">
-                      <Clock3 className="h-3.5 w-3.5 text-cyan-300/70" />
+                      <LuClock3 className="h-3.5 w-3.5 text-cyan-300/70" />
                       Time
                     </div>
 
@@ -448,7 +622,7 @@ const BookingDetails = () => {
                 {/* Location */}
                 <div className="mt-3 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
                   <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-white/25">
-                    <MapPin className="h-3.5 w-3.5 text-cyan-300/70" />
+                    <LuMapPin className="h-3.5 w-3.5 text-cyan-300/70" />
                     Service location
                   </div>
 
@@ -492,7 +666,7 @@ const BookingDetails = () => {
                     <h2 className="mt-2 text-xl font-semibold">Your service journey</h2>
                   </div>
 
-                  <ShieldCheck className="h-6 w-6 text-cyan-300/70" />
+                  <LuShieldCheck className="h-6 w-6 text-cyan-300/70" />
                 </div>
 
                 <div className="mt-7 space-y-0">
@@ -550,44 +724,76 @@ const BookingDetails = () => {
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/70">PROFESSIONAL</p>
 
                 <div className="mt-5 flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-cyan-300/20 bg-cyan-300/[0.06]">
-                    <UserRound className="h-6 w-6 text-cyan-300/70" />
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-cyan-300/20 bg-cyan-300/[0.06]">
+                    {professionalImage ? (
+                      <img src={professionalImage} alt={professionalName || "Professional"} className="h-full w-full object-cover" />
+                    ) : (
+                      <LuUserRound className="h-6 w-6 text-cyan-300/70" />
+                    )}
                   </div>
 
                   <div className="min-w-0">
-                    <h2 className="truncate text-lg font-semibold">
-                      {professional ? professionalName : status === "assigning" ? "Finding professional..." : "Professional assigned"}
-                    </h2>
+                    <h2 className="truncate text-lg font-semibold text-white">{professionalName || "Professional assigned"}</h2>
 
-                    {professional && (
+                    {professionalVerified && (
                       <div className="mt-1 flex items-center gap-2 text-xs text-cyan-300/70">
-                        <ShieldCheck className="h-3.5 w-3.5" />
+                        <LuShieldCheck className="h-3.5 w-3.5" />
                         Verified Professional
                       </div>
                     )}
 
-                    {!professional && status === "assigning" && <p className="mt-1 text-xs text-white/30">This usually takes a few moments.</p>}
+                    {!professional && <p className="mt-1 text-xs text-white/30">Loading professional details...</p>}
                   </div>
                 </div>
 
                 {professional && (
-                  <div className="mt-5 grid grid-cols-2 gap-2">
-                    {professionalRating && (
+                  <>
+                    {/* Rating / Jobs / Experience */}
+                    <div className="mt-5 grid grid-cols-2 gap-2">
                       <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-3">
                         <p className="text-[9px] uppercase tracking-wider text-white/25">Rating</p>
 
-                        <p className="mt-1 text-sm font-semibold">★ {professionalRating}</p>
-                      </div>
-                    )}
+                        <p className="mt-1 text-sm font-semibold">★ {professionalRating || "New"}</p>
 
-                    {professionalJobs && (
+                        {professionalReviews > 0 && <p className="mt-1 text-[10px] text-white/25">{professionalReviews} reviews</p>}
+                      </div>
+
                       <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-3">
                         <p className="text-[9px] uppercase tracking-wider text-white/25">Jobs</p>
 
-                        <p className="mt-1 text-sm font-semibold">{professionalJobs}</p>
+                        <p className="mt-1 text-sm font-semibold">{professionalJobs || 0}</p>
                       </div>
-                    )}
-                  </div>
+
+                      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-3">
+                        <p className="text-[9px] uppercase tracking-wider text-white/25">Experience</p>
+
+                        <p className="mt-1 text-sm font-semibold">{professionalExperience ? `${professionalExperience} yrs` : "—"}</p>
+                      </div>
+
+                      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-3">
+                        <p className="text-[9px] uppercase tracking-wider text-white/25">Scheduled</p>
+
+                        <p className="mt-1 text-sm font-semibold text-white/80">{formatDate(bookingDate)}</p>
+
+                        <p className="mt-1 text-[10px] text-white/30">{formatTime(bookingTime)}</p>
+                      </div>
+                    </div>
+
+                    {/* Assigned schedule */}
+                    <div className="mt-3 rounded-2xl border border-cyan-300/10 bg-cyan-300/[0.03] p-4">
+                      <div className="flex items-start gap-3">
+                        <LuCalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300/70" />
+
+                        <div>
+                          <p className="text-[9px] uppercase tracking-[0.16em] text-white/25">ASSIGNED FOR</p>
+
+                          <p className="mt-1 text-sm font-medium text-white/80">{formatDate(bookingDate)}</p>
+
+                          <p className="mt-1 text-xs text-white/35">{formatTime(bookingTime)} · Your scheduled service</p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
                 )}
 
                 {/* Future actions */}
@@ -603,8 +809,9 @@ const BookingDetails = () => {
                       <span className="mt-1 block text-[10px] text-white/30">Available once contact is enabled</span>
                     </span>
 
-                    <ChevronRight className="h-4 w-4" />
+                    <LuChevronRight className="h-4 w-4" />
                   </button>
+
                   {canCancel && (
                     <button
                       type="button"
@@ -648,17 +855,49 @@ const BookingDetails = () => {
                 <section className="rounded-[28px] border border-white/[0.08] bg-white/[0.025] p-6 sm:p-7">
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/70">YOUR EXPERIENCE</p>
 
-                  <h2 className="mt-2 text-xl font-semibold">How was your service?</h2>
+                  {loadingReview ? (
+                    <div className="mt-5">
+                      <p className="text-sm text-white/40">Loading your review...</p>
+                    </div>
+                  ) : existingReview ? (
+                    <>
+                      <h2 className="mt-2 text-xl font-semibold">Your review</h2>
 
-                  <p className="mt-2 text-xs leading-5 text-white/35">Rate your professional and share your experience with other Dwaarper customers.</p>
+                      <div className="mt-5 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <span key={star} className={star <= existingReview.rating ? "text-yellow-300" : "text-white/15"}>
+                              ★
+                            </span>
+                          ))}
+                        </div>
 
-                  <button
-                    type="button"
-                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-white/90"
-                  >
-                    Rate your professional
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
+                        <p className="mt-3 text-sm leading-6 text-white/65">
+                          {existingReview.comment ? `"${existingReview.comment}"` : "You submitted a rating without a written comment."}
+                        </p>
+
+                        <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-white/20">Review submitted</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="mt-2 text-xl font-semibold">How was your service?</h2>
+
+                      <p className="mt-2 text-xs leading-5 text-white/35">Rate your professional and share your experience with other Dwaarper customers.</p>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setReviewError(null);
+                          setShowReviewModal(true);
+                        }}
+                        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-white/90"
+                      >
+                        Rate your professional
+                        <LuChevronRight className="h-4 w-4" />
+                      </button>
+                    </>
+                  )}
                 </section>
               )}
             </div>
@@ -706,6 +945,111 @@ const BookingDetails = () => {
           </div>
         </div>
       )}
+
+      {showReviewModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/75 px-5 backdrop-blur-md">
+          <div className="w-full max-w-md rounded-[28px] border border-white/[0.08] bg-[#111] p-6 shadow-2xl sm:p-7">
+            {!reviewSubmitted ? (
+              <>
+                {/* Header */}
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/70">YOUR EXPERIENCE</p>
+
+                  <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">Rate your professional</h3>
+
+                  <p className="mt-2 text-sm leading-6 text-white/35">How was your experience with {professionalName || "your professional"}?</p>
+                </div>
+
+                {/* Stars */}
+                <div className="mt-7 flex justify-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const active = star <= (reviewHover || reviewRating);
+
+                    return (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewRating(star)}
+                        onMouseEnter={() => setReviewHover(star)}
+                        onMouseLeave={() => setReviewHover(0)}
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.07] bg-white/[0.025] text-2xl transition hover:scale-105"
+                        aria-label={`${star} star${star > 1 ? "s" : ""}`}
+                      >
+                        <span className={active ? "text-yellow-300" : "text-white/20"}>★</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {reviewRating > 0 && (
+                  <p className="mt-3 text-center text-xs text-white/35">
+                    {reviewRating === 1 && "We'll do better."}
+                    {reviewRating === 2 && "Thanks for your feedback."}
+                    {reviewRating === 3 && "Thanks for your feedback."}
+                    {reviewRating === 4 && "Glad you had a good experience."}
+                    {reviewRating === 5 && "We're glad you loved the service."}
+                  </p>
+                )}
+
+                {/* Comment */}
+                <div className="mt-7">
+                  <label className="mb-2 block text-[10px] font-medium uppercase tracking-[0.18em] text-white/30">Your experience</label>
+
+                  <textarea
+                    value={reviewComment}
+                    onChange={(event) => setReviewComment(event.target.value)}
+                    placeholder="Tell us about your experience..."
+                    maxLength={1000}
+                    rows={4}
+                    className="w-full resize-none rounded-2xl border border-white/[0.08] bg-white/[0.025] px-4 py-3 text-sm text-white outline-none placeholder:text-white/20 focus:border-cyan-300/20"
+                  />
+                </div>
+
+                {/* Error */}
+                {reviewError && (
+                  <div className="mt-4 rounded-2xl border border-red-500/10 bg-red-500/[0.04] px-4 py-3">
+                    <p className="text-xs leading-5 text-red-300/80">{reviewError}</p>
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowReviewModal(false);
+                      setReviewError(null);
+                    }}
+                    disabled={submittingReview}
+                    className="w-full rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white disabled:opacity-40"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSubmitReview}
+                    disabled={!reviewRating || submittingReview}
+                    className="w-full rounded-full bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/30"
+                  >
+                    {submittingReview ? "Submitting..." : "Submit Review"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col items-center py-10 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-300 text-black">
+                  <LuCheck className="h-7 w-7" />
+                </div>
+
+                <h3 className="mt-6 text-xl font-semibold">Thanks for your feedback</h3>
+
+                <p className="mt-2 text-sm text-white/35">Your review has been submitted successfully.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 };
@@ -717,7 +1061,7 @@ const StatusStep = ({ active = false, completed = false, title, description, las
         <div
           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${completed ? "border-cyan-300 bg-cyan-300 text-black" : active ? "border-cyan-300/50 bg-cyan-300/[0.08] text-cyan-300" : "border-white/10 bg-white/[0.025] text-white/20"}`}
         >
-          {completed ? <Check className="h-4 w-4" /> : <span className="h-2 w-2 rounded-full bg-current" />}
+          {completed ? <LuCheck className="h-4 w-4" /> : <span className="h-2 w-2 rounded-full bg-current" />}
         </div>
 
         {!last && <div className={`mt-1 h-12 w-px ${completed ? "bg-cyan-300/40" : "bg-white/[0.08]"}`} />}
