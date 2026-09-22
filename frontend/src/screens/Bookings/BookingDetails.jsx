@@ -443,7 +443,7 @@ const BookingDetails = () => {
         setReviewRating(0);
         setReviewHover(0);
         setReviewComment("");
-      }, 1200);
+      }, 3000);
     } catch (error) {
       console.error("Review submission error:", error);
       setReviewError(error.message || "Unable to submit your review.");
@@ -584,8 +584,7 @@ const BookingDetails = () => {
               <section className="rounded-[28px] border border-white/[0.08] bg-white/[0.025] p-6 sm:p-7">
                 <div className="flex items-end justify-between gap-5">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/25">YOUR SERVICE</p>
-
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/70">YOUR SERVICE</p>
                     <h2 className="mt-2 text-2xl font-semibold tracking-tight">{primaryBooking.name || "Home Service"}</h2>
 
                     <p className="mt-1 text-sm text-white/35">{primaryBooking.service || "Professional home service"}</p>
@@ -635,7 +634,7 @@ const BookingDetails = () => {
               {/* Services */}
               {bookings.length > 1 && (
                 <section className="rounded-[28px] border border-white/[0.08] bg-white/[0.025] p-6 sm:p-7">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/25">SERVICES</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/70">SERVICES</p>
 
                   <div className="mt-5 space-y-3">
                     {bookings.map((item, index) => (
@@ -661,8 +660,7 @@ const BookingDetails = () => {
               <section className="rounded-[28px] border border-white/[0.08] bg-white/[0.025] p-6 sm:p-7">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/25">BOOKING STATUS</p>
-
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/70">BOOKING STATUS</p>
                     <h2 className="mt-2 text-xl font-semibold">Your service journey</h2>
                   </div>
 
@@ -778,21 +776,6 @@ const BookingDetails = () => {
                         <p className="mt-1 text-[10px] text-white/30">{formatTime(bookingTime)}</p>
                       </div>
                     </div>
-
-                    {/* Assigned schedule */}
-                    <div className="mt-3 rounded-2xl border border-cyan-300/10 bg-cyan-300/[0.03] p-4">
-                      <div className="flex items-start gap-3">
-                        <LuCalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300/70" />
-
-                        <div>
-                          <p className="text-[9px] uppercase tracking-[0.16em] text-white/25">ASSIGNED FOR</p>
-
-                          <p className="mt-1 text-sm font-medium text-white/80">{formatDate(bookingDate)}</p>
-
-                          <p className="mt-1 text-xs text-white/35">{formatTime(bookingTime)} · Your scheduled service</p>
-                        </div>
-                      </div>
-                    </div>
                   </>
                 )}
 
@@ -829,8 +812,7 @@ const BookingDetails = () => {
 
               {/* Payment */}
               <section className="rounded-[28px] border border-white/[0.08] bg-white/[0.025] p-6 sm:p-7">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/25">PAYMENT</p>
-
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300/70">PAYMENT</p>
                 <div className="mt-5 flex items-end justify-between">
                   <div>
                     <p className="text-xs text-white/30">Total paid</p>
@@ -1037,14 +1019,68 @@ const BookingDetails = () => {
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center py-10 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-300 text-black">
-                  <LuCheck className="h-7 w-7" />
+              <div className="relative overflow-hidden py-6 text-center sm:py-8">
+                {/* Ambient success glow */}
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/[0.045] blur-[80px]" />
+
+                <div className="relative">
+                  {/* Success icon */}
+                  <div className="mx-auto flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/[0.1] bg-white/[0.055] shadow-[0_15px_40px_rgba(0,0,0,0.35)]">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-300 text-black">
+                      <LuCheck className="h-6 w-6 stroke-[2.5]" />
+                    </div>
+                  </div>
+
+                  {/* Brand */}
+                  <span className="mt-7 block text-[10px] font-bold tracking-[0.25em] text-white/35">DWAARPER</span>
+
+                  {/* Heading */}
+                  <h3 className="mt-3 text-[28px] font-semibold leading-tight tracking-[-0.035em] text-white sm:text-[32px]">Review submitted</h3>
+
+                  {/* Description */}
+                  <p className="mx-auto mt-3 max-w-[320px] text-sm leading-6 text-white/45">
+                    Thanks for sharing your experience with <span className="text-white/70">{professionalName || "your professional"}</span>.
+                  </p>
+
+                  {/* Review preview */}
+                  <div className="mx-auto mt-7 max-w-[340px] rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4 text-left">
+                    {/* Stars */}
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span key={star} className={star <= (existingReview?.rating || reviewRating) ? "text-yellow-300" : "text-white/15"}>
+                          ★
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Comment */}
+                    {(existingReview?.comment || reviewComment.trim()) && (
+                      <p className="mt-3 text-sm leading-6 text-white/60">"{existingReview?.comment || reviewComment.trim()}"</p>
+                    )}
+
+                    {/* Status */}
+                    <div className="mt-4 flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-cyan-300" />
+
+                      <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/30">Review received</span>
+                    </div>
+                  </div>
+
+                  {/* Done */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowReviewModal(false);
+                      setReviewSubmitted(false);
+                      setReviewRating(0);
+                      setReviewHover(0);
+                      setReviewComment("");
+                    }}
+                    className="mt-7 inline-flex min-w-[180px] items-center justify-center rounded-full bg-white px-6 py-3 text-[13px] font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-[0_12px_30px_rgba(255,255,255,.12)]"
+                  >
+                    Done
+                  </button>
                 </div>
-
-                <h3 className="mt-6 text-xl font-semibold">Thanks for your feedback</h3>
-
-                <p className="mt-2 text-sm text-white/35">Your review has been submitted successfully.</p>
               </div>
             )}
           </div>

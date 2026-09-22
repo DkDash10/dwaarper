@@ -175,15 +175,31 @@ router.post("/complete-profile", fetchUser, async (req, res) => {
 // =======================
 router.post("/getlocation", async (req, res) => {
   try {
-    const { lat, long } = req.body.latlong;
+    const lat = Number(req.body?.latlong?.lat);
+    const long = Number(req.body?.latlong?.long);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(long) || lat < -90 || lat > 90 || long < -180 || long > 180) {
+      return res.status(400).json({ error: "Valid coordinates are required" });
+    }
 
     const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(10000),
+    });
+
+    if (!response.ok) {
+      return res.status(502).json({ error: "Location service is temporarily unavailable" });
+    }
+
     const data = await response.json();
 
     const location = `${data.locality || ""}, ${data.city || ""}, ${data.principalSubdivision || ""} ${data.postcode || ""}`;
 
-    res.send({ location });
+    if (!location.replace(/[\s,]/g, "").trim()) {
+      return res.status(404).json({ error: "No location could be found for these coordinates" });
+    }
+
+    res.json({ location: location.replace(/^,\s*|,\s*$/g, "").trim() });
   } catch (error) {
     console.error(error.message);
     res.status(500).send({ error: "Server Error" });

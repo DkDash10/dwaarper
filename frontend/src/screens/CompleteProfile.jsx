@@ -74,42 +74,60 @@ export default function CompleteProfile() {
   // AUTO LOCATION DETECT
   // ======================
   const detectLocation = async () => {
-    try {
-      setDetecting(true);
+    if (!navigator.geolocation) {
+      setErrors((prev) => ({ ...prev, location: "Location detection is not supported by this browser." }));
+      return;
+    }
 
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const latlong = {
+    setDetecting(true);
+    setErrors((prev) => ({ ...prev, location: "" }));
+
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 60000,
+        });
+      });
+
+      const response = await fetch(`${API_BASE_URL}/api/auth/getlocation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          latlong: {
             lat: position.coords.latitude,
             long: position.coords.longitude,
-          };
+          },
+        }),
+      });
 
-          const response = await fetch(`${API_BASE_URL}/api/auth/getlocation`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ latlong }),
-          });
+      const data = await response.json();
 
-          const text = await response.text();
-          const data = text ? JSON.parse(text) : {};
+      if (!response.ok || !data.location?.trim()) {
+        throw new Error(data.error || "Unable to determine your location. Enter it manually.");
+      }
 
-          setForm((prev) => ({
-            ...prev,
-            location: data.location || "",
-          }));
+      setForm((prev) => ({
+        ...prev,
+        location: data.location.trim(),
+      }));
+    } catch (error) {
+      console.error("Location detection failed:", error);
 
-          setDetecting(false);
-        },
+      const message =
+        error?.code === 1
+          ? "Location permission was denied. Allow access or enter your location manually."
+          : error?.code === 2
+            ? "Your location could not be determined. Check your device location settings."
+            : error?.code === 3
+              ? "Location detection timed out. Try again or enter your location manually."
+              : error.message || "Unable to determine your location. Enter it manually.";
 
-        (error) => {
-          console.error(error);
-          setDetecting(false);
-        },
-      );
-    } catch (err) {
-      console.error(err);
+      setErrors((prev) => ({ ...prev, location: message }));
+    } finally {
       setDetecting(false);
     }
   };
@@ -211,7 +229,13 @@ export default function CompleteProfile() {
               <div className="relative">
                 <input type="text" name="location" placeholder="Mumbai, Maharashtra" value={form.location} onChange={handleChange} className={`${inputClass} pr-14`} required />
 
-                <button type="button" onClick={detectLocation} className="absolute right-4 top-1/2 -translate-y-1/2 text-cyan-300 transition hover:text-cyan-200">
+                <button
+                  type="button"
+                  onClick={detectLocation}
+                  disabled={detecting}
+                  aria-label="Use current location"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-cyan-300 transition hover:text-cyan-200 disabled:cursor-wait disabled:opacity-50"
+                >
                   <IoLocationOutline size={22} />
                 </button>
                 {errors.location && <p className="text-red-500 text-xs mt-2">{errors.location}</p>}
