@@ -46,7 +46,23 @@ export default function BookingJourney() {
       });
     }, sectionRef);
 
-    return () => ctx.revert();
+    let active = true;
+    const refreshLayout = () => {
+      if (active) ScrollTrigger.refresh();
+    };
+
+    if (document.readyState === "complete") {
+      refreshLayout();
+    } else {
+      window.addEventListener("load", refreshLayout, { once: true });
+    }
+    document.fonts?.ready.then(refreshLayout);
+
+    return () => {
+      active = false;
+      window.removeEventListener("load", refreshLayout);
+      ctx.revert();
+    };
   }, [screens]);
 
   /*

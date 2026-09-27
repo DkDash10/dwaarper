@@ -547,11 +547,11 @@ const BookingDetails = () => {
     <>
       <Navigationbar />
 
-      <main className="relative min-h-screen overflow-hidden bg-[#080808] px-5 pb-24 pt-28 text-white">
+      <main className="relative min-h-screen overflow-hidden bg-[#080808] text-white">
         {/* Subtle ambient glow */}
         <div className="pointer-events-none absolute left-1/2 top-40 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-cyan-400/[0.025] blur-[130px]" />
 
-        <div className="relative mx-auto max-w-7xl">
+        <div className="relative mx-auto max-w-7xl px-5 pb-24 pt-28">
           {/* Back */}
           <Link to="/mybookings" className="group inline-flex items-center gap-2 text-xs text-white/35 transition hover:text-white/70">
             <LuArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
